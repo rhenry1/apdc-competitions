@@ -1,0 +1,29 @@
+{
+  "name": "APDC Nationals 2026",
+  "short_name": "APDC 2026",
+  "description": "Dance Nationals Schedule \u2014 Long Branch, NJ \u00b7 June 28 \u2013 July 2",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07041a",
+  "theme_color": "#07041a",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
