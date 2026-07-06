@@ -1,0 +1,30 @@
+{
+  "name": "APDC Competitions",
+  "short_name": "APDC",
+  "description": "Dance Nationals Schedule \u2014 Long Branch, NJ \u00b7 June 28 \u2013 July 2",
+  "start_url": "/apdc-competitions/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07041a",
+  "theme_color": "#07041a",
+  "icons": [
+    {
+      "src": "/apdc-competitions/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/apdc-competitions/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apdc-competitions/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "scope": "/apdc-competitions/"
+}
