@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#07041a">
+<link rel="icon" type="image/x-icon" href="../favicon.ico">
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" href="../icon-192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="../icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="../icon-512.png">
+<title>APDC Competition Schedule</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #07041a;
+    --card: #14103a;
+    --card-elevated: #1a1545;
+    --border: rgba(255,255,255,0.07);
+    --border-strong: rgba(167,139,250,0.4);
+    --text: #ffffff;
+    --text-secondary: #e2d9f3;
+    --muted: #a89cc8;
+    --accent-quinn: #d8b4fe;
+    --accent-quinn-dim: rgba(216,180,254,0.15);
+    --accent-props: #f9a8d4;
+    --accent-props-dim: rgba(249,168,212,0.12);
+    --accent-both: #a5b4fc;
+    --accent-both-dim: rgba(165,180,252,0.15);
+    --stage1: #c4b5fd;
+    --stage2: #67e8f9;
+    --gold: #fde68a;
+    --gold-dim: rgba(253,230,138,0.12);
+    --card-quinn-bg: #1e1040;
+    --card-quinn-border: rgba(216,180,254,0.35);
+    --card-props-bg: #1e0e30;
+    --card-props-border: rgba(249,168,212,0.35);
+    --card-both-bg: #111540;
+    --card-both-border: rgba(165,180,252,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 10% 25%,  rgba(109,40,217,0.22) 0%, transparent 40%),
+      radial-gradient(ellipse at 90% 55%,  rgba(88,28,220,0.18)  0%, transparent 40%),
+      radial-gradient(ellipse at 50% 95%,  rgba(76,29,149,0.15)  0%, transparent 50%);
+    color: var(--text);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 24px 16px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(180deg, #06031a 0%, #09061f 100%);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  .header-inner { max-width: 960px; margin: 0 auto; }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .brand-logo {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #fde68a;
+    background: rgba(253,230,138,0.08);
+    border: 1px solid rgba(253,230,138,0.25);
+    padding: 3px 10px;
+    border-radius: 4px;
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7a6fa0;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(22px, 6vw, 36px);
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    color: #ffffff;
+    margin-bottom: 12px;
+    line-height: 1.15;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #8878a8;
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .ld-quinn  { background: var(--accent-quinn); box-shadow: 0 0 6px rgba(192,132,252,0.5); }
+  .ld-props  { background: var(--accent-props); box-shadow: 0 0 6px rgba(244,114,182,0.4); }
+  .ld-both   { background: var(--accent-both); box-shadow: 0 0 6px rgba(129,140,248,0.4); }
+  .ld-normal { background: rgba(139,92,246,0.3); }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(7,4,26,0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: sticky;
+    top: 0;
+    z-index: 90;
+  }
+
+  /* Make filter bar stick below header — JS sets top dynamically */
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .filter-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    width: 28px;
+    flex-shrink: 0;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .btn:hover { border-color: var(--accent-quinn); color: var(--accent-quinn); }
+
+  /* show-filter active states */
+  .show-btn.active                      { background: rgba(139,92,246,0.15); border-color: var(--stage1); color: var(--stage1); }
+  .show-btn[data-filter="props"].active { background: var(--accent-props-dim); border-color: var(--accent-props); color: var(--accent-props); }
+
+  /* day-filter active state */
+  .day-btn.active { background: rgba(167,139,250,0.15); border-color: var(--accent-quinn); color: var(--accent-quinn); }
+  .cat-btn.active { background: rgba(167,139,250,0.15); border-color: var(--accent-quinn); color: var(--accent-quinn); }
+
+  /* ── DANCER SEARCH ── */
+  .search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    max-width: 200px;
+  }
+
+  .dancer-input {
+    width: 100%;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.06);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dancer-input::placeholder { color: var(--muted); }
+  .dancer-input:focus { border-color: var(--accent-quinn); box-shadow: 0 0 0 2px rgba(192,132,252,0.12); }
+
+  .dancer-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    min-width: 220px;
+    background: #0f0c24;
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 400;
+    display: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+  }
+  .dancer-dropdown.open { display: block; }
+
+  .dropdown-item {
+    padding: 9px 14px;
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: background 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dropdown-item:last-child { border-bottom: none; }
+  .dropdown-item:hover, .dropdown-item.highlighted { background: rgba(139,92,246,0.15); }
+  .dropdown-item mark {
+    background: transparent;
+    color: var(--accent-quinn);
+    font-weight: 600;
+  }
+  .dropdown-empty {
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* Active dancer pill */
+  .dancer-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px 5px 12px;
+    border-radius: 20px;
+    background: rgba(139,92,246,0.18);
+    border: 1px solid var(--accent-quinn);
+    color: var(--accent-quinn);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 0 12px rgba(192,132,252,0.25);
+  }
+  .pill-clear {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: var(--accent-quinn);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0;
+    opacity: 0.7;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pill-clear:hover { opacity: 1; }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+    background: transparent;
+  }
+
+  /* Ensure dark bg fills full viewport below filter bar */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: -1;
+  }
+
+  /* ── DANCER CALLOUT ── */
+  .quinn-callout {
+    background: var(--card);
+    border: 1px solid rgba(167,139,250,0.3);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 0 24px rgba(109,40,217,0.15);
+  }
+
+  .callout-header {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: #c4b5fd;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .quinn-schedule {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .quinn-item {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(167,139,250,0.2);
+    border-radius: 8px;
+    padding: 7px 11px;
+    font-size: 12px;
+    min-width: 0;
+  }
+
+  .quinn-item-title { font-weight: 600; color: #ffffff; }
+  .quinn-item-meta  { color: var(--muted); font-size: 11px; margin-top: 2px; }
+
+  /* ── DAY SECTION ── */
+  .day-section { margin-bottom: 36px; }
+  .day-section.hidden { display: none; }
+
+  .day-header {
+    border-bottom: 1px solid rgba(167,139,250,0.2);
+    background: transparent;
+  }
+
+  .day-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .day-label {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #a78bfa;
+    opacity: 1;
+  }
+
+  .day-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    font-style: italic;
+    color: #ffffff;
+    letter-spacing: 0.01em;
+  }
+
+  .day-count {
+    margin-left: auto;
+    font-size: 10px;
+    color: #7a6fa0;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── ROUTINE CARD ── */
+  .routine-card {
+    display: grid;
+    grid-template-columns: 58px 1fr auto;
+    gap: 0 12px;
+    align-items: start;
+    padding: 11px 12px 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    margin-bottom: 6px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .routine-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+
+  .routine-card.normal::before            { background: rgba(167,139,250,0.3); }
+  .routine-card.quinn-only                { background: var(--card-quinn-bg); border-color: var(--card-quinn-border); box-shadow: 0 4px 20px rgba(139,92,246,0.2); }
+  .routine-card.quinn-only::before        { background: linear-gradient(180deg, #d8b4fe 0%, #a78bfa 100%); }
+  .routine-card.props-only                { background: var(--card-props-bg); border-color: var(--card-props-border); box-shadow: 0 4px 20px rgba(236,72,153,0.15); }
+  .routine-card.props-only::before        { background: linear-gradient(180deg, #f9a8d4, #f472b6); }
+  .routine-card.quinn-and-props           { background: var(--card-both-bg); border-color: var(--card-both-border); box-shadow: 0 4px 20px rgba(99,102,241,0.2); }
+  .routine-card.quinn-and-props::before   { background: linear-gradient(180deg, #d8b4fe, #f9a8d4 100%); }
+
+  .routine-card.hidden { display: none; }
+
+  .card-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: #9d8ec4;
+    padding-top: 2px;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    line-height: 1.3;
+  }
+
+  .card-main { min-width: 0; }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .quinn-star { color: var(--accent-quinn); margin-left: 3px; filter: drop-shadow(0 0 4px rgba(192,132,252,0.6)); }
+  .props-icon { color: var(--accent-props); margin-left: 3px; font-size: 12px; }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 4px;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    background: rgba(255,255,255,0.08);
+    color: #c4b5fd;
+    white-space: nowrap;
+  }
+
+  .tag.style-jazz         { background: rgba(129,140,248,0.22); color: #c7d2fe; }
+  .tag.style-contemporary { background: rgba(103,232,249,0.15); color: #67e8f9; }
+  .tag.style-lyrical      { background: rgba(192,132,252,0.22); color: #e9d5ff; }
+  .tag.style-hiphop       { background: rgba(244,114,182,0.2);  color: #fbcfe8; }
+  .tag.style-tap          { background: rgba(196,181,253,0.2);  color: #ddd6fe; }
+  .tag.style-musical      { background: rgba(253,230,138,0.18); color: #fde68a; }
+  .tag.style-open         { background: rgba(148,163,184,0.12); color: #94a3b8; }
+  .tag.fmt-prod           { background: rgba(233,196,106,0.15); color: var(--gold); }
+  .tag.stage-1            { background: rgba(167,139,250,0.2);  color: #ddd6fe; }
+  .tag.stage-2            { background: rgba(103,232,249,0.15); color: #a5f3fc; }
+
+  .card-dancers {
+    font-size: 11px;
+    color: #a89cc8;
+    line-height: 1.4;
+  }
+
+  .card-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    padding-top: 2px;
+    white-space: nowrap;
+  }
+
+  .entry-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: #c4b5fd;
+    letter-spacing: 0.02em;
+  }
+
+  .age-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #9d8ec4;
+    text-align: right;
+  }
+
+  /* ── META ROWS (awards / breaks) ── */
+  .meta-row {
+    display: flex;
+    align-items: center;
+    padding: 7px 12px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    border: 1px dashed rgba(167,139,250,0.2);
+    color: #8878b0;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.03em;
+  }
+
+  .meta-row.awards {
+    border-color: rgba(253,230,138,0.3);
+    color: #fde68a;
+    background: rgba(253,230,138,0.06);
+  }
+
+  .meta-row.hidden { display: none; }
+
+
+  /* ── INSTALL BANNER ── */
+  .install-banner {
+    background: linear-gradient(135deg, #1e1040 0%, #16103a 100%);
+    border-bottom: 1px solid rgba(167,139,250,0.3);
+    padding: 12px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    position: relative;
+  }
+
+  .install-banner.hidden { display: none; }
+
+  .install-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .install-text { flex: 1; min-width: 0; }
+
+  .install-title {
+    font-weight: 700;
+    font-size: 13px;
+    color: #ffffff;
+    margin-bottom: 3px;
+  }
+
+  .install-body {
+    font-size: 12px;
+    color: #a89cc8;
+    line-height: 1.5;
+  }
+
+  .install-body strong { color: #c4b5fd; }
+
+  .install-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .install-btn-primary {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: none;
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .install-btn-dismiss {
+    padding: 7px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: transparent;
+    color: #6d5f90;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .install-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #6d5f90;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 2px 6px;
+    line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ── OFFSET BAR ── */
+  .offset-bar {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(7,4,26,0.97);
+    flex-wrap: wrap;
+  }
+
+  .offset-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .offset-btns {
+    display: flex;
+    gap: 4px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex: 1;
+  }
+  .offset-btns::-webkit-scrollbar { display: none; }
+
+  .offset-btn {
+    padding: 4px 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .offset-btn:hover { border-color: #555; color: var(--text); }
+  .offset-btn.active { 
+    background: rgba(167,139,250,0.15); 
+    border-color: var(--accent-quinn); 
+    color: var(--accent-quinn);
+    font-weight: 600;
+  }
+  .offset-btn[data-delta="0"].active {
+    background: rgba(103,232,249,0.1);
+    border-color: var(--stage2);
+    color: var(--stage2);
+  }
+
+  .offset-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent-quinn);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Adjusted time display on cards */
+  .time-adjusted {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-quinn);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+  .time-original {
+    font-size: 10px;
+    color: #5a4f78;
+    text-decoration: line-through;
+    white-space: nowrap;
+  }
+
+
+  /* ── AMANDA PAGE DANCE COMPANY — GOLD ── */
+  .apdc-card {
+    background: linear-gradient(135deg, rgba(233,196,106,0.09) 0%, rgba(161,138,60,0.06) 100%) !important;
+    border-color: rgba(233,196,106,0.35) !important;
+    box-shadow: 0 2px 16px rgba(233,196,106,0.1) !important;
+  }
+  .apdc-card::before {
+    background: linear-gradient(180deg, #fde68a, #e9c46a, #b8942a) !important;
+  }
+  .apdc-card .card-title {
+    color: #fde68a !important;
+  }
+  .apdc-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #0e0630;
+    background: linear-gradient(135deg, #fde68a, #e9c46a);
+    border: 1px solid rgba(233,196,106,0.5);
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  /* Props + APDC combined */
+  .apdc-card.props-only {
+    background: linear-gradient(135deg, rgba(233,196,106,0.09), rgba(244,114,182,0.07)) !important;
+    border-color: rgba(233,196,106,0.4) !important;
+  }
+
+  /* ── BATTLE CATEGORY HEADER ── */
+  .battle-category {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #a78bfa;
+    padding: 12px 4px 6px;
+    border-bottom: 1px solid rgba(167,139,250,0.15);
+    margin-bottom: 6px;
+    margin-top: 4px;
+  }
+
+  /* ── NO RESULTS ── */
+  .no-results {
+    text-align: center;
+    padding: 48px 16px;
+    color: #6d5f90;
+    font-size: 13px;
+    display: none;
+  }
+
+  /* ── MOBILE ── */
+  /* ── RESPONSIVE ── */
+
+  /* Large phones (iPhone Pro Max, Plus: 428px+) */
+  @media (max-width: 480px) {
+    header {
+      padding: 14px 16px 14px;
+      padding-top: max(14px, env(safe-area-inset-top));
+    }
+
+    .search-expand { min-width: 200px; }
+
+    h1 { font-size: 22px; margin-bottom: 10px; }
+
+    .legend { gap: 6px 14px; }
+
+    .filter-bar {
+      padding: 10px 16px;
+      gap: 8px;
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+    }
+
+    .filter-label { width: 36px; font-size: 9px; }
+
+    .btn { font-size: 11px; padding: 5px 11px; }
+
+    .search-wrap { max-width: none; flex: 1; }
+
+    main {
+      padding: 16px 14px 40px;
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
+      padding-bottom: max(40px, env(safe-area-inset-bottom));
+    }
+
+    .routine-card {
+      grid-template-columns: 54px 1fr;
+      padding: 10px 12px 10px 14px;
+    }
+
+    .card-right { display: none; }
+
+    .card-title { font-size: 13px; }
+
+    .day-title { font-size: 16px; }
+
+    .quinn-callout { padding: 12px 14px; }
+
+    .quinn-item { font-size: 11px; }
+  }
+
+  /* Standard phones (iPhone 14/15: 390-393px) */
+  @media (max-width: 400px) {
+    h1 { font-size: 20px; }
+
+    .btn { font-size: 10px; padding: 5px 9px; }
+
+    .filter-label { display: none; }
+
+    .routine-card {
+      grid-template-columns: 48px 1fr;
+      padding: 9px 10px 9px 12px;
+    }
+
+    .card-time { font-size: 10px; }
+
+    .card-title { font-size: 13px; }
+
+    .tag { font-size: 9px; padding: 2px 5px; }
+
+    .day-title { font-size: 15px; }
+
+    main { padding: 14px 12px 40px; }
+  }
+
+  /* Small phones (SE: 375px and below) */
+  @media (max-width: 375px) {
+    h1 { font-size: 18px; }
+
+    .btn { font-size: 10px; padding: 4px 8px; }
+
+    .header-brand { flex-wrap: wrap; gap: 6px; }
+
+    .routine-card { grid-template-columns: 44px 1fr; }
+
+    .card-title { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     COMPETITION TEMPLATE — APDC Dance Competition Dashboard
+     ============================================================
+     TO USE FOR A NEW COMPETITION:
+     1. Update COMPETITION_CONFIG with the new event details
+     2. Replace ROUTINES array with the new schedule data
+     3. Update manifest.json name/short_name
+     4. Deploy to GitHub Pages
+     ============================================================ -->
+
+<script>
+// ============================================================
+// ① COMPETITION CONFIG — update this for each new event
+// ============================================================
+const COMPETITION_CONFIG = {
+  "name": "Turn It Up Regionals — Fall 2026",
+  "subtitle": "Cherry Hill, NJ · October 11–12, 2026",
+  "primaryStudio": "Amanda Page Dance Company",
+  "days": {
+    "sat": {
+      "label": "✦ Day 1",
+      "title": "Saturday, October 11",
+      "count": "Stage 1"
+    },
+    "sun": {
+      "label": "✦ Day 2",
+      "title": "Sunday, October 12",
+      "count": "Stage 1"
+    }
+  },
+  "dayButtons": [
+    {
+      "key": "sat",
+      "label": "Sat 10/11"
+    },
+    {
+      "key": "sun",
+      "label": "Sun 10/12"
+    }
+  ],
+  "metaRows": {
+    "sat": [
+      {
+        "type": "meta",
+        "text": "8:00 am · Doors Open"
+      },
+      {
+        "type": "awards",
+        "text": "🏆 12:30 pm · Awards"
+      }
+    ],
+    "sun": [
+      {
+        "type": "meta",
+        "text": "9:00 am · Doors Open"
+      },
+      {
+        "type": "awards",
+        "text": "🏆 3:00 pm · Final Awards"
+      }
+    ]
+  }
+};
+
+
+// ============================================================
+// ② SCHEDULE DATA — replace with new competition routines
+//    Each routine object:
+//    entry:     string  — entry/routine number
+//    title:     string  — routine name
+//    time:      string  — scheduled time e.g. "8:45 am"
+//    day:       string  — day key matching COMPETITION_CONFIG.days
+//    dayTitle:  string  — display name for the day
+//    dayLabel:  string  — small label e.g. "✦ Day 1"
+//    dayCount:  string  — stage info e.g. "Stage 1 & 2"
+//    level:     string  — mini | petite | junior | teen | senior
+//    format:    string  — solo | group | production
+//    props:     bool    — true if props needed
+//    studio:    string  — studio name
+//    dancers:   string  — comma-separated dancer names
+//    style:     string  — Jazz | Contemporary | Lyrical | Hip-Hop | Tap | Musical Theater | Open
+//    stage:     string  — "1" | "2" | ""
+//    formatTag: string  — display tag e.g. "Petite Small Group"
+//    ageLabel:  string  — e.g. "Age 9 · 5"
+//    battleCat: string  — battle category header (for battle days)
+//    isApdc:    bool    — true to apply gold APDC styling
+// ============================================================
+const ROUTINES = [
+  {
+    "entry": "101",
+    "title": "Don't Stop Me Now",
+    "time": "8:15 am",
+    "day": "sat",
+    "dayTitle": "Saturday, October 11",
+    "dayLabel": "✦ Day 1",
+    "dayCount": "Stage 1",
+    "level": "mini",
+    "format": "solo",
+    "props": false,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Jazz",
+    "stage": "1",
+    "formatTag": "Mini Solo",
+    "ageLabel": "Mini",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "102",
+    "title": "Rainbow Connection",
+    "time": "8:18 am",
+    "day": "sat",
+    "dayTitle": "Saturday, October 11",
+    "dayLabel": "✦ Day 1",
+    "dayCount": "Stage 1",
+    "level": "mini",
+    "format": "solo",
+    "props": false,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Lyrical",
+    "stage": "1",
+    "formatTag": "Mini Solo",
+    "ageLabel": "Mini",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "103",
+    "title": "Shake It Off",
+    "time": "8:22 am",
+    "day": "sat",
+    "dayTitle": "Saturday, October 11",
+    "dayLabel": "✦ Day 1",
+    "dayCount": "Stage 1",
+    "level": "petite",
+    "format": "solo",
+    "props": false,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Jazz",
+    "stage": "1",
+    "formatTag": "Petite Solo",
+    "ageLabel": "Petite",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "104",
+    "title": "Unstoppable",
+    "time": "8:26 am",
+    "day": "sat",
+    "dayTitle": "Saturday, October 11",
+    "dayLabel": "✦ Day 1",
+    "dayCount": "Stage 1",
+    "level": "petite",
+    "format": "solo",
+    "props": false,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Contemporary",
+    "stage": "1",
+    "formatTag": "Petite Solo",
+    "ageLabel": "Petite",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "105",
+    "title": "Run The World",
+    "time": "8:30 am",
+    "day": "sat",
+    "dayTitle": "Saturday, October 11",
+    "dayLabel": "✦ Day 1",
+    "dayCount": "Stage 1",
+    "level": "petite",
+    "format": "solo",
+    "props": false,
+    "studio": "Other Studio",
+    "dancers": "TBD",
+    "style": "Hip-Hop",
+    "stage": "1",
+    "formatTag": "Petite Solo",
+    "ageLabel": "Petite",
+    "battleCat": "",
+    "isApdc": false
+  },
+  {
+    "entry": "106",
+    "title": "River",
+    "time": "8:34 am",
+    "day": "sat",
+    "dayTitle": "Saturday, October 11",
+    "dayLabel": "✦ Day 1",
+    "dayCount": "Stage 1",
+    "level": "junior",
+    "format": "solo",
+    "props": false,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Contemporary",
+    "stage": "1",
+    "formatTag": "Junior Solo",
+    "ageLabel": "Junior",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "107",
+    "title": "The Greatest",
+    "time": "8:38 am",
+    "day": "sat",
+    "dayTitle": "Saturday, October 11",
+    "dayLabel": "✦ Day 1",
+    "dayCount": "Stage 1",
+    "level": "junior",
+    "format": "solo",
+    "props": false,
+    "studio": "Other Studio",
+    "dancers": "TBD",
+    "style": "Contemporary",
+    "stage": "1",
+    "formatTag": "Junior Solo",
+    "ageLabel": "Junior",
+    "battleCat": "",
+    "isApdc": false
+  },
+  {
+    "entry": "108",
+    "title": "Petite Crew",
+    "time": "9:15 am",
+    "day": "sat",
+    "dayTitle": "Saturday, October 11",
+    "dayLabel": "✦ Day 1",
+    "dayCount": "Stage 1",
+    "level": "petite",
+    "format": "group",
+    "props": false,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Jazz",
+    "stage": "1",
+    "formatTag": "Petite Small Group",
+    "ageLabel": "Petite · 5",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "109",
+    "title": "Instruction",
+    "time": "9:20 am",
+    "day": "sat",
+    "dayTitle": "Saturday, October 11",
+    "dayLabel": "✦ Day 1",
+    "dayCount": "Stage 1",
+    "level": "petite",
+    "format": "group",
+    "props": true,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Jazz",
+    "stage": "1",
+    "formatTag": "Petite Small Group",
+    "ageLabel": "Petite · 5",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "110",
+    "title": "Junior Ensemble",
+    "time": "10:00 am",
+    "day": "sat",
+    "dayTitle": "Saturday, October 11",
+    "dayLabel": "✦ Day 1",
+    "dayCount": "Stage 1",
+    "level": "junior",
+    "format": "group",
+    "props": false,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Contemporary",
+    "stage": "1",
+    "formatTag": "Junior Large Group",
+    "ageLabel": "Junior · 12",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "111",
+    "title": "All Stars",
+    "time": "11:30 am",
+    "day": "sat",
+    "dayTitle": "Saturday, October 11",
+    "dayLabel": "✦ Day 1",
+    "dayCount": "Stage 1",
+    "level": "",
+    "format": "production",
+    "props": true,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "",
+    "stage": "1",
+    "formatTag": "Production · 12 & Under",
+    "ageLabel": "All · 30",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "201",
+    "title": "Logical",
+    "time": "9:15 am",
+    "day": "sun",
+    "dayTitle": "Sunday, October 12",
+    "dayLabel": "✦ Day 2",
+    "dayCount": "Stage 1",
+    "level": "teen",
+    "format": "solo",
+    "props": false,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Contemporary",
+    "stage": "1",
+    "formatTag": "Teen Solo",
+    "ageLabel": "Teen",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "202",
+    "title": "Closure",
+    "time": "9:19 am",
+    "day": "sun",
+    "dayTitle": "Sunday, October 12",
+    "dayLabel": "✦ Day 2",
+    "dayCount": "Stage 1",
+    "level": "teen",
+    "format": "solo",
+    "props": false,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Contemporary",
+    "stage": "1",
+    "formatTag": "Teen Solo",
+    "ageLabel": "Teen",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "203",
+    "title": "Hands",
+    "time": "9:23 am",
+    "day": "sun",
+    "dayTitle": "Sunday, October 12",
+    "dayLabel": "✦ Day 2",
+    "dayCount": "Stage 1",
+    "level": "senior",
+    "format": "solo",
+    "props": false,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Contemporary",
+    "stage": "1",
+    "formatTag": "Senior Solo",
+    "ageLabel": "Senior",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "204",
+    "title": "Sweet Dreams",
+    "time": "9:27 am",
+    "day": "sun",
+    "dayTitle": "Sunday, October 12",
+    "dayLabel": "✦ Day 2",
+    "dayCount": "Stage 1",
+    "level": "senior",
+    "format": "solo",
+    "props": false,
+    "studio": "Other Studio",
+    "dancers": "TBD",
+    "style": "Jazz",
+    "stage": "1",
+    "formatTag": "Senior Solo",
+    "ageLabel": "Senior",
+    "battleCat": "",
+    "isApdc": false
+  },
+  {
+    "entry": "205",
+    "title": "Teen Squad",
+    "time": "10:30 am",
+    "day": "sun",
+    "dayTitle": "Sunday, October 12",
+    "dayLabel": "✦ Day 2",
+    "dayCount": "Stage 1",
+    "level": "teen",
+    "format": "group",
+    "props": false,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Hip-Hop",
+    "stage": "1",
+    "formatTag": "Teen Large Group",
+    "ageLabel": "Teen · 15",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "206",
+    "title": "Medicine",
+    "time": "10:45 am",
+    "day": "sun",
+    "dayTitle": "Sunday, October 12",
+    "dayLabel": "✦ Day 2",
+    "dayCount": "Stage 1",
+    "level": "teen",
+    "format": "group",
+    "props": false,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Contemporary",
+    "stage": "1",
+    "formatTag": "Teen Line",
+    "ageLabel": "Teen · 20",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "207",
+    "title": "Chandelier",
+    "time": "1:30 pm",
+    "day": "sun",
+    "dayTitle": "Sunday, October 12",
+    "dayLabel": "✦ Day 2",
+    "dayCount": "Stage 1",
+    "level": "senior",
+    "format": "group",
+    "props": true,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "Open",
+    "stage": "1",
+    "formatTag": "Senior Large Group",
+    "ageLabel": "Senior · 12",
+    "battleCat": "",
+    "isApdc": true
+  },
+  {
+    "entry": "208",
+    "title": "Big Finale",
+    "time": "2:30 pm",
+    "day": "sun",
+    "dayTitle": "Sunday, October 12",
+    "dayLabel": "✦ Day 2",
+    "dayCount": "Stage 1",
+    "level": "",
+    "format": "production",
+    "props": true,
+    "studio": "Amanda Page Dance Company",
+    "dancers": "TBD",
+    "style": "",
+    "stage": "1",
+    "formatTag": "Production · 13 & Over",
+    "ageLabel": "All · 35",
+    "battleCat": "",
+    "isApdc": true
+  }
+];
+</script>
+
+<!-- Install Banner -->
+<div class="install-banner hidden" id="install-banner">
+  <div class="install-icon">💃</div>
+  <div class="install-text">
+    <div class="install-title">Add to your Home Screen</div>
+    <div class="install-body" id="install-instructions"></div>
+    <div class="install-actions">
+      <button class="install-btn-primary" id="install-btn-primary">Install App</button>
+      <button class="install-btn-dismiss" id="install-btn-dismiss">Maybe later</button>
+    </div>
+  </div>
+  <button class="install-close" id="install-close" aria-label="Close">✕</button>
+</div>
+
+<header>
+  <div class="header-inner">
+    <div class="header-brand">
+      <span class="brand-logo" id="brand-logo">APDC</span>
+      <span class="eyebrow" id="header-subtitle"></span>
+    </div>
+    <h1 id="header-title">Dance Competition Schedule</h1>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot ld-quinn"></div> Dancer spotlight</div>
+      <div class="legend-item"><div class="legend-dot ld-props"></div> Props needed</div>
+      <div class="legend-item"><div class="legend-dot ld-both"></div> Dancer + Props</div>
+      <div class="legend-item"><div class="legend-dot ld-normal"></div> Other routines</div>
+    </div>
+  </div>
+</header>
+
+<div class="filter-bar" id="filter-bar">
+  <div class="filter-row">
+    <span class="filter-label">Show</span>
+    <button class="btn show-btn active" data-filter="all">All</button>
+    <button class="btn show-btn" data-filter="props">🎭 Props</button>
+    <div class="search-wrap" id="search-wrap">
+      <input class="dancer-input" id="dancer-input" type="text" placeholder="🔍 Dancer..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+      <div class="dancer-dropdown" id="dancer-dropdown"></div>
+    </div>
+  </div>
+  <div class="filter-row" id="pill-row" style="display:none;">
+    <span class="filter-label">Who</span>
+    <div id="dancer-pill-wrap" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;flex:1;min-width:0;"></div>
+    <button class="btn" id="clear-all-btn" style="display:none;font-size:10px;padding:4px 8px;color:#8878b0;border-color:rgba(255,255,255,0.08);flex-shrink:0;">Clear all</button>
+  </div>
+  <div class="filter-row" id="studio-row">
+    <span class="filter-label">Studio</span>
+    <div class="search-wrap" id="studio-search-wrap">
+      <input class="dancer-input" id="studio-input" type="text" placeholder="🏫 Studio..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+      <div class="dancer-dropdown" id="studio-dropdown"></div>
+    </div>
+    <div id="studio-pill-wrap" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;flex:1;min-width:0;"></div>
+    <button class="btn" id="studio-clear-btn" style="display:none;font-size:10px;padding:4px 8px;color:#8878b0;border-color:rgba(255,255,255,0.08);flex-shrink:0;">Clear</button>
+  </div>
+  <div class="filter-row" id="cat-row">
+    <span class="filter-label">Type</span>
+    <button class="btn cat-btn active" data-level="" data-format="">All</button>
+    <button class="btn cat-btn" data-level="" data-format="solo">Solo</button>
+    <button class="btn cat-btn" data-level="" data-format="group">Groups</button>
+    <button class="btn cat-btn" data-level="" data-format="production">Production</button>
+    <button class="btn cat-btn" data-level="petite" data-format="">Petite</button>
+    <button class="btn cat-btn" data-level="junior" data-format="">Junior</button>
+    <button class="btn cat-btn" data-level="teen" data-format="">Teen</button>
+    <button class="btn cat-btn" data-level="senior" data-format="">Senior</button>
+  </div>
+  <div class="filter-row" id="day-filter-row">
+    <span class="filter-label">Day</span>
+    <button class="btn day-btn active" data-day="all">All</button>
+    <!-- Day buttons injected by JS from COMPETITION_CONFIG.dayButtons -->
+  </div>
+</div>
+
+<div class="offset-bar" id="offset-bar">
+  <span class="offset-label">Schedule offset</span>
+  <div class="offset-btns">
+    <button class="offset-btn" data-delta="-30">−30</button>
+    <button class="offset-btn" data-delta="-15">−15</button>
+    <button class="offset-btn" data-delta="-10">−10</button>
+    <button class="offset-btn" data-delta="-5">−5</button>
+    <button class="offset-btn active" data-delta="0">On Time</button>
+    <button class="offset-btn" data-delta="5">+5</button>
+    <button class="offset-btn" data-delta="10">+10</button>
+    <button class="offset-btn" data-delta="15">+15</button>
+    <button class="offset-btn" data-delta="30">+30</button>
+  </div>
+  <span class="offset-status" id="offset-status" style="display:none"></span>
+</div>
+
+<main id="main-content">
+  <!-- Dancer spotlight — built dynamically -->
+  <div class="quinn-callout" id="quinn-callout" style="display:none">
+    <div class="callout-header" id="callout-header">✦ Routines</div>
+    <div class="quinn-schedule" id="callout-schedule"></div>
+  </div>
+  <!-- Schedule rendered by JS -->
+  <div id="schedule-container"></div>
+  <div class="no-results" id="no-results">No routines match this filter.</div>
+</main>
+
+<script>
+// ============================================================
+// TEMPLATE ENGINE — do not edit below for new competitions
+// ============================================================
+
+// ── Style maps ──
+const STYLE_CLASS = {
+  'Jazz': 'style-jazz', 'Contemporary': 'style-contemporary',
+  'Lyrical': 'style-lyrical', 'Hip-Hop': 'style-hiphop',
+  'Tap': 'style-tap', 'Musical Theater': 'style-musical', 'Open': 'style-open'
+};
+
+// ── Render schedule from data ──
+function buildSchedule() {
+  // Set header
+  document.getElementById('header-title').textContent   = COMPETITION_CONFIG.name;
+  document.getElementById('header-subtitle').textContent = COMPETITION_CONFIG.subtitle;
+
+  // Build day buttons
+  const dayRow = document.getElementById('day-filter-row');
+  COMPETITION_CONFIG.dayButtons.forEach(btn => {
+    const el = document.createElement('button');
+    el.className = 'btn day-btn';
+    el.dataset.day = btn.key;
+    el.textContent = btn.label;
+    dayRow.appendChild(el);
+  });
+
+  // Group routines by day
+  const byDay = {};
+  ROUTINES.forEach(r => {
+    if (!byDay[r.day]) byDay[r.day] = [];
+    byDay[r.day].push(r);
+  });
+
+  const container = document.getElementById('schedule-container');
+  container.innerHTML = '';
+
+  // Render in day order
+  const dayOrder = COMPETITION_CONFIG.dayButtons.map(b => b.key);
+  dayOrder.forEach(dayKey => {
+    const dayRoutines = byDay[dayKey];
+    if (!dayRoutines || dayRoutines.length === 0) return;
+
+    const dayConf  = COMPETITION_CONFIG.days[dayKey] || {};
+    const meta     = (COMPETITION_CONFIG.metaRows || {})[dayKey] || [];
+
+    const section = document.createElement('div');
+    section.className = 'day-section';
+    section.setAttribute('data-day', dayKey);
+
+    // Day header
+    section.innerHTML = `
+      <div class="day-header">
+        <div class="day-label">${dayConf.label || ''}</div>
+        <div class="day-title">${dayConf.title || dayKey}</div>
+        <div class="day-count">${dayConf.count || ''}</div>
+      </div>
+    `;
+
+    // Render meta rows at top of section
+    meta.filter(m => !m.text.includes('🏆')).forEach(m => {
+      const row = document.createElement('div');
+      row.className = 'meta-row' + (m.type === 'awards' ? ' awards' : '');
+      row.textContent = m.text;
+      section.appendChild(row);
+    });
+
+    // Render cards, inserting battle category headers when they change
+    let currentBattleCat = null;
+    dayRoutines.forEach(r => {
+      // Battle category header
+      if (r.battleCat && r.battleCat !== currentBattleCat) {
+        currentBattleCat = r.battleCat;
+        const cat = document.createElement('div');
+        cat.className = 'battle-category';
+        // Session headers get teal color
+        if (r.battleCat.startsWith('Session')) {
+          cat.style.cssText = 'color:#67e8f9;border-bottom-color:rgba(103,232,249,0.2);margin-top:20px;';
+        }
+        cat.textContent = r.battleCat;
+        section.appendChild(cat);
+      }
+
+      // Card classes
+      let cardClass = 'normal';
+      const isSpotlight = activeDancers.length > 0 &&
+        activeDancers.some(n => r.dancers.toLowerCase().includes(n.toLowerCase()));
+      if (r.isApdc) cardClass += ' apdc-card';
+      if (r.props && isSpotlight) cardClass = 'quinn-and-props' + (r.isApdc ? ' apdc-card' : '');
+      else if (r.props)           cardClass = 'props-only'      + (r.isApdc ? ' apdc-card' : '');
+      else if (isSpotlight)       cardClass = 'quinn-only'      + (r.isApdc ? ' apdc-card' : '');
+
+      const styleClass = STYLE_CLASS[r.style] || '';
+
+      const card = document.createElement('div');
+      card.className = `routine-card ${cardClass}`;
+      card.dataset.quinn   = String(isSpotlight);
+      card.dataset.props   = String(r.props);
+      card.dataset.dancers = r.dancers;
+      card.dataset.level   = r.level;
+      card.dataset.format  = r.format;
+      card.dataset.studio  = r.studio;
+      card.dataset.day     = dayKey;
+
+      const stageTag   = r.stage ? `<span class="tag stage-${r.stage}">Stage ${r.stage}</span>` : '';
+      const styleTag   = r.style ? `<span class="tag ${styleClass}">${r.style}</span>` : '';
+      const fmtTag     = r.formatTag ? `<span class="tag">${r.formatTag}</span>` : '';
+      const propsIcon  = r.props ? ' <span class="props-icon">🎭</span>' : '';
+      const apdcBadge  = r.isApdc ? '<span class="apdc-badge">APDC</span>' : '';
+      const entryNum   = r.entry ? `<div class="entry-num">#${r.entry}</div>` : '';
+
+      card.innerHTML = `
+        <div class="card-time" data-orig-time="${r.time}">${r.time}</div>
+        <div class="card-main">
+          ${entryNum}<div class="card-title">${r.title}${propsIcon}${apdcBadge}</div>
+          <div class="card-meta">${stageTag}${styleTag}${fmtTag}</div>
+          <div class="card-dancers">${r.dancers}</div>
+        </div>
+        <div class="card-right"><span class="age-badge">${r.ageLabel}</span></div>
+      `;
+
+      section.appendChild(card);
+    });
+
+    // Awards rows at bottom
+    meta.filter(m => m.text.includes('🏆')).forEach(m => {
+      const row = document.createElement('div');
+      row.className = 'meta-row awards';
+      row.textContent = m.text;
+      section.appendChild(row);
+    });
+
+    container.appendChild(section);
+  });
+
+  // Re-query dynamic elements
+  window._cards    = document.querySelectorAll('.routine-card');
+  window._sections = document.querySelectorAll('.day-section');
+  window._metaRows = document.querySelectorAll('.meta-row');
+
+  // Wire up day buttons (injected dynamically)
+  document.querySelectorAll('.day-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeDay = btn.dataset.day;
+      applyFilters();
+    });
+  });
+
+  // Build dancer + studio lists from data
+  buildDancerList();
+  buildStudioList();
+}
+
+// ── State ──
+let activeFilter  = 'all';
+let activeDay     = 'all';
+let activeDancers = [];
+let activeStudios = [];
+let activeLevel   = '';
+let activeFormat  = '';
+let offsetMinutes = 0;
+
+// ── Element refs ──
+const showBtns      = document.querySelectorAll('.show-btn');
+const catBtns       = document.querySelectorAll('.cat-btn');
+const callout       = document.getElementById('quinn-callout');
+const calloutHeader = document.getElementById('callout-header');
+const calloutSched  = document.getElementById('callout-schedule');
+const noResults     = document.getElementById('no-results');
+const dancerInput   = document.getElementById('dancer-input');
+const dancerDropdown = document.getElementById('dancer-dropdown');
+const pillWrap      = document.getElementById('dancer-pill-wrap');
+const pillRow       = document.getElementById('pill-row');
+const clearAllBtn   = document.getElementById('clear-all-btn');
+const studioInput   = document.getElementById('studio-input');
+const studioDropdown = document.getElementById('studio-dropdown');
+const studioPillWrap = document.getElementById('studio-pill-wrap');
+const studioClearBtn = document.getElementById('studio-clear-btn');
+const offsetBtns    = document.querySelectorAll('.offset-btn');
+const offsetStatus  = document.getElementById('offset-status');
+
+let allDancers = [];
+let allStudios = [];
+
+function buildDancerList() {
+  const set = new Set();
+  ROUTINES.forEach(r => r.dancers.split(',').map(s => s.trim()).filter(Boolean).forEach(n => set.add(n)));
+  allDancers = [...set].sort();
+}
+
+function buildStudioList() {
+  const set = new Set();
+  ROUTINES.forEach(r => { if (r.studio) set.add(r.studio); });
+  allStudios = [...set].sort();
+}
+
+// ── Apply filters ──
+function applyFilters() {
+  const cards    = window._cards    || document.querySelectorAll('.routine-card');
+  const sections = window._sections || document.querySelectorAll('.day-section');
+  const metaRows = window._metaRows || document.querySelectorAll('.meta-row');
+  const hasDancers = activeDancers.length > 0;
+  let visible = 0;
+
+  sections.forEach(sec => {
+    const secDay = sec.getAttribute('data-day') || '';
+    const show = activeDay === 'all' || secDay === activeDay;
+    sec.style.display = show ? '' : 'none';
+    sec.classList.toggle('hidden', !show);
+  });
+
+  cards.forEach(card => {
+    const sec      = card.closest('.day-section');
+    const secDay   = sec ? (sec.getAttribute('data-day') || '') : '';
+    const dayMatch = activeDay === 'all' || secDay === activeDay;
+    const dancers  = card.dataset.dancers || '';
+    const isProps  = card.dataset.props === 'true';
+
+    let showMatch = false;
+    if (hasDancers)              showMatch = activeDancers.some(n => dancers.toLowerCase().includes(n.toLowerCase()));
+    else if (activeFilter === 'all')   showMatch = true;
+    else if (activeFilter === 'props') showMatch = isProps;
+
+    const levelMatch  = !activeLevel  || card.dataset.level  === activeLevel;
+    const formatMatch = !activeFormat || card.dataset.format === activeFormat;
+    const studioMatch = activeStudios.length === 0 ||
+      activeStudios.some(s => (card.dataset.studio || '').toLowerCase() === s.toLowerCase());
+
+    const show = dayMatch && showMatch && levelMatch && formatMatch && studioMatch;
+    card.classList.toggle('hidden', !show);
+    if (show) visible++;
+  });
+
+  metaRows.forEach(row => {
+    const sec    = row.closest('.day-section');
+    const secDay = sec ? (sec.getAttribute('data-day') || '') : '';
+    const dayMatch = activeDay === 'all' || secDay === activeDay;
+    row.classList.toggle('hidden', hasDancers || activeFilter !== 'all' || !dayMatch);
+  });
+
+  renderCallout();
+  noResults.style.display = visible === 0 ? 'block' : 'none';
+}
+
+// ── Callout ──
+function renderCallout() {
+  if (activeDancers.length === 0) { callout.style.display = 'none'; return; }
+  const DAY_ORDER = {};
+  COMPETITION_CONFIG.dayButtons.forEach((b, i) => DAY_ORDER[b.key] = i);
+  const seen = new Set();
+  const entries = ROUTINES
+    .filter(r => activeDancers.some(n => r.dancers.toLowerCase().includes(n.toLowerCase())))
+    .filter(r => { const k = r.day + r.time + r.title; if (seen.has(k)) return false; seen.add(k); return true; })
+    .sort((a, b) => (DAY_ORDER[a.day] ?? 99) - (DAY_ORDER[b.day] ?? 99));
+
+  calloutHeader.textContent = activeDancers.length === 1
+    ? '✦ All routines for ' + activeDancers[0]
+    : '✦ All routines for selected dancers';
+  calloutSched.innerHTML = '';
+  entries.forEach(r => {
+    const item = document.createElement('div');
+    item.className = 'quinn-item';
+    item.innerHTML = `<div class="quinn-item-title">${r.title}${r.props ? ' 🎭' : ''}</div>
+      <div class="quinn-item-meta">${r.dayTitle} · ${r.time}${r.stage ? ' · Stage ' + r.stage : ''}</div>`;
+    calloutSched.appendChild(item);
+  });
+  callout.style.display = entries.length > 0 ? '' : 'none';
+}
+
+// ── Dancer search ──
+function renderDancerDropdown(q) {
+  const query = q.trim().toLowerCase();
+  const avail = allDancers.filter(n => !activeDancers.includes(n));
+  const matches = query ? avail.filter(n => n.toLowerCase().includes(query)) : avail;
+  dancerDropdown.innerHTML = matches.length === 0
+    ? '<div class="dropdown-empty">No dancers found</div>'
+    : matches.map(n => {
+        const idx = query ? n.toLowerCase().indexOf(query) : -1;
+        const label = idx >= 0
+          ? n.slice(0,idx) + '<mark>' + n.slice(idx,idx+query.length) + '</mark>' + n.slice(idx+query.length)
+          : n;
+        return `<div class="dropdown-item" data-name="${n}">${label}</div>`;
+      }).join('');
+  dancerDropdown.classList.add('open');
+  dancerDropdown.querySelectorAll('.dropdown-item').forEach(d => {
+    d.addEventListener('mousedown', e => { e.preventDefault(); addDancer(d.dataset.name); });
+    d.addEventListener('touchstart', e => { e.preventDefault(); addDancer(d.dataset.name); }, {passive:false});
+  });
+}
+
+function addDancer(name) {
+  if (activeDancers.includes(name)) { dancerDropdown.classList.remove('open'); dancerInput.value=''; dancerInput.blur(); return; }
+  activeDancers.push(name);
+  showBtns.forEach(b => b.classList.remove('active'));
+  dancerInput.value = ''; dancerInput.blur(); dancerDropdown.classList.remove('open');
+  renderDancerPills(); applyFilters();
+}
+
+function removeDancer(name) {
+  activeDancers = activeDancers.filter(n => n !== name);
+  if (activeDancers.length === 0) {
+    showBtns.forEach(b => b.classList.remove('active'));
+    document.querySelector('.show-btn[data-filter="all"]').classList.add('active');
+    activeFilter = 'all';
+  }
+  renderDancerPills(); applyFilters();
+}
+
+function renderDancerPills() {
+  pillWrap.innerHTML = '';
+  activeDancers.forEach(name => {
+    const pill = document.createElement('div'); pill.className = 'dancer-pill';
+    pill.innerHTML = `<span>⭐ ${name}</span><button class="pill-clear" aria-label="Remove ${name}">×</button>`;
+    pill.querySelector('.pill-clear').addEventListener('click', () => removeDancer(name));
+    pillWrap.appendChild(pill);
+  });
+  pillRow.style.display = activeDancers.length > 0 ? '' : 'none';
+  clearAllBtn.style.display = activeDancers.length > 1 ? '' : 'none';
+  dancerInput.placeholder = activeDancers.length > 0 ? '🔍 Add dancer...' : '🔍 Dancer...';
+}
+
+dancerInput.addEventListener('input', () => renderDancerDropdown(dancerInput.value));
+dancerInput.addEventListener('focus', () => renderDancerDropdown(dancerInput.value));
+dancerInput.addEventListener('blur',  () => setTimeout(() => dancerDropdown.classList.remove('open'), 200));
+clearAllBtn.addEventListener('click', () => {
+  activeDancers = []; renderDancerPills();
+  showBtns.forEach(b => b.classList.remove('active'));
+  document.querySelector('.show-btn[data-filter="all"]').classList.add('active');
+  activeFilter = 'all'; applyFilters();
+});
+
+// ── Studio search ──
+function renderStudioDropdown(q) {
+  const query = q.trim().toLowerCase();
+  const avail = allStudios.filter(s => !activeStudios.includes(s));
+  const matches = query ? avail.filter(s => s.toLowerCase().includes(query)) : avail;
+  studioDropdown.innerHTML = matches.length === 0
+    ? '<div class="dropdown-empty">No studios found</div>'
+    : matches.map(s => {
+        const idx = query ? s.toLowerCase().indexOf(query) : -1;
+        const label = idx >= 0
+          ? s.slice(0,idx) + '<mark>' + s.slice(idx,idx+query.length) + '</mark>' + s.slice(idx+query.length)
+          : s;
+        return `<div class="dropdown-item" data-name="${s}">${label}</div>`;
+      }).join('');
+  studioDropdown.classList.add('open');
+  studioDropdown.querySelectorAll('.dropdown-item').forEach(d => {
+    d.addEventListener('mousedown', e => { e.preventDefault(); addStudio(d.dataset.name); });
+    d.addEventListener('touchstart', e => { e.preventDefault(); addStudio(d.dataset.name); }, {passive:false});
+  });
+}
+
+function addStudio(name) {
+  if (activeStudios.includes(name)) { studioDropdown.classList.remove('open'); studioInput.value=''; studioInput.blur(); return; }
+  activeStudios.push(name);
+  studioInput.value = ''; studioInput.blur(); studioDropdown.classList.remove('open');
+  renderStudioPills(); applyFilters();
+}
+
+function removeStudio(name) {
+  activeStudios = activeStudios.filter(s => s !== name);
+  renderStudioPills(); applyFilters();
+}
+
+function renderStudioPills() {
+  studioPillWrap.innerHTML = '';
+  activeStudios.forEach(name => {
+    const pill = document.createElement('div'); pill.className = 'dancer-pill';
+    pill.style.cssText = 'background:rgba(233,196,106,0.15);border-color:rgba(233,196,106,0.4);color:#fde68a;';
+    pill.innerHTML = `<span>🏫 ${name}</span><button class="pill-clear" style="color:#fde68a" aria-label="Remove ${name}">×</button>`;
+    pill.querySelector('.pill-clear').addEventListener('click', () => removeStudio(name));
+    studioPillWrap.appendChild(pill);
+  });
+  studioClearBtn.style.display = activeStudios.length > 1 ? '' : 'none';
+  studioInput.placeholder = activeStudios.length > 0 ? '🏫 Add studio...' : '🏫 Studio...';
+}
+
+studioInput.addEventListener('input', () => renderStudioDropdown(studioInput.value));
+studioInput.addEventListener('focus', () => renderStudioDropdown(studioInput.value));
+studioInput.addEventListener('blur',  () => setTimeout(() => studioDropdown.classList.remove('open'), 200));
+studioClearBtn.addEventListener('click', () => { activeStudios = []; renderStudioPills(); applyFilters(); });
+
+// ── Show / Type / Cat buttons ──
+showBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeDancers = []; renderDancerPills();
+    dancerInput.value = '';
+    showBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    applyFilters();
+  });
+});
+
+catBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    catBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeLevel  = btn.dataset.level;
+    activeFormat = btn.dataset.format;
+    applyFilters();
+  });
+});
+
+// ── Offset ──
+function parseTime(str) {
+  const [tp, ap] = str.trim().split(' ');
+  let [h, m] = tp.split(':').map(Number);
+  if (ap === 'pm' && h !== 12) h += 12;
+  if (ap === 'am' && h === 12) h = 0;
+  return h * 60 + m;
+}
+function formatTime(mins) {
+  let h = Math.floor(mins / 60), m = mins % 60;
+  const ap = h >= 12 ? 'pm' : 'am';
+  if (h > 12) h -= 12; if (h === 0) h = 12;
+  return h + ':' + String(m).padStart(2,'0') + ' ' + ap;
+}
+function applyOffset(delta) {
+  offsetMinutes = delta;
+  offsetBtns.forEach(b => b.classList.toggle('active', parseInt(b.dataset.delta) === delta));
+  document.querySelectorAll('.card-time[data-orig-time]').forEach(el => {
+    const orig = el.dataset.origTime;
+    if (delta === 0) {
+      el.innerHTML = orig; el.className = 'card-time';
+    } else {
+      const newTime = formatTime(parseTime(orig) + delta);
+      el.innerHTML = `<span class="time-adjusted">${newTime}</span><span class="time-original">${orig}</span>`;
+      el.className = 'card-time card-time--shifted';
+    }
+  });
+  offsetStatus.textContent = delta === 0 ? '' : 'Running ' + (delta < 0 ? '' : '+') + delta + ' min';
+  offsetStatus.style.display = delta === 0 ? 'none' : '';
+}
+offsetBtns.forEach(btn => btn.addEventListener('click', () => applyOffset(parseInt(btn.dataset.delta))));
+
+// ── PWA Install banner ──
+const installBanner = document.getElementById('install-banner');
+const installInstructions = document.getElementById('install-instructions');
+const installBtnPrimary = document.getElementById('install-btn-primary');
+const DISMISSED_KEY = 'apdc-install-dismissed';
+let deferredPrompt = null;
+
+function isIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream; }
+function isStandalone() { return ('standalone' in navigator && navigator.standalone) || window.matchMedia('(display-mode: standalone)').matches; }
+function wasDismissed() { return localStorage.getItem(DISMISSED_KEY) === '1'; }
+function dismissBanner() { localStorage.setItem(DISMISSED_KEY,'1'); installBanner.classList.add('hidden'); }
+
+document.getElementById('install-btn-dismiss').addEventListener('click', dismissBanner);
+document.getElementById('install-close').addEventListener('click', dismissBanner);
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); deferredPrompt = e;
+  if (!isStandalone() && !wasDismissed()) {
+    installInstructions.innerHTML = 'Get quick access during the competition — tap <strong>Install App</strong> below.';
+    installBtnPrimary.style.display = '';
+    installBanner.classList.remove('hidden');
+  }
+});
+installBtnPrimary.addEventListener('click', async () => {
+  if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; deferredPrompt = null; if (outcome === 'accepted') dismissBanner(); }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (isIOS() && !isStandalone() && !wasDismissed()) {
+    installInstructions.innerHTML = 'Get quick access during the competition.<br>Tap the <strong>Share</strong> button <strong>⬆</strong> then choose <strong>Add to Home Screen</strong>.';
+    installBtnPrimary.style.display = 'none';
+    installBanner.classList.remove('hidden');
+  }
+  buildSchedule();
+  document.querySelectorAll('.day-section').forEach(s => { s.style.display=''; s.classList.remove('hidden'); });
+  applyFilters();
+});
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('../service-worker.js').catch(() => {}));
+}
+</script>
+
+</body>
+</html>
