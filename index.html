@@ -12,110 +12,605 @@
 <title>APDC Competitions</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Inter:wght@200;300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { background: #06041a !important; }
-  body { background: #06041a; color: #f0ebff; font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; overflow-x: hidden; padding-bottom: max(60px, env(safe-area-inset-bottom)); }
-  .bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(ellipse 120% 55% at -10% 0%, rgba(109,40,217,0.32) 0%, transparent 55%), radial-gradient(ellipse 80% 45% at 110% 35%, rgba(76,29,149,0.22) 0%, transparent 55%), radial-gradient(ellipse 70% 40% at 50% 110%, rgba(109,40,217,0.15) 0%, transparent 50%); pointer-events: none; }
-  .wrap { position: relative; z-index: 1; max-width: 620px; margin: 0 auto; padding: 0 28px; }
-  .header { padding-top: max(64px, env(safe-area-inset-top)); padding-bottom: 60px; }
-  .overline { font-size: 9px; font-weight: 500; letter-spacing: 0.32em; text-transform: uppercase; color: rgba(196,181,253,0.4); margin-bottom: 22px; display: flex; align-items: center; gap: 16px; }
-  .overline::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(233,196,106,0.2), rgba(196,181,253,0.1), transparent); }
-  .masthead { font-family: 'Tenor Sans', serif; font-size: clamp(72px, 20vw, 140px); font-weight: 400; letter-spacing: 0.06em; line-height: 0.9; margin-left: -2px; margin-bottom: 8px; background: linear-gradient(125deg, #4c1d95 0%, #7c3aed 30%, #c084fc 60%, #e9d5ff 80%, #fde68a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(0 0 36px rgba(124,58,237,0.3)); }
-  .masthead-rule { width: 0; height: 1px; background: linear-gradient(90deg, rgba(233,196,106,0.7), rgba(233,196,106,0.2), transparent); margin-bottom: 16px; animation: drawRule 1.4s cubic-bezier(0.4,0,0.2,1) 0.2s forwards; }
+
+  body {
+    background: #06041a;
+    color: #f0ebff;
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-bottom: max(60px, env(safe-area-inset-bottom));
+  }
+
+  .bg {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 120% 55% at -10% 0%,  rgba(109,40,217,0.32) 0%, transparent 55%),
+      radial-gradient(ellipse 80%  45% at 110% 35%, rgba(76,29,149,0.22)  0%, transparent 55%),
+      radial-gradient(ellipse 70%  40% at 50% 110%, rgba(109,40,217,0.15) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 620px; margin: 0 auto; padding: 0 28px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    padding-top: max(64px, env(safe-area-inset-top));
+    padding-bottom: 60px;
+  }
+
+  .overline {
+    font-size: 9px; font-weight: 500; letter-spacing: 0.32em;
+    text-transform: uppercase; color: rgba(196,181,253,0.4);
+    margin-bottom: 22px; display: flex; align-items: center; gap: 16px;
+  }
+  .overline::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, rgba(233,196,106,0.2), rgba(196,181,253,0.1), transparent);
+  }
+
+  /* APDC — Tenor Sans, purple-to-violet gradient */
+  .masthead {
+    font-family: 'Tenor Sans', serif;
+    font-size: clamp(72px, 20vw, 140px);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    line-height: 0.9;
+    margin-left: -2px;
+    margin-bottom: 8px;
+    background: linear-gradient(125deg,
+      #4c1d95 0%,
+      #7c3aed 30%,
+      #c084fc 60%,
+      #e9d5ff 80%,
+      #fde68a 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 36px rgba(124,58,237,0.3));
+  }
+
+  /* Animated gold rule */
+  .masthead-rule {
+    width: 0; height: 1px;
+    background: linear-gradient(90deg, rgba(233,196,106,0.7), rgba(233,196,106,0.2), transparent);
+    margin-bottom: 16px;
+    animation: drawRule 1.4s cubic-bezier(0.4,0,0.2,1) 0.2s forwards;
+  }
   @keyframes drawRule { to { width: 100%; } }
-  .studio-name { font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(196,181,253,0.5); margin-bottom: 32px; }
-  .header-title { font-family: 'Tenor Sans', serif; font-size: clamp(22px, 5vw, 32px); font-weight: 400; letter-spacing: 0.04em; color: #e0d4ff; line-height: 1.2; }
+
+  .studio-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px; font-weight: 400; letter-spacing: 0.3em;
+    text-transform: uppercase; color: rgba(196,181,253,0.5);
+    margin-bottom: 32px;
+  }
+
+  /* Competition Schedule — Tenor Sans, clean */
+  .header-title {
+    font-family: 'Tenor Sans', serif;
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: #e0d4ff;
+    line-height: 1.2;
+  }
+
+  /* ── SEASON SECTION ── */
   .season-block { padding-top: 48px; }
-  .season-label { display: flex; align-items: center; gap: 16px; margin-bottom: 0; opacity: 0; animation: fadeUp 0.7s ease forwards 0.5s; }
-  .season-year { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(196,181,253,0.38); white-space: nowrap; }
+
+  .season-label {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 0;
+    opacity: 0; animation: fadeUp 0.7s ease forwards 0.5s;
+  }
+  .season-year {
+    font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(196,181,253,0.38); white-space: nowrap;
+  }
   .season-rule { flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
-  .comp-row { display: block; text-decoration: none; color: inherit; padding: 28px 0; border-bottom: 1px solid rgba(255,255,255,0.05); position: relative; opacity: 0; animation: fadeUp 0.7s ease forwards; -webkit-tap-highlight-color: transparent; }
+
+  /* ── COMPETITION ROWS ── */
+  .comp-row {
+    display: block; text-decoration: none; color: inherit;
+    padding: 28px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    position: relative; opacity: 0; animation: fadeUp 0.7s ease forwards;
+    -webkit-tap-highlight-color: transparent;
+  }
   .comp-row:first-of-type { border-top: 1px solid rgba(255,255,255,0.05); }
-  .comp-row::before { content: ''; position: absolute; left: -28px; top: 0; bottom: 0; width: 2px; }
-  .comp-row.nationals-row::before { background: linear-gradient(180deg, #fde68a 0%, #c084fc 100%); opacity: 1; }
-  .comp-row.regional-row::before { background: linear-gradient(180deg, #a5b4fc 0%, #818cf8 100%); opacity: 1; }
+
+  .comp-row::before {
+    content: ''; position: absolute; left: -28px; top: 0; bottom: 0; width: 2px;
+  }
+  .comp-row.nationals-row::before {
+    background: linear-gradient(180deg, #fde68a 0%, #c084fc 100%);
+    opacity: 1;
+  }
+  .comp-row.regional-row::before {
+    background: linear-gradient(180deg, #a5b4fc 0%, #818cf8 100%);
+    opacity: 1;
+  }
   .comp-row.soon::before { opacity: 0.2; }
   .comp-row:not(.soon):active { opacity: 0.75; }
-  .comp-inner { display: grid; grid-template-columns: 36px 1fr auto; gap: 0 18px; align-items: center; }
-  .comp-index { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(196,181,253,0.2); letter-spacing: 0.05em; align-self: start; padding-top: 4px; }
+
+  .comp-inner {
+    display: grid; grid-template-columns: 36px 1fr auto;
+    gap: 0 18px; align-items: center;
+  }
+
+  .comp-index {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: rgba(196,181,253,0.2); letter-spacing: 0.05em;
+    align-self: start; padding-top: 4px;
+  }
   .comp-row.nationals-row:not(.soon) .comp-index { color: rgba(253,230,138,0.35); }
+
   .comp-body { min-width: 0; }
-  .comp-type { font-family: 'Inter', sans-serif; font-size: 8px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 7px; color: rgba(196,181,253,0.45); }
+
+  .comp-type {
+    font-family: 'Inter', sans-serif; font-size: 8px; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 7px;
+    color: rgba(196,181,253,0.45);
+  }
   .comp-row.nationals-row:not(.soon) .comp-type { color: rgba(253,230,138,0.7); }
   .comp-row.soon .comp-type { color: rgba(255,255,255,0.15); }
-  .comp-name { font-family: 'Tenor Sans', serif; font-size: clamp(20px, 4.5vw, 26px); font-weight: 400; letter-spacing: 0.02em; color: #ffffff; line-height: 1.15; margin-bottom: 9px; }
+
+  .comp-name {
+    font-family: 'Tenor Sans', serif;
+    font-size: clamp(20px, 4.5vw, 26px);
+    font-weight: 400; letter-spacing: 0.02em;
+    color: #ffffff; line-height: 1.15; margin-bottom: 9px;
+  }
   .comp-row.soon .comp-name { color: rgba(255,255,255,0.28); }
-  .comp-details { display: flex; flex-wrap: wrap; gap: 3px 18px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; color: rgba(255,255,255,0.3); letter-spacing: 0.02em; }
+
+  .comp-details {
+    display: flex; flex-wrap: wrap; gap: 3px 18px;
+    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300;
+    color: rgba(255,255,255,0.3); letter-spacing: 0.02em;
+  }
   .comp-row.nationals-row:not(.soon) .comp-details { color: rgba(255,255,255,0.45); }
   .comp-row.soon .comp-details { color: rgba(255,255,255,0.1); }
-  .comp-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0; }
-  .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse 2.2s ease-in-out infinite; }
-  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); } 70% { box-shadow: 0 0 0 7px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
-  .arrow { font-size: 22px; color: rgba(255,255,255,0.18); transition: color 0.2s, transform 0.2s; line-height: 1; }
-  .comp-row:not(.soon):hover .arrow { color: rgba(255,255,255,0.55); transform: translateX(4px); }
-  .soon-label { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.12); }
+
+  .comp-right {
+    display: flex; flex-direction: column;
+    align-items: flex-end; gap: 10px; flex-shrink: 0;
+  }
+
+  .pulse-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: #4ade80;
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0   rgba(74,222,128,0.5); }
+    70%  { box-shadow: 0 0 0 7px rgba(74,222,128,0);   }
+    100% { box-shadow: 0 0 0 0   rgba(74,222,128,0);   }
+  }
+
+  .arrow {
+    font-size: 22px; color: rgba(255,255,255,0.18);
+    transition: color 0.2s, transform 0.2s; line-height: 1;
+  }
+  .comp-row:not(.soon):hover .arrow {
+    color: rgba(255,255,255,0.55); transform: translateX(4px);
+  }
+
+  .soon-label {
+    font-family: 'DM Mono', monospace; font-size: 8px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.12);
+  }
+
   .comp-row:nth-child(1) { animation-delay: 0.55s; }
   .comp-row:nth-child(2) { animation-delay: 0.63s; }
   .comp-row:nth-child(3) { animation-delay: 0.71s; }
   .comp-row:nth-child(4) { animation-delay: 0.79s; }
   .comp-row:nth-child(5) { animation-delay: 0.87s; }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
   .season-gap { height: 44px; }
-  footer { padding: 64px 0 20px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em; color: rgba(233,196,106,0.12); }
-  .install-banner { position: fixed; bottom: max(24px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%) translateY(120px); width: calc(100% - 48px); max-width: 560px; background: #14103a; border: 1px solid rgba(196,181,253,0.25); border-radius: 16px; padding: 18px 18px 18px 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); z-index: 999; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease; opacity: 0; }
-  .install-banner.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  footer {
+    padding: 64px 0 20px;
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    letter-spacing: 0.14em; color: rgba(255,255,255,0.07);
+  }
+
+
+  /* ── INSTALL BUTTON ── */
+  .install-btn-wrap {
+    margin-bottom: 48px;
+  }
+
+  .install-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196,181,253,0.3);
+    background: rgba(124,58,237,0.12);
+    color: #c4b5fd;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    text-decoration: none;
+  }
+  .install-btn:hover {
+    background: rgba(124,58,237,0.22);
+    border-color: rgba(196,181,253,0.5);
+    color: #e9d5ff;
+  }
+  .install-btn:active { transform: scale(0.97); }
+  .install-btn .btn-icon { font-size: 14px; }
+
+  /* iOS instruction panel */
+  .ios-instructions {
+    display: none;
+    margin-top: 16px;
+    background: rgba(124,58,237,0.1);
+    border: 1px solid rgba(196,181,253,0.2);
+    border-radius: 14px;
+    padding: 16px 18px;
+    animation: fadeUp 0.3s ease;
+  }
+  .ios-instructions.visible { display: block; }
+
+  .ios-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(196,181,253,0.8);
+    line-height: 1.5;
+  }
+  .ios-step:last-child { margin-bottom: 0; }
+
+  .ios-step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    color: rgba(253,230,138,0.7);
+    background: rgba(253,230,138,0.08);
+    border: 1px solid rgba(253,230,138,0.2);
+    border-radius: 50%;
+    width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .ios-step strong { color: #e9d5ff; font-weight: 500; }
+
+  /* ── INSTALL BANNER ── */
+  .install-banner {
+    position: fixed;
+    bottom: max(24px, env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    width: calc(100% - 48px);
+    max-width: 560px;
+    background: #14103a;
+    border: 1px solid rgba(196,181,253,0.25);
+    border-radius: 16px;
+    padding: 18px 18px 18px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(196,181,253,0.1);
+    z-index: 999;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+    opacity: 0;
+  }
+  .install-banner.visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
   .install-banner.hidden { display: none; }
-  .banner-icon { font-size: 26px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+
+  .banner-icon {
+    font-size: 26px;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
   .banner-text { flex: 1; min-width: 0; }
-  .banner-title { font-family: 'Tenor Sans', serif; font-size: 15px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 4px; }
-  .banner-body { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 300; color: rgba(196,181,253,0.7); line-height: 1.5; }
+
+  .banner-title {
+    font-family: 'Tenor Sans', serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+  }
+
+  .banner-body {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(196,181,253,0.7);
+    line-height: 1.5;
+  }
   .banner-body strong { color: #c4b5fd; font-weight: 500; }
-  .banner-actions { display: flex; gap: 8px; margin-top: 12px; }
-  .banner-btn-install { padding: 7px 16px; border-radius: 20px; border: none; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #fff; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-  .banner-btn-dismiss { padding: 7px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: rgba(255,255,255,0.3); font-family: 'Inter', sans-serif; font-size: 12px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-  .banner-close { flex-shrink: 0; background: none; border: none; color: rgba(255,255,255,0.25); font-size: 18px; line-height: 1; cursor: pointer; padding: 0 0 0 4px; -webkit-tap-highlight-color: transparent; }
+
+  .banner-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .banner-btn-install {
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: none;
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: opacity 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .banner-btn-install:hover { opacity: 0.85; }
+
+  .banner-btn-dismiss {
+    padding: 7px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: transparent;
+    color: rgba(255,255,255,0.3);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .banner-btn-dismiss:hover { color: rgba(255,255,255,0.5); }
+
+  .banner-close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.25);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0 0 4px;
+    -webkit-tap-highlight-color: transparent;
+    margin-top: -2px;
+  }
+  .banner-close:hover { color: rgba(255,255,255,0.5); }
+
 </style>
 </head>
 <body style="background:#06041a;">
+
 <div class="bg"></div>
 <div class="wrap">
+
   <div class="header">
     <div class="overline">Official Schedule Portal</div>
     <div class="masthead">APDC</div>
     <div class="masthead-rule"></div>
     <div class="studio-name">Amanda Page Dance Company</div>
     <div class="header-title">Competition Schedule</div>
+
+  <div class="install-btn-wrap" id="install-btn-wrap">
+    <button class="install-btn" id="install-btn-main">
+      <span class="btn-icon">⬇</span> Add to Home Screen
+    </button>
+    <div class="ios-instructions" id="ios-instructions">
+      <div class="ios-step">
+        <div class="ios-step-num">1</div>
+        <div>Tap the <strong>Share button ⬆</strong> at the bottom of your browser</div>
+      </div>
+      <div class="ios-step">
+        <div class="ios-step-num">2</div>
+        <div>Scroll down and tap <strong>Add to Home Screen</strong></div>
+      </div>
+      <div class="ios-step">
+        <div class="ios-step-num">3</div>
+        <div>Tap <strong>Add</strong> — the APDC app will appear on your home screen</div>
+      </div>
+    </div>
   </div>
+
+  </div>
+
+  <!-- ── 2025–2026 ── -->
   <div class="season-block">
     <div class="season-label">
       <span class="season-year">2025 – 2026 Season</span>
       <div class="season-rule"></div>
     </div>
+
     <a class="comp-row nationals-row" href="nationals-2026/">
       <div class="comp-inner">
         <div class="comp-index">01</div>
         <div class="comp-body">
           <div class="comp-type">Nationals</div>
           <div class="comp-name">Turn It Up Nationals 2026</div>
-          <div class="comp-details"><span>Long Branch, NJ</span><span>June 28 – July 3</span></div>
+          <div class="comp-details">
+            <span>Long Branch, NJ</span>
+            <span>June 28 – July 3</span>
+          </div>
         </div>
-        <div class="comp-right"><div class="pulse-dot"></div><div class="arrow">›</div></div>
+        <div class="comp-right">
+          <div class="pulse-dot"></div>
+          <div class="arrow">›</div>
+        </div>
       </div>
     </a>
   </div>
+
   <div class="season-gap"></div>
+
+  <!-- ── 2026–2027 ── -->
   <div class="season-block">
     <div class="season-label">
       <span class="season-year">2026 – 2027 Season</span>
       <div class="season-rule"></div>
     </div>
-    <div class="comp-row regional-row soon"><div class="comp-inner"><div class="comp-index">02</div><div class="comp-body"><div class="comp-type">Regional</div><div class="comp-name">Regional Competition 1</div><div class="comp-details"><span>Spring 2027</span></div></div><div class="comp-right"><div class="soon-label">Soon</div></div></div></div>
-    <div class="comp-row regional-row soon"><div class="comp-inner"><div class="comp-index">03</div><div class="comp-body"><div class="comp-type">Regional</div><div class="comp-name">Regional Competition 2</div><div class="comp-details"><span>Spring 2027</span></div></div><div class="comp-right"><div class="soon-label">Soon</div></div></div></div>
-    <div class="comp-row regional-row soon"><div class="comp-inner"><div class="comp-index">04</div><div class="comp-body"><div class="comp-type">Regional</div><div class="comp-name">Regional Competition 3</div><div class="comp-details"><span>Spring 2027</span></div></div><div class="comp-right"><div class="soon-label">Soon</div></div></div></div>
-    <div class="comp-row nationals-row soon"><div class="comp-inner"><div class="comp-index">05</div><div class="comp-body"><div class="comp-type">Nationals</div><div class="comp-name">Nationals 2027</div><div class="comp-details"><span>Summer 2027</span></div></div><div class="comp-right"><div class="soon-label">Soon</div></div></div></div>
+
+    <div class="comp-row regional-row soon">
+      <div class="comp-inner">
+        <div class="comp-index">02</div>
+        <div class="comp-body">
+          <div class="comp-type">Regional</div>
+          <div class="comp-name">Regional Competition 1</div>
+          <div class="comp-details"><span>Spring 2027</span></div>
+        </div>
+        <div class="comp-right"><div class="soon-label">Soon</div></div>
+      </div>
+    </div>
+
+    <div class="comp-row regional-row soon">
+      <div class="comp-inner">
+        <div class="comp-index">03</div>
+        <div class="comp-body">
+          <div class="comp-type">Regional</div>
+          <div class="comp-name">Regional Competition 2</div>
+          <div class="comp-details"><span>Spring 2027</span></div>
+        </div>
+        <div class="comp-right"><div class="soon-label">Soon</div></div>
+      </div>
+    </div>
+
+    <div class="comp-row regional-row soon">
+      <div class="comp-inner">
+        <div class="comp-index">04</div>
+        <div class="comp-body">
+          <div class="comp-type">Regional</div>
+          <div class="comp-name">Regional Competition 3</div>
+          <div class="comp-details"><span>Spring 2027</span></div>
+        </div>
+        <div class="comp-right"><div class="soon-label">Soon</div></div>
+      </div>
+    </div>
+
+    <div class="comp-row nationals-row soon">
+      <div class="comp-inner">
+        <div class="comp-index">05</div>
+        <div class="comp-body">
+          <div class="comp-type">Nationals</div>
+          <div class="comp-name">Nationals 2027</div>
+          <div class="comp-details"><span>Summer 2027</span></div>
+        </div>
+        <div class="comp-right"><div class="soon-label">Soon</div></div>
+      </div>
+    </div>
+
   </div>
+
   <footer>rhenry1.github.io / apdc-competitions</footer>
 </div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () =>
+      navigator.serviceWorker.register('/apdc-competitions/service-worker.js').catch(() => {})
+    );
+  }
+
+  const DISMISSED = 'apdc-install-dismissed';
+  let deferredPrompt = null;
+
+  function isIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream; }
+  function isStandalone() {
+    return ('standalone' in navigator && navigator.standalone) ||
+           window.matchMedia('(display-mode: standalone)').matches;
+  }
+
+  // ── Banner ──
+  function getBanner() { return document.getElementById('install-banner'); }
+  function showBanner() {
+    const b = getBanner();
+    b.classList.remove('hidden');
+    setTimeout(() => b.classList.add('visible'), 50);
+  }
+  function dismiss() {
+    const b = getBanner();
+    b.classList.remove('visible');
+    setTimeout(() => b.classList.add('hidden'), 400);
+    localStorage.setItem(DISMISSED, '1');
+  }
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const banner        = document.getElementById('install-banner');
+    const bannerBody    = document.getElementById('banner-body');
+    const bannerInstall = document.getElementById('banner-install');
+    const btnWrap       = document.getElementById('install-btn-wrap');
+    const btnMain       = document.getElementById('install-btn-main');
+    const iosPanel      = document.getElementById('ios-instructions');
+
+    document.getElementById('banner-dismiss').addEventListener('click', dismiss);
+    document.getElementById('banner-close').addEventListener('click', dismiss);
+    document.getElementById('banner-install').addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        if (outcome === 'accepted') { dismiss(); btnWrap.style.display = 'none'; }
+      }
+    });
+
+    // Hide install button if already standalone
+    if (isStandalone()) { btnWrap.style.display = 'none'; return; }
+
+    // Wire main button
+    btnMain.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        // Android — native prompt
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        if (outcome === 'accepted') { btnWrap.style.display = 'none'; dismiss(); }
+      } else if (isIOS()) {
+        // iOS — toggle instruction panel
+        const open = iosPanel.classList.toggle('visible');
+        btnMain.innerHTML = open
+          ? '<span class="btn-icon">✕</span> Close'
+          : '<span class="btn-icon">⬇</span> Add to Home Screen';
+      }
+    });
+
+    // iOS: also show slide-up banner after delay
+    if (isIOS() && localStorage.getItem(DISMISSED) !== '1') {
+      bannerBody.innerHTML = 'Tap <strong>Share ⬆</strong> then <strong>Add to Home Screen</strong>.';
+      bannerInstall.style.display = 'none';
+      setTimeout(showBanner, 2500);
+    }
+  });
+</script>
+
+
+<!-- ── INSTALL BANNER ── -->
 <div class="install-banner hidden" id="install-banner">
   <div class="banner-icon">💃</div>
   <div class="banner-text">
@@ -126,43 +621,8 @@
       <button class="banner-btn-dismiss" id="banner-dismiss">Maybe later</button>
     </div>
   </div>
-  <button class="banner-close" id="banner-close">✕</button>
+  <button class="banner-close" id="banner-close" aria-label="Close">✕</button>
 </div>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () =>
-      navigator.serviceWorker.register('/apdc-competitions/service-worker.js').catch(() => {})
-    );
-  }
-  const banner = document.getElementById('install-banner');
-  const bannerBody = document.getElementById('banner-body');
-  const bannerInstall = document.getElementById('banner-install');
-  const DISMISSED = 'apdc-install-dismissed';
-  let deferredPrompt = null;
-  function isIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream; }
-  function isStandalone() { return ('standalone' in navigator && navigator.standalone) || window.matchMedia('(display-mode: standalone)').matches; }
-  function dismiss() { banner.classList.remove('visible'); setTimeout(() => banner.classList.add('hidden'), 400); localStorage.setItem(DISMISSED, '1'); }
-  function showBanner() { banner.classList.remove('hidden'); setTimeout(() => banner.classList.add('visible'), 50); }
-  document.getElementById('banner-dismiss').addEventListener('click', dismiss);
-  document.getElementById('banner-close').addEventListener('click', dismiss);
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault(); deferredPrompt = e;
-    if (!isStandalone() && localStorage.getItem(DISMISSED) !== '1') {
-      bannerBody.innerHTML = 'Get quick access during competitions — tap <strong>Install App</strong> below.';
-      bannerInstall.style.display = ''; showBanner();
-    }
-  });
-  bannerInstall.addEventListener('click', async () => {
-    if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; deferredPrompt = null; if (outcome === 'accepted') dismiss(); }
-  });
-  window.addEventListener('DOMContentLoaded', () => {
-    if (isStandalone() || localStorage.getItem(DISMISSED) === '1') return;
-    if (isIOS()) {
-      bannerBody.innerHTML = 'Tap the <strong>Share ⬆</strong> button then choose <strong>Add to Home Screen</strong> for quick access during competitions.';
-      bannerInstall.style.display = 'none';
-      setTimeout(showBanner, 1200);
-    }
-  });
-</script>
+
 </body>
 </html>
