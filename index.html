@@ -407,9 +407,40 @@
   }
   .banner-close:hover { color: rgba(255,255,255,0.5); }
 
+
+  /* ── PWA CLOSE BUTTON (standalone only) ── */
+  .pwa-close {
+    display: none;
+    position: fixed;
+    top: max(12px, env(safe-area-inset-top));
+    right: 14px;
+    z-index: 1000;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(196,181,253,0.25);
+    background: rgba(20,16,58,0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: rgba(196,181,253,0.8);
+    font-size: 16px;
+    line-height: 1;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, color 0.15s;
+  }
+  .pwa-close:hover, .pwa-close:active {
+    background: rgba(30,24,80,0.95);
+    color: #e9d5ff;
+  }
+  body.standalone .pwa-close { display: flex; }
+
 </style>
 </head>
 <body style="background:#06041a;">
+<button class="pwa-close" id="pwa-close" aria-label="Close">✕</button>
 
 <div class="bg"></div>
 <div class="wrap">
@@ -632,6 +663,29 @@
       setTimeout(showBanner, 2500);
     }
   });
+
+  // ── PWA close button (standalone launch only) ──
+  (function() {
+    function isStandalone() {
+      return ('standalone' in navigator && navigator.standalone) ||
+             window.matchMedia('(display-mode: standalone)').matches;
+    }
+    if (isStandalone()) {
+      document.body.classList.add('standalone');
+    }
+    var closeBtn = document.getElementById('pwa-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        // Try to close; if blocked, navigate back to hub
+        window.close();
+        // Fallback — go to hub landing (or blank)
+        setTimeout(function() {
+          window.location.href = 'about:blank';
+        }, 100);
+      });
+    }
+  })();
+
 </script>
 
 
