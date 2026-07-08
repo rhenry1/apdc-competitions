@@ -1,0 +1,2723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#06041a">
+<link rel="icon" type="image/x-icon" href="../favicon.ico">
+<link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="manifest" href="../manifest.json">
+<title>Long Branch Nationals 2026 · Schedule</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Inter:wght@200;300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #06041a;
+    --card: #160d35;
+    --card-elevated: #1e1245;
+    --border: rgba(255,255,255,0.07);
+    --border-strong: rgba(167,139,250,0.4);
+    --text: #ffffff;
+    --text-secondary: #e2d9f3;
+    --muted: #a89cc8;
+    --accent-quinn: #d8b4fe;
+    --accent-quinn-dim: rgba(216,180,254,0.15);
+    --accent-props: #f9a8d4;
+    --accent-props-dim: rgba(249,168,212,0.12);
+    --accent-both: #a5b4fc;
+    --accent-both-dim: rgba(165,180,252,0.15);
+    --stage1: #c4b5fd;
+    --stage2: #67e8f9;
+    --gold: #fde68a;
+    --gold-dim: rgba(253,230,138,0.12);
+    --card-quinn-bg: #231050;
+    --card-quinn-border: rgba(216,180,254,0.35);
+    --card-props-bg: #250e3a;
+    --card-props-border: rgba(249,168,212,0.35);
+    --card-both-bg: #141650;
+    --card-both-border: rgba(165,180,252,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 10% 25%,  rgba(109,40,217,0.22) 0%, transparent 40%),
+      radial-gradient(ellipse at 90% 55%,  rgba(88,28,220,0.18)  0%, transparent 40%),
+      radial-gradient(ellipse at 50% 95%,  rgba(76,29,149,0.15)  0%, transparent 50%);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 24px 16px 18px;
+    border-bottom: 1px solid rgba(167,139,250,0.12);
+    background: linear-gradient(180deg, #06031a 0%, #09061f 100%);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  .header-inner { max-width: 960px; margin: 0 auto; }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .brand-logo {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #fde68a;
+    background: rgba(253,230,138,0.08);
+    border: 1px solid rgba(253,230,138,0.25);
+    padding: 3px 10px;
+    border-radius: 4px;
+  }
+
+  .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7a6fa0;
+  }
+
+  h1 {
+    font-family: 'Tenor Sans', serif;
+    font-size: clamp(20px, 5vw, 30px);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: #e0d4ff;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #8878a8;
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .ld-quinn  { background: var(--accent-quinn); box-shadow: 0 0 6px rgba(192,132,252,0.5); }
+  .ld-props  { background: var(--accent-props); box-shadow: 0 0 6px rgba(244,114,182,0.4); }
+  .ld-both   { background: var(--accent-both); box-shadow: 0 0 6px rgba(129,140,248,0.4); }
+  .ld-normal { background: rgba(139,92,246,0.3); }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid rgba(167,139,250,0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(6,4,26,0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: sticky;
+    top: 0;
+    z-index: 90;
+  }
+
+  /* Make filter bar stick below header — JS sets top dynamically */
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .filter-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    width: 28px;
+    flex-shrink: 0;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .btn:hover { border-color: var(--accent-quinn); color: var(--accent-quinn); }
+
+  /* show-filter active states */
+  .show-btn.active                      { background: rgba(139,92,246,0.15); border-color: var(--stage1); color: var(--stage1); }
+  .show-btn[data-filter="props"].active { background: var(--accent-props-dim); border-color: var(--accent-props); color: var(--accent-props); }
+
+  /* day-filter active state */
+  .day-btn.active { background: rgba(167,139,250,0.15); border-color: var(--accent-quinn); color: var(--accent-quinn); }
+  .cat-btn.active { background: rgba(167,139,250,0.15); border-color: var(--accent-quinn); color: var(--accent-quinn); }
+
+  /* ── DANCER SEARCH ── */
+  .search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    max-width: 200px;
+  }
+
+  .dancer-input {
+    width: 100%;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.06);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dancer-input::placeholder { color: var(--muted); }
+  .dancer-input:focus { border-color: var(--accent-quinn); box-shadow: 0 0 0 2px rgba(192,132,252,0.12); }
+
+  .dancer-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    min-width: 220px;
+    background: #0f0c24;
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 400;
+    display: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+  }
+  .dancer-dropdown.open { display: block; }
+
+  .dropdown-item {
+    padding: 9px 14px;
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(167,139,250,0.12);
+    transition: background 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dropdown-item:last-child { border-bottom: none; }
+  .dropdown-item:hover, .dropdown-item.highlighted { background: rgba(139,92,246,0.15); }
+  .dropdown-item mark {
+    background: transparent;
+    color: var(--accent-quinn);
+    font-weight: 600;
+  }
+  .dropdown-empty {
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* Active dancer pill */
+  .dancer-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px 5px 12px;
+    border-radius: 20px;
+    background: rgba(139,92,246,0.18);
+    border: 1px solid var(--accent-quinn);
+    color: var(--accent-quinn);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 0 12px rgba(192,132,252,0.25);
+  }
+  .pill-clear {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: var(--accent-quinn);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0;
+    opacity: 0.7;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pill-clear:hover { opacity: 1; }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+    background: transparent;
+  }
+
+  /* Ensure dark bg fills full viewport below filter bar */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: -1;
+  }
+
+  /* ── DANCER CALLOUT ── */
+  .quinn-callout {
+    background: var(--card);
+    border: 1px solid rgba(167,139,250,0.3);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 0 24px rgba(109,40,217,0.15);
+  }
+
+  .callout-header {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: #c4b5fd;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .quinn-schedule {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .quinn-item {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(167,139,250,0.2);
+    border-radius: 8px;
+    padding: 7px 11px;
+    font-size: 12px;
+    min-width: 0;
+  }
+
+  .quinn-item-title { font-weight: 600; color: #ffffff; }
+  .quinn-item-meta  { color: var(--muted); font-size: 11px; margin-top: 2px; }
+
+  /* ── DAY SECTION ── */
+  .day-section { margin-bottom: 36px; }
+  .day-section.hidden { display: none; }
+
+  .day-header {
+    border-bottom: 1px solid rgba(167,139,250,0.2);
+    background: transparent;
+  }
+
+  .day-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(167,139,250,0.12);
+  }
+
+  .day-label {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #a78bfa;
+    opacity: 1;
+  }
+
+  .day-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    font-style: italic;
+    color: #ffffff;
+    letter-spacing: 0.01em;
+  }
+
+  .day-count {
+    margin-left: auto;
+    font-size: 10px;
+    color: #7a6fa0;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── ROUTINE CARD ── */
+  .routine-card {
+    display: grid;
+    grid-template-columns: 58px 1fr auto;
+    gap: 0 12px;
+    align-items: start;
+    padding: 11px 12px 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    margin-bottom: 6px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .routine-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+
+  .routine-card.normal::before            { background: rgba(167,139,250,0.3); }
+  .routine-card.quinn-only                { background: var(--card-quinn-bg); border-color: var(--card-quinn-border); box-shadow: 0 4px 20px rgba(139,92,246,0.2); }
+  .routine-card.quinn-only::before        { background: linear-gradient(180deg, #d8b4fe 0%, #a78bfa 100%); }
+  .routine-card.props-only                { background: var(--card-props-bg); border-color: var(--card-props-border); box-shadow: 0 4px 20px rgba(236,72,153,0.15); }
+  .routine-card.props-only::before        { background: linear-gradient(180deg, #f9a8d4, #f472b6); }
+  .routine-card.quinn-and-props           { background: var(--card-both-bg); border-color: var(--card-both-border); box-shadow: 0 4px 20px rgba(99,102,241,0.2); }
+  .routine-card.quinn-and-props::before   { background: linear-gradient(180deg, #d8b4fe, #f9a8d4 100%); }
+
+  .routine-card.hidden { display: none; }
+
+  .card-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: #9d8ec4;
+    padding-top: 2px;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    line-height: 1.3;
+  }
+
+  .card-main { min-width: 0; }
+
+  .card-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .quinn-star { color: var(--accent-quinn); margin-left: 3px; filter: drop-shadow(0 0 4px rgba(192,132,252,0.6)); }
+  .props-icon { color: var(--accent-props); margin-left: 3px; font-size: 12px; }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 4px;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    background: rgba(255,255,255,0.08);
+    color: #c4b5fd;
+    white-space: nowrap;
+  }
+
+  .tag.style-jazz         { background: rgba(129,140,248,0.22); color: #c7d2fe; }
+  .tag.style-contemporary { background: rgba(103,232,249,0.15); color: #67e8f9; }
+  .tag.style-lyrical      { background: rgba(192,132,252,0.22); color: #e9d5ff; }
+  .tag.style-hiphop       { background: rgba(244,114,182,0.2);  color: #fbcfe8; }
+  .tag.style-tap          { background: rgba(196,181,253,0.2);  color: #ddd6fe; }
+  .tag.style-musical      { background: rgba(253,230,138,0.18); color: #fde68a; }
+  .tag.style-open         { background: rgba(148,163,184,0.12); color: #94a3b8; }
+  .tag.fmt-prod           { background: rgba(233,196,106,0.15); color: var(--gold); }
+  .tag.stage-1            { background: rgba(167,139,250,0.2);  color: #ddd6fe; }
+  .tag.stage-2            { background: rgba(103,232,249,0.15); color: #a5f3fc; }
+
+  .card-dancers {
+    font-size: 11px;
+    color: #a89cc8;
+    line-height: 1.4;
+  }
+
+  .card-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    padding-top: 2px;
+    white-space: nowrap;
+  }
+
+  .entry-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: #c4b5fd;
+    letter-spacing: 0.02em;
+  }
+
+  .age-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #9d8ec4;
+    text-align: right;
+  }
+
+  /* ── META ROWS (awards / breaks) ── */
+  .meta-row {
+    display: flex;
+    align-items: center;
+    padding: 7px 12px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    border: 1px dashed rgba(167,139,250,0.2);
+    color: #8878b0;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.03em;
+  }
+
+  .meta-row.awards {
+    border-color: rgba(253,230,138,0.3);
+    color: #fde68a;
+    background: rgba(253,230,138,0.06);
+  }
+
+  .meta-row.hidden { display: none; }
+
+
+
+
+  /* ── OFFSET BAR ── */
+  .offset-bar {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(167,139,250,0.12);
+    background: rgba(7,4,26,0.97);
+    flex-wrap: wrap;
+  }
+
+  .offset-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .offset-btns {
+    display: flex;
+    gap: 4px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex: 1;
+  }
+  .offset-btns::-webkit-scrollbar { display: none; }
+
+  .offset-btn {
+    padding: 4px 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .offset-btn:hover { border-color: #555; color: var(--text); }
+  .offset-btn.active { 
+    background: rgba(167,139,250,0.15); 
+    border-color: var(--accent-quinn); 
+    color: var(--accent-quinn);
+    font-weight: 600;
+  }
+  .offset-btn[data-delta="0"].active {
+    background: rgba(103,232,249,0.1);
+    border-color: var(--stage2);
+    color: var(--stage2);
+  }
+
+  .offset-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent-quinn);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Adjusted time display on cards */
+  .time-adjusted {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-quinn);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+  .time-original {
+    font-size: 10px;
+    color: #5a4f78;
+    text-decoration: line-through;
+    white-space: nowrap;
+  }
+
+
+  /* ── AMANDA PAGE DANCE COMPANY — GOLD ── */
+  .apdc-card {
+    background: linear-gradient(135deg, rgba(233,196,106,0.09) 0%, rgba(161,138,60,0.06) 100%) !important;
+    border-color: rgba(233,196,106,0.35) !important;
+    box-shadow: 0 2px 16px rgba(233,196,106,0.1) !important;
+  }
+  .apdc-card::before {
+    background: linear-gradient(180deg, #fde68a, #e9c46a, #b8942a) !important;
+  }
+  .apdc-card .card-title {
+    color: #fde68a !important;
+  }
+  .apdc-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #0e0630;
+    background: linear-gradient(135deg, #fde68a, #e9c46a);
+    border: 1px solid rgba(233,196,106,0.5);
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  /* Props + APDC combined */
+  .apdc-card.props-only {
+    background: linear-gradient(135deg, rgba(233,196,106,0.09), rgba(244,114,182,0.07)) !important;
+    border-color: rgba(233,196,106,0.4) !important;
+  }
+
+  /* ── BATTLE CATEGORY HEADER ── */
+  .battle-category {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #a78bfa;
+    padding: 12px 4px 6px;
+    border-bottom: 1px solid rgba(167,139,250,0.15);
+    margin-bottom: 6px;
+    margin-top: 4px;
+  }
+
+  /* ── NO RESULTS ── */
+  .no-results {
+    text-align: center;
+    padding: 48px 16px;
+    color: #6d5f90;
+    font-size: 13px;
+    display: none;
+  }
+
+  /* ── MOBILE ── */
+  /* ── RESPONSIVE ── */
+
+  /* Large phones (iPhone Pro Max, Plus: 428px+) */
+  @media (max-width: 480px) {
+    header {
+      padding: 14px 16px 14px;
+      padding-top: max(14px, env(safe-area-inset-top));
+    }
+
+    .search-expand { min-width: 200px; }
+
+    h1 { font-size: 22px; margin-bottom: 10px; }
+
+    .legend { gap: 6px 14px; }
+
+    .filter-bar {
+      padding: 10px 16px;
+      gap: 8px;
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+    }
+
+    .filter-label { width: 36px; font-size: 9px; }
+
+    .btn { font-size: 11px; padding: 5px 11px; }
+
+    .search-wrap { max-width: none; flex: 1; }
+
+    main {
+      padding: 16px 14px 40px;
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
+      padding-bottom: max(40px, env(safe-area-inset-bottom));
+    }
+
+    .routine-card {
+      grid-template-columns: 54px 1fr;
+      padding: 10px 12px 10px 14px;
+    }
+
+    .card-right { display: none; }
+
+    .card-title { font-size: 13px; }
+
+    .day-title { font-size: 16px; }
+
+    .quinn-callout { padding: 12px 14px; }
+
+    .quinn-item { font-size: 11px; }
+  }
+
+  /* Standard phones (iPhone 14/15: 390-393px) */
+  @media (max-width: 400px) {
+    h1 { font-size: 20px; }
+
+    .btn { font-size: 10px; padding: 5px 9px; }
+
+    .filter-label { display: none; }
+
+    .routine-card {
+      grid-template-columns: 48px 1fr;
+      padding: 9px 10px 9px 12px;
+    }
+
+    .card-time { font-size: 10px; }
+
+    .card-title { font-size: 13px; }
+
+    .tag { font-size: 9px; padding: 2px 5px; }
+
+    .day-title { font-size: 15px; }
+
+    main { padding: 14px 12px 40px; }
+  }
+
+  /* Small phones (SE: 375px and below) */
+  @media (max-width: 375px) {
+    h1 { font-size: 18px; }
+
+    .btn { font-size: 10px; padding: 4px 8px; }
+
+    .header-brand { flex-wrap: wrap; gap: 6px; }
+
+    .routine-card { grid-template-columns: 44px 1fr; }
+
+    .card-title { font-size: 12px; }
+  }
+
+  /* ── BACK TO HUB LINK ── */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(196,181,253,0.55);
+    text-decoration: none;
+    transition: color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .back-link:hover { color: rgba(196,181,253,0.9); }
+  .back-link .back-arrow {
+    font-size: 14px;
+    line-height: 1;
+    transition: transform 0.2s;
+  }
+  .back-link:hover .back-arrow { transform: translateX(-3px); }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="back-link" href="../"><span class="back-arrow">‹</span> All Competitions</a>
+    <div class="header-brand">
+      <span class="brand-logo">APDC</span>
+      <span class="eyebrow">Long Branch, NJ · Nationals 2026 · June 28 – July 2</span>
+    </div>
+    <h1>Dance Nationals Schedule</h1>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot ld-quinn"></div> Dancer spotlight</div>
+      <div class="legend-item"><div class="legend-dot ld-props"></div> Props needed</div>
+      <div class="legend-item"><div class="legend-dot ld-both"></div> Dancer + Props</div>
+      <div class="legend-item"><div class="legend-dot ld-normal"></div> Other routines</div>
+    </div>
+  </div>
+</header>
+
+<div class="filter-bar" id="filter-bar">
+
+  <!-- Row 1: Show + inline search -->
+  <div class="filter-row">
+    <span class="filter-label">Show</span>
+    <button class="btn show-btn active" data-filter="all">All</button>
+    <button class="btn show-btn" data-filter="props">🎭 Props</button>
+    <div class="search-wrap" id="search-wrap">
+      <input class="dancer-input" id="dancer-input" type="text" placeholder="🔍 Dancer..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+      <div class="dancer-dropdown" id="dancer-dropdown"></div>
+    </div>
+  </div>
+
+  <!-- Row 2: Active pills — only visible when dancers selected -->
+  <div class="filter-row" id="pill-row" style="display:none;">
+    <span class="filter-label">Who</span>
+    <div id="dancer-pill-wrap" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;flex:1;min-width:0;"></div>
+    <button class="btn" id="clear-all-btn" style="display:none;font-size:10px;padding:4px 8px;color:#8878b0;border-color:rgba(255,255,255,0.08);flex-shrink:0;">Clear all</button>
+  </div>
+
+  <!-- Row 3: Studio search -->
+  <div class="filter-row" id="studio-row">
+    <span class="filter-label">Studio</span>
+    <div class="search-wrap" id="studio-search-wrap">
+      <input class="dancer-input" id="studio-input" type="text" placeholder="🏫 Studio..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+      <div class="dancer-dropdown" id="studio-dropdown"></div>
+    </div>
+    <div id="studio-pill-wrap" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;flex:1;min-width:0;"></div>
+    <button class="btn" id="studio-clear-btn" style="display:none;font-size:10px;padding:4px 8px;color:#8878b0;border-color:rgba(255,255,255,0.08);flex-shrink:0;">Clear</button>
+  </div>
+
+  <!-- Row 4: Category filters -->
+  <div class="filter-row" id="cat-row">
+    <span class="filter-label">Type</span>
+    <button class="btn cat-btn active" data-level="" data-format="">All</button>
+    <button class="btn cat-btn" data-level="" data-format="solo">Solo</button>
+    <button class="btn cat-btn" data-level="" data-format="group">Groups</button>
+    <button class="btn cat-btn" data-level="" data-format="production">Production</button>
+    <button class="btn cat-btn" data-level="petite" data-format="">Petite</button>
+    <button class="btn cat-btn" data-level="junior" data-format="">Junior</button>
+    <button class="btn cat-btn" data-level="teen" data-format="">Teen</button>
+    <button class="btn cat-btn" data-level="senior" data-format="">Senior</button>
+  </div>
+
+  <!-- Row 4: Day filters -->
+  <div class="filter-row">
+    <span class="filter-label">Day</span>
+    <button class="btn day-btn active" data-day="all">All</button>
+    <button class="btn day-btn" data-day="sun">Sun 6/28</button>
+    <button class="btn day-btn" data-day="mon">Mon 6/29</button>
+    <button class="btn day-btn" data-day="tue">Tue 6/30</button>
+    <button class="btn day-btn" data-day="wed">Wed 7/1</button>
+    <button class="btn day-btn" data-day="thu">Thu 7/2</button>
+    <button class="btn day-btn" data-day="fri">Fri 7/3</button>
+  </div>
+
+</div>
+
+<div class="offset-bar" id="offset-bar">
+  <span class="offset-label">Schedule offset</span>
+  <div class="offset-btns">
+    <button class="offset-btn" data-delta="-30">−30</button>
+    <button class="offset-btn" data-delta="-15">−15</button>
+    <button class="offset-btn" data-delta="-10">−10</button>
+    <button class="offset-btn" data-delta="-5">−5</button>
+    <button class="offset-btn active" data-delta="0">On Time</button>
+    <button class="offset-btn" data-delta="5">+5</button>
+    <button class="offset-btn" data-delta="10">+10</button>
+    <button class="offset-btn" data-delta="15">+15</button>
+    <button class="offset-btn" data-delta="30">+30</button>
+  </div>
+  <span class="offset-status" id="offset-status" style="display:none"></span>
+</div>
+
+<main>
+
+  <!-- DANCER SPOTLIGHT — built dynamically by JS when a dancer is selected -->
+  <div class="quinn-callout" id="quinn-callout" style="display:none">
+    <div class="callout-header" id="callout-header">✦ Routines</div>
+    <div class="quinn-schedule" id="callout-schedule"></div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- FRIDAY JUNE 27 — JUNIOR DANCE BATTLE        -->
+  <!-- ═══════════════════════════════════════════ -->
+  
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- FRIDAY JULY 3 — DANCE BATTLE                -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="day-section" data-day="sun">
+    <div class="day-header">
+      <div class="day-label">✦ Day 1</div>
+      <div class="day-title">Sunday, June 28</div>
+      <div class="day-count">Stage 1 &amp; 2</div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Quinn Adams" data-level="mini" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="8:45 am">8:45 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1000</div><div class="card-title">Don't Rain On My Parade</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Mini Solo</span></div>
+        <div class="card-dancers">Quinn Adams</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 5</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Mackenzie Bowers" data-level="mini" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="8:47 am">8:47 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1001</div><div class="card-title">My Wish</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-lyrical">Lyrical</span><span class="tag">Mini Solo</span></div>
+        <div class="card-dancers">Mackenzie Bowers</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 6</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Thea Leyrer" data-level="petite" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="8:49 am">8:49 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1002</div><div class="card-title">Sledgehammer</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Petite Solo</span></div>
+        <div class="card-dancers">Thea Leyrer</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 9</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Logan Peroni" data-level="petite" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="8:54 am">8:54 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1004</div><div class="card-title">How Do I Say Goodbye</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Petite Solo</span></div>
+        <div class="card-dancers">Logan Peroni</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 9</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Alana Caputo" data-level="petite" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="8:57 am">8:57 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1005</div><div class="card-title">Shake</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-hiphop">Hip-Hop</span><span class="tag">Petite Solo</span></div>
+        <div class="card-dancers">Alana Caputo</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 8</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Layne Howard" data-level="petite" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="9:02 am">9:02 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1007</div><div class="card-title">Applause</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Petite Solo</span></div>
+        <div class="card-dancers">Layne Howard</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 9</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Sayde Thompson" data-level="petite" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="9:05 am">9:05 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1008</div><div class="card-title">Salute</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Petite Solo</span></div>
+        <div class="card-dancers">Sayde Thompson</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 8</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Carly Babula" data-level="petite" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="9:07 am">9:07 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1009</div><div class="card-title">Strut</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Petite Solo</span></div>
+        <div class="card-dancers">Carly Babula</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 8</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Isabella Vacirca" data-level="petite" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="9:12 am">9:12 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1011</div><div class="card-title">Levitating</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Petite Solo</span></div>
+        <div class="card-dancers">Isabella Vacirca</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 9</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Candice Deriggi" data-level="petite" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="9:18 am">9:18 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1013</div><div class="card-title">River</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Petite Solo</span></div>
+        <div class="card-dancers">Candice Deriggi</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 9</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Charlotte Howard" data-level="petite" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="9:20 am">9:20 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1014</div><div class="card-title">Yaya</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Petite Solo</span></div>
+        <div class="card-dancers">Charlotte Howard</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 7</span></div>
+    </div>
+
+    <div class="meta-row">9:28 am · Junior Title Line Up Backstage</div>
+    <div class="meta-row">9:42 am · Junior Title Introductions</div>
+    <div class="meta-row">10:15 am · End of Junior Title / Judges Break</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Hunter Scancella" data-level="junior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="10:53 am">10:53 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1038</div><div class="card-title">Hanging By A Moment</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Junior Solo</span></div>
+        <div class="card-dancers">Hunter Scancella</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 12</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Teagan Fochtman" data-level="junior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="10:56 am">10:56 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1039</div><div class="card-title">Worse</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Junior Solo</span></div>
+        <div class="card-dancers">Teagan Fochtman</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 12</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Ariana Nahom" data-level="junior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="11:07 am">11:07 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1043</div><div class="card-title">Chaotic</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Junior Solo</span></div>
+        <div class="card-dancers">Ariana Nahom</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 12</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Angela Morton" data-level="junior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="11:10 am">11:10 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1044</div><div class="card-title">The Greatest</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Junior Solo</span></div>
+        <div class="card-dancers">Angela Morton</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 12</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Danica Fochtman" data-level="junior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="11:15 am">11:15 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1046</div><div class="card-title">All I Want</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Junior Solo</span></div>
+        <div class="card-dancers">Danica Fochtman</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 11</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Kristopher Bair" data-level="junior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="11:29 am">11:29 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1051</div><div class="card-title">You Will Be Found</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Junior Solo</span></div>
+        <div class="card-dancers">Kristopher Bair</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 12</span></div>
+    </div>
+
+    <div class="meta-row">11:59 am · Judges Break</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Allison Lochel" data-level="junior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="12:12 pm">12:12 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1062</div><div class="card-title">Dream It Possible</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-lyrical">Lyrical</span><span class="tag">Junior Solo</span></div>
+        <div class="card-dancers">Allison Lochel</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 10</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Avery Degnan" data-level="junior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="12:57 pm">12:57 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1078</div><div class="card-title">Glam</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Junior Solo</span></div>
+        <div class="card-dancers">Avery Degnan</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 10</span></div>
+    </div>
+
+    <!-- Stage 2 Duos -->
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Carly Babula, Charlotte Howard, Carly Marshall" data-level="petite" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="1:01 pm">1:01 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#2084</div><div class="card-title">My Boyfriend's Back</div>
+        <div class="card-meta"><span class="tag stage-2">Stage 2</span><span class="tag style-jazz">Jazz</span><span class="tag">Petite Duo/Trio</span></div>
+        <div class="card-dancers">Carly Babula, Charlotte Howard, Carly Marshall</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 7</span></div>
+    </div>
+
+    <div class="routine-card quinn-only" data-quinn="true" data-props="false" data-dancers="Quinn Henry, Logan Peroni" data-level="petite" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="1:06 pm">1:06 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#2086</div><div class="card-title">Time of My Life <span class="quinn-star">⭐</span></div>
+        <div class="card-meta"><span class="tag stage-2">Stage 2</span><span class="tag style-jazz">Jazz</span><span class="tag">Petite Duo/Trio</span></div>
+        <div class="card-dancers">Quinn Henry, Logan Peroni</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 8</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Candice Deriggi, Layne Howard, Thea Leyrer" data-level="petite" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="1:08 pm">1:08 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#2087</div><div class="card-title">Diva</div>
+        <div class="card-meta"><span class="tag stage-2">Stage 2</span><span class="tag style-jazz">Jazz</span><span class="tag">Petite Duo/Trio</span></div>
+        <div class="card-dancers">Candice Deriggi, Layne Howard, Thea Leyrer</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 9</span></div>
+    </div>
+
+    <div class="meta-row awards">🏆 1:35 pm · Awards (Stage 1)</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Anastasia Demshick" data-level="senior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="3:25 pm">3:25 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1103</div><div class="card-title">Sweet Dreams</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Senior Solo</span></div>
+        <div class="card-dancers">Anastasia Demshick</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 16</span></div>
+    </div>
+
+    <div class="meta-row">3:45 pm · Senior Title Line Up Backstage</div>
+    <div class="meta-row">4:00 pm · Senior Title Introductions</div>
+    <div class="meta-row">4:20 pm · End of Senior Title / Judges Break</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Ella Roskein" data-level="senior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="4:52 pm">4:52 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1126</div><div class="card-title">Hands</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Senior Solo</span></div>
+        <div class="card-dancers">Ella Roskein</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 16</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Emma Sabo" data-level="senior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="4:55 pm">4:55 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1127</div><div class="card-title">All My Love</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Senior Solo</span></div>
+        <div class="card-dancers">Emma Sabo</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 17</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Charlotte Mccarthy" data-level="senior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="5:07 pm">5:07 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1131</div><div class="card-title">You Stole The Show</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Senior Solo</span></div>
+        <div class="card-dancers">Charlotte Mccarthy</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 17</span></div>
+    </div>
+
+    <div class="meta-row">5:57 pm · Judges Break</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Melina Franceski" data-level="senior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="6:25 pm">6:25 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1154</div><div class="card-title">Save You A Seat</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Senior Solo</span></div>
+        <div class="card-dancers">Melina Franceski</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 18</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Meghan Muller" data-level="senior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="6:34 pm">6:34 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1157</div><div class="card-title">Never Love Again</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Senior Solo</span></div>
+        <div class="card-dancers">Meghan Muller</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 16</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Ishani Patel" data-level="senior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="6:40 pm">6:40 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1159</div><div class="card-title">Overdose</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Senior Solo</span></div>
+        <div class="card-dancers">Ishani Patel</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 16</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Olivia Meehan" data-level="senior" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="6:52 pm">6:52 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1163</div><div class="card-title">1 To 5</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Senior Solo</span></div>
+        <div class="card-dancers">Olivia Meehan</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 16</span></div>
+    </div>
+
+    <div class="meta-row awards">🏆 7:45 pm · Awards (Stage 1)</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- DAY 2: MONDAY JUNE 29                       -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="day-section" data-day="mon">
+    <div class="day-header">
+      <div class="day-label">✦ Day 2</div>
+      <div class="day-title">Monday, June 29</div>
+      <div class="day-count">Stage 1 &amp; 2</div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Kristopher Bair, Avery Degnan, Allison Lochel" data-level="junior" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="10:27 am">10:27 am</div>
+      <div class="card-main">
+        <div class="entry-num">#2203</div><div class="card-title">Torn</div>
+        <div class="card-meta"><span class="tag stage-2">Stage 2</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Junior Duo/Trio</span></div>
+        <div class="card-dancers">Kristopher Bair, Avery Degnan, Allison Lochel</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 10</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Kristopher Bair, Danica Pongonis" data-level="teen" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="11:37 am">11:37 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1232</div><div class="card-title">Feeling Good</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-tap">Tap</span><span class="tag">Teen Duo/Trio</span></div>
+        <div class="card-dancers">Kristopher Bair, Danica Pongonis</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 13</span></div>
+    </div>
+
+    <div class="meta-row awards">🏆 11:50 am · Awards (Stage 1)</div>
+    <div class="meta-row">1:54 pm · Teen Title Line Up Backstage</div>
+    <div class="meta-row">2:09 pm · Teen Title Introductions</div>
+    <div class="meta-row">2:47 pm · End of Teen Title / Judges Break</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Maddy Howard" data-level="teen" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="3:35 pm">3:35 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1275</div><div class="card-title">Logical</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Solo</span></div>
+        <div class="card-dancers">Maddy Howard</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 14</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Sydney Degnan" data-level="teen" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="4:35 pm">4:35 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1295</div><div class="card-title">September</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Solo</span></div>
+        <div class="card-dancers">Sydney Degnan</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 13</span></div>
+    </div>
+
+    <div class="meta-row">4:41 pm · Judges Break</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Emily Baumann" data-level="teen" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="5:14 pm">5:14 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1303</div><div class="card-title">Unforgettable</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Solo</span></div>
+        <div class="card-dancers">Emily Baumann</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 15</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Adelynn Suarez" data-level="teen" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="5:28 pm">5:28 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1308</div><div class="card-title">Closure</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Solo</span></div>
+        <div class="card-dancers">Adelynn Suarez</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 15</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Emma Cannon" data-level="teen" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="5:42 pm">5:42 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1313</div><div class="card-title">Creep</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Solo</span></div>
+        <div class="card-dancers">Emma Cannon</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 15</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Giuliana Strauss" data-level="teen" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="5:45 pm">5:45 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1314</div><div class="card-title">Game Of Survival</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Solo</span></div>
+        <div class="card-dancers">Giuliana Strauss</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 14</span></div>
+    </div>
+
+    <div class="meta-row">6:41 pm · Judges Break</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Haileigh Scancella" data-level="teen" data-format="solo" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="7:50 pm">7:50 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1354</div><div class="card-title">Mama Knows Best</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Teen Solo</span></div>
+        <div class="card-dancers">Haileigh Scancella</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 13</span></div>
+    </div>
+
+    <div class="meta-row awards">🏆 8:35 pm · Awards (Stage 1)</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- DAY 3: TUESDAY JUNE 30                      -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="day-section" data-day="tue">
+    <div class="day-header">
+      <div class="day-label">✦ Day 3</div>
+      <div class="day-title">Tuesday, June 30</div>
+      <div class="day-count">Stage 1</div>
+    </div>
+
+    <div class="routine-card quinn-only" data-quinn="true" data-props="false" data-dancers="Carly Babula, Alana Caputo, Avery Degnan, Candice Deriggi, Quinn Henry, Layne Howard, Charlotte Howard, Thea Leyrer, Allison Lochel, Carly Marshall, Teagan Meehan, Angela Morton, Logan Peroni, Sayde Thompson, Isabella Vacirca" data-level="petite" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="9:28 am">9:28 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1381</div><div class="card-title">Pump It Up <span class="quinn-star">⭐</span></div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-hiphop">Hip-Hop</span><span class="tag">Petite Large Group</span></div>
+        <div class="card-dancers">Carly Babula, Alana Caputo, Avery Degnan, Candice Deriggi, Quinn Henry, Layne Howard, Charlotte Howard, Thea Leyrer, Allison Lochel, Carly Marshall, Teagan Meehan, Angela Morton, Logan Peroni, Sayde Thompson, Isabella Vacirca</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 8 · 15 dancers</span></div>
+    </div>
+
+    <div class="meta-row">10:08 am · Judges Break</div>
+    <div class="meta-row">11:50 am · Judges Break</div>
+
+    <div class="routine-card props-only" data-quinn="false" data-props="true" data-dancers="Carly Babula, Kristopher Bair, Grace Bird, Alana Caputo, Sydney Degnan, Avery Degnan, Candice Deriggi, Danica Fochtman, Teagan Fochtman, Layne Howard, Thea Leyrer, Allison Lochel, Angela Morton, Ariana Nahom, Hunter Scancella, Haileigh Scancella, Isabella Vacirca" data-level="junior" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="12:44 pm">12:44 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1435</div><div class="card-title">Coffee In A Cardboard Cup <span class="props-icon">🎭</span></div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-musical">Musical Theater</span><span class="tag">Junior Large Group</span></div>
+        <div class="card-dancers">Carly Babula, Kristopher Bair, Grace Bird, Alana Caputo, Sydney Degnan, Avery Degnan, Candice Deriggi, Danica Fochtman, Teagan Fochtman, Layne Howard, Thea Leyrer, Allison Lochel, Angela Morton, Ariana Nahom, Hunter Scancella, Haileigh Scancella, Isabella Vacirca</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 10 · 17 dancers</span></div>
+    </div>
+
+    <div class="meta-row awards">🏆 1:45 pm · Awards (Stage 1)</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- DAY 4: WEDNESDAY JULY 1                     -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="day-section" data-day="wed">
+    <div class="day-header">
+      <div class="day-label">✦ Day 4</div>
+      <div class="day-title">Wednesday, July 1</div>
+      <div class="day-count">Stage 1</div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Kristopher Bair, Emily Baumann, Grace Bird, Emma Cannon, Anastasia Demshick, Melina Franceski, Lila Haimowitz, Maddy Howard, Jillian Hubbard, Brooke Lavelle, Charlotte Mccarthy, Phoebe Mccarthy, Olivia Meehan, Mia Melfi, Meghan Muller, Patricia Murdock, Ishani Patel, Danica Pongonis, Ella Roskein, Emma Sabo, Giuliana Strauss, Adelynn Suarez" data-level="teen" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="9:31 am">9:31 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1464</div><div class="card-title">Medicine</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Line</span></div>
+        <div class="card-dancers">22 dancers — full teen ensemble</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 15 · 22</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Kristopher Bair, Emily Baumann, Grace Bird, Emma Cannon, Anastasia Demshick, Melina Franceski, Maddy Howard, Charlotte Mccarthy, Phoebe Mccarthy, Olivia Meehan, Mia Melfi, Meghan Muller, Patricia Murdock, Ishani Patel, Danica Pongonis, Ella Roskein, Adelynn Suarez" data-level="teen" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="9:58 am">9:58 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1472</div><div class="card-title">Kiss Kiss</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-hiphop">Hip-Hop</span><span class="tag">Teen Large Group</span></div>
+        <div class="card-dancers">Kristopher Bair, Emily Baumann, Grace Bird, Emma Cannon, Anastasia Demshick, Melina Franceski, Maddy Howard, Charlotte Mccarthy, Phoebe Mccarthy, Olivia Meehan, Mia Melfi, Meghan Muller, Patricia Murdock, Ishani Patel, Danica Pongonis, Ella Roskein, Adelynn Suarez</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 15 · 17</span></div>
+    </div>
+
+    <div class="meta-row">10:42 am · Judges Break</div>
+
+    <div class="routine-card props-only" data-quinn="false" data-props="true" data-dancers="Emily Baumann, Sydney Degnan, Lila Haimowitz, Maddy Howard, Jillian Hubbard, Charlotte Mccarthy, Phoebe Mccarthy, Patricia Murdock, Danica Pongonis, Giuliana Strauss" data-level="teen" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="12:31 pm">12:31 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1512</div><div class="card-title">When Velma Takes The Stand <span class="props-icon">🎭</span></div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-musical">Musical Theater</span><span class="tag">Teen Large Group</span></div>
+        <div class="card-dancers">Emily Baumann, Sydney Degnan, Lila Haimowitz, Maddy Howard, Jillian Hubbard, Charlotte Mccarthy, Phoebe Mccarthy, Patricia Murdock, Danica Pongonis, Giuliana Strauss</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 14 · 10</span></div>
+    </div>
+
+    <div class="meta-row awards">🏆 1:00 pm · Awards (Stage 1)</div>
+
+    <div class="routine-card props-only" data-quinn="false" data-props="true" data-dancers="Kristopher Bair, Sydney Degnan, Teagan Fochtman, Angela Morton, Ariana Nahom, Nicoletta Raimondo, Hunter Scancella, Haileigh Scancella" data-level="junior" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="2:10 pm">2:10 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1520</div><div class="card-title">Because Of You <span class="props-icon">🎭</span></div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Junior Small Group</span></div>
+        <div class="card-dancers">Kristopher Bair, Sydney Degnan, Teagan Fochtman, Angela Morton, Ariana Nahom, Nicoletta Raimondo, Hunter Scancella, Haileigh Scancella</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 12 · 8</span></div>
+    </div>
+
+    <div class="meta-row">3:05 pm · Judges Break</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Kristopher Bair, Sydney Degnan, Teagan Fochtman, Angela Morton, Ariana Nahom, Giuliana Strauss" data-level="junior" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="3:33 pm">3:33 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1539</div><div class="card-title">An Evening I Will Not Forget</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Junior Small Group</span></div>
+        <div class="card-dancers">Kristopher Bair, Sydney Degnan, Teagan Fochtman, Angela Morton, Ariana Nahom, Giuliana Strauss</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 12 · 6</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Kristopher Bair, Emily Baumann, Grace Bird, Emma Cannon, Sydney Degnan, Anastasia Demshick, Teagan Fochtman, Melina Franceski, Maddy Howard, Jillian Hubbard, Brooke Lavelle, Charlotte Mccarthy, Phoebe Mccarthy, Olivia Meehan, Mia Melfi, Angela Morton, Meghan Muller, Patricia Murdock, Ariana Nahom, Ishani Patel, Danica Pongonis, Ella Roskein, Emma Sabo, Hunter Scancella, Haileigh Scancella, Giuliana Strauss, Adelynn Suarez" data-level="" data-format="production" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="4:16 pm">4:16 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1552</div><div class="card-title">Superstar</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag fmt-prod">Production · 13 &amp; Over</span></div>
+        <div class="card-dancers">27 dancers — full teen/senior ensemble</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 14 · 27</span></div>
+    </div>
+
+    <div class="meta-row awards">🏆 4:30 pm · Awards (Stage 1)</div>
+    <div class="meta-row">6:57 pm · Judges Break</div>
+
+    <div class="routine-card props-only" data-quinn="false" data-props="true" data-dancers="Grace Bird, Emma Cannon, Anastasia Demshick, Melina Franceski, Brooke Lavelle, Olivia Meehan, Mia Melfi, Meghan Muller, Ishani Patel, Ella Roskein, Emma Sabo, Adelynn Suarez" data-level="senior" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="7:12 pm">7:12 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1583</div><div class="card-title">Chandelier <span class="props-icon">🎭</span></div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-open">Open</span><span class="tag">Senior Large Group</span></div>
+        <div class="card-dancers">Grace Bird, Emma Cannon, Anastasia Demshick, Melina Franceski, Brooke Lavelle, Olivia Meehan, Mia Melfi, Meghan Muller, Ishani Patel, Ella Roskein, Emma Sabo, Adelynn Suarez</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 16 · 12</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Emma Cannon, Anastasia Demshick, Brooke Lavelle, Olivia Meehan, Mia Melfi, Meghan Muller, Ella Roskein, Emma Sabo" data-level="senior" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="7:58 pm">7:58 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1597</div><div class="card-title">Ching A Ling</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Senior Small Group</span></div>
+        <div class="card-dancers">Emma Cannon, Anastasia Demshick, Brooke Lavelle, Olivia Meehan, Mia Melfi, Meghan Muller, Ella Roskein, Emma Sabo</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 16 · 8</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Grace Bird, Emma Cannon, Anastasia Demshick, Melina Franceski, Brooke Lavelle, Olivia Meehan, Mia Melfi, Meghan Muller, Ishani Patel, Ella Roskein, Emma Sabo, Adelynn Suarez" data-level="senior" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="8:22 pm">8:22 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1605</div><div class="card-title">Die On This Hill</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Senior Large Group</span></div>
+        <div class="card-dancers">Grace Bird, Emma Cannon, Anastasia Demshick, Melina Franceski, Brooke Lavelle, Olivia Meehan, Mia Melfi, Meghan Muller, Ishani Patel, Ella Roskein, Emma Sabo, Adelynn Suarez</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 16 · 12</span></div>
+    </div>
+
+    <div class="meta-row awards">🏆 8:40 pm · Awards (Stage 1)</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- DAY 5: THURSDAY JULY 2                      -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="day-section" data-day="thu">
+    <div class="day-header">
+      <div class="day-label">✦ Day 5</div>
+      <div class="day-title">Thursday, July 2</div>
+      <div class="day-count">Stage 1</div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Quinn Adams, Mackenzie Bowers, Cora Leyrer, Azalea Patel, Lainey Patterson" data-level="mini" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="10:00 am">10:00 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1618</div><div class="card-title">Rainbow</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-lyrical">Lyrical</span><span class="tag">Mini Small Group</span></div>
+        <div class="card-dancers">Quinn Adams, Mackenzie Bowers, Cora Leyrer, Azalea Patel, Lainey Patterson</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 5 · 5</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Quinn Adams, Isabel Baumann, Mackenzie Bowers, Aubrey Hixenbaugh, Amelia Leichter, Cora Leyrer, Reagan Mcgeehan, Azalea Patel, Lainey Patterson, Rosalie Troisi" data-level="mini" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="10:31 am">10:31 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1625</div><div class="card-title">You'll Be In My Heart</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Mini Large Group</span></div>
+        <div class="card-dancers">Quinn Adams, Isabel Baumann, Mackenzie Bowers, Aubrey Hixenbaugh, Amelia Leichter, Cora Leyrer, Reagan Mcgeehan, Azalea Patel, Lainey Patterson, Rosalie Troisi</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 6 · 10</span></div>
+    </div>
+
+    <div class="routine-card quinn-only" data-quinn="true" data-props="false" data-dancers="Carly Babula, Quinn Henry, Charlotte Howard, Carly Marshall, Teagan Meehan" data-level="petite" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="11:17 am">11:17 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1638</div><div class="card-title">Instruction <span class="quinn-star">⭐</span></div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Petite Small Group</span></div>
+        <div class="card-dancers">Carly Babula, Quinn Henry, Charlotte Howard, Carly Marshall, Teagan Meehan</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 7 · 5</span></div>
+    </div>
+
+    <div class="routine-card props-only" data-quinn="false" data-props="true" data-dancers="Alana Caputo, Avery Degnan, Candice Deriggi, Danica Fochtman, Layne Howard, Thea Leyrer, Allison Lochel, Sayde Thompson, Isabella Vacirca" data-level="petite" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="11:23 am">11:23 am</div>
+      <div class="card-main">
+        <div class="entry-num">#1640</div><div class="card-title">Get The Party Started <span class="props-icon">🎭</span></div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Petite Small Group</span></div>
+        <div class="card-dancers">Alana Caputo, Avery Degnan, Candice Deriggi, Danica Fochtman, Layne Howard, Thea Leyrer, Allison Lochel, Sayde Thompson, Isabella Vacirca</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 9 · 9</span></div>
+    </div>
+
+    <div class="meta-row">11:37 am · Judges Break</div>
+
+    <div class="routine-card quinn-and-props" data-quinn="true" data-props="true" data-dancers="Quinn Adams, Carly Babula, Kristopher Bair, Emily Baumann, Isabel Baumann, Grace Bird, Mackenzie Bowers, Emma Cannon, Alana Caputo, Sydney Degnan, Avery Degnan, Anastasia Demshick, Candice Deriggi, Danica Fochtman, Teagan Fochtman, Melina Franceski, Lila Haimowitz, Quinn Henry, Aubrey Hixenbaugh, Layne Howard, Maddy Howard, Charlotte Howard, Jillian Hubbard, Brooke Lavelle, Amelia Leichter, Thea Leyrer, Cora Leyrer, Allison Lochel, Carly Marshall, Charlotte Mccarthy, Phoebe Mccarthy, Reagan Mcgeehan, Teagan Meehan, Olivia Meehan, Mia Melfi, Angela Morton, Meghan Muller, Patricia Murdock, Ariana Nahom, Azalea Patel, Ishani Patel, Lainey Patterson, Logan Peroni, Danica Pongonis, Nicoletta Raimondo, Ella Roskein, Emma Sabo, Hunter Scancella, Haileigh Scancella, Layla Scott, Giuliana Strauss, Adelynn Suarez, Sayde Thompson, Rosalie Troisi, Isabella Vacirca" data-level="" data-format="production" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="12:19 pm">12:19 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1649</div><div class="card-title">Rock Around The Clock  <span class="props-icon">🎭</span><span class="quinn-star">⭐</span><span class="props-icon">🎭</span></div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag fmt-prod">Production · 12 &amp; Under</span></div>
+        <div class="card-dancers">55 dancers — full company ensemble</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 11 · 55</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Avery Degnan, Candice Deriggi, Danica Fochtman, Layne Howard, Thea Leyrer, Allison Lochel, Isabella Vacirca" data-level="petite" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="12:54 pm">12:54 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1659</div><div class="card-title">Wild Hearts Can't Be Broken</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Petite Small Group</span></div>
+        <div class="card-dancers">Avery Degnan, Candice Deriggi, Danica Fochtman, Layne Howard, Thea Leyrer, Allison Lochel, Isabella Vacirca</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 9 · 7</span></div>
+    </div>
+
+    <div class="routine-card quinn-only" data-quinn="true" data-props="false" data-dancers="Carly Babula, Quinn Henry, Charlotte Howard, Carly Marshall, Teagan Meehan, Logan Peroni, Layla Scott" data-level="petite" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="12:49 pm">12:49 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1657</div><div class="card-title">Rise Up <span class="quinn-star">⭐</span></div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Petite Small Group</span></div>
+        <div class="card-dancers">Carly Babula, Quinn Henry, Charlotte Howard, Carly Marshall, Teagan Meehan, Logan Peroni, Layla Scott</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 8 · 7</span></div>
+    </div>
+
+    <div class="meta-row awards">🏆 2:00 pm · Awards (Stage 1)</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Emma Cannon, Avery Degnan, Danica Fochtman, Brooke Lavelle, Allison Lochel, Meghan Muller, Emma Sabo, Isabella Vacirca" data-level="teen" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="4:38 pm">4:38 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1705</div><div class="card-title">Dear Younger Me</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Small Group</span></div>
+        <div class="card-dancers">Emma Cannon, Avery Degnan, Danica Fochtman, Brooke Lavelle, Allison Lochel, Meghan Muller, Emma Sabo, Isabella Vacirca</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 13 · 8</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Emily Baumann, Lila Haimowitz, Maddy Howard, Jillian Hubbard, Charlotte Mccarthy, Phoebe Mccarthy, Patricia Murdock, Danica Pongonis, Giuliana Strauss" data-level="teen" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="4:47 pm">4:47 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1708</div><div class="card-title">Love The Hell Out Of You</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Small Group</span></div>
+        <div class="card-dancers">Emily Baumann, Lila Haimowitz, Maddy Howard, Jillian Hubbard, Charlotte Mccarthy, Phoebe Mccarthy, Patricia Murdock, Danica Pongonis, Giuliana Strauss</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 14 · 9</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Grace Bird, Anastasia Demshick, Teagan Fochtman, Brooke Lavelle, Olivia Meehan, Ariana Nahom, Ishani Patel, Emma Sabo, Adelynn Suarez" data-level="teen" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="5:00 pm">5:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1712</div><div class="card-title">Low</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Small Group</span></div>
+        <div class="card-dancers">Grace Bird, Anastasia Demshick, Teagan Fochtman, Brooke Lavelle, Olivia Meehan, Ariana Nahom, Ishani Patel, Emma Sabo, Adelynn Suarez</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 15 · 9</span></div>
+    </div>
+
+    <div class="meta-row">5:15 pm · Judges Break</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Emma Cannon, Anastasia Demshick, Mia Melfi, Meghan Muller, Ishani Patel, Ella Roskein, Emma Sabo, Adelynn Suarez" data-level="teen" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="5:50 pm">5:50 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1723</div><div class="card-title">Finding Hope</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Small Group</span></div>
+        <div class="card-dancers">Emma Cannon, Anastasia Demshick, Mia Melfi, Meghan Muller, Ishani Patel, Ella Roskein, Emma Sabo, Adelynn Suarez</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 15 · 8</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Emma Cannon, Anastasia Demshick, Brooke Lavelle, Mia Melfi, Meghan Muller, Ella Roskein, Emma Sabo, Adelynn Suarez" data-level="teen" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="6:11 pm">6:11 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1730</div><div class="card-title">Girlfight</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-hiphop">Hip-Hop</span><span class="tag">Teen Small Group</span></div>
+        <div class="card-dancers">Emma Cannon, Anastasia Demshick, Brooke Lavelle, Mia Melfi, Meghan Muller, Ella Roskein, Emma Sabo, Adelynn Suarez</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 15 · 8</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Emily Baumann, Lila Haimowitz, Maddy Howard, Jillian Hubbard, Charlotte Mccarthy, Phoebe Mccarthy, Patricia Murdock, Danica Pongonis" data-level="teen" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="6:54 pm">6:54 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1744</div><div class="card-title">One Night Only</div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-jazz">Jazz</span><span class="tag">Teen Small Group</span></div>
+        <div class="card-dancers">Emily Baumann, Lila Haimowitz, Maddy Howard, Jillian Hubbard, Charlotte Mccarthy, Phoebe Mccarthy, Patricia Murdock, Danica Pongonis</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Age 14 · 8</span></div>
+    </div>
+
+    <div class="meta-row awards">🏆 7:40 pm · Awards (Stage 1)</div>
+  </div>
+
+  <div class="day-section" data-day="fri">
+    <div class="day-header">
+      <div class="day-label">✦ Battle Day</div>
+      <div class="day-title">Friday, July 3</div>
+      <div class="day-count">2 Sessions</div>
+    </div>
+
+    <!-- ── SESSION 1: JUNIOR BATTLE ── -->
+    <div class="battle-category" style="color:#67e8f9;border-bottom-color:rgba(103,232,249,0.2);">Session 1 — Junior Battle · Doors 12:45 PM · Starts 1:15 PM</div>
+
+
+    <div class="meta-row">12:45 pm · Doors Open</div>
+    <div class="meta-row">1:15 pm · Junior Dance Battle Starts · Junior National Dance Team Performs</div>
+
+    <!-- INTERMEDIATE SMALL GROUP -->
+    <div class="battle-category">Intermediate Small Group</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Studio 11 Dance Company" data-level="mini" data-format="group" data-studio="Studio 11 Dance Company">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1622</div><div class="card-title">Blue Suede Shoes</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Mini Small Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">Studio 11 Dance Company</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Mini</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="DDA Dance Academy" data-level="junior" data-format="group" data-studio="DDA Dance Academy">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#2307</div><div class="card-title">Girl Gang</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Junior Small Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">DDA Dance Academy</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Movement Dance Academy" data-level="junior" data-format="group" data-studio="Movement Dance Academy">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#2311</div><div class="card-title">My Love</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Junior Small Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">Movement Dance Academy</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="East Coast Dance Complex" data-level="mini" data-format="group" data-studio="East Coast Dance Complex">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1623</div><div class="card-title">Over The Rainbow</div>
+        <div class="card-meta"><span class="tag style-lyrical">Lyrical</span><span class="tag">Mini Small Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">East Coast Dance Complex</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Mini</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="The Movement Studios" data-level="junior" data-format="group" data-studio="The Movement Studios">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#2301</div><div class="card-title">Tomorrow</div>
+        <div class="card-meta"><span class="tag style-musical">Musical Theater</span><span class="tag">Junior Small Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">The Movement Studios</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Broadway Bound Dance Center" data-level="petite" data-format="group" data-studio="Broadway Bound Dance Center">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1660</div><div class="card-title">Chasing Cars</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Petite Small Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">Broadway Bound Dance Center</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Petite</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="DDA Dance Academy" data-level="petite" data-format="group" data-studio="DDA Dance Academy">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1654</div><div class="card-title">I Don't Speak French</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Petite Small Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">DDA Dance Academy</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Petite</span></div>
+    </div>
+
+    <!-- INTERMEDIATE LARGE GROUP -->
+    <div class="battle-category">Intermediate Large Group</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Sara Jean Dance Company" data-level="junior" data-format="group" data-studio="Sara Jean Dance Company">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1402</div><div class="card-title">Fergilicious</div>
+        <div class="card-meta"><span class="tag style-hiphop">Hip-Hop</span><span class="tag">Junior Large Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">Sara Jean Dance Company</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="The Movement Studios" data-level="junior" data-format="group" data-studio="The Movement Studios">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1406</div><div class="card-title">Vogue</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Junior Large Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">The Movement Studios</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="CMG Dance Project" data-level="petite" data-format="group" data-studio="CMG Dance Project">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1447</div><div class="card-title">Emojis</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Petite Large Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">CMG Dance Project</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Petite</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Jump Dance Move" data-level="petite" data-format="group" data-studio="Jump Dance Move">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1377</div><div class="card-title">Dear Future Husband</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Petite Large Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">Jump Dance Move</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Petite</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="DDA Dance Academy" data-level="junior" data-format="group" data-studio="DDA Dance Academy">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1412</div><div class="card-title">Flowers</div>
+        <div class="card-meta"><span class="tag style-lyrical">Lyrical</span><span class="tag">Junior Large Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">DDA Dance Academy</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <!-- INTERMEDIATE LINES -->
+    <div class="battle-category">Intermediate Lines</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Not Your Ordinary Dancers" data-level="junior" data-format="group" data-studio="Not Your Ordinary Dancers">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1393</div><div class="card-title">Party Rock</div>
+        <div class="card-meta"><span class="tag style-hiphop">Hip-Hop</span><span class="tag">Junior Line</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">Not Your Ordinary Dancers</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="CMG Dance Project" data-level="petite" data-format="group" data-studio="CMG Dance Project">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1392</div><div class="card-title">Party In Ipanema</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Petite Line</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">CMG Dance Project</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Petite</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Jump Dance Move" data-level="petite" data-format="group" data-studio="Jump Dance Move">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1398</div><div class="card-title">Coffee Break</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Petite Line</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">Jump Dance Move</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Petite</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="DDA Dance Academy" data-level="junior" data-format="group" data-studio="DDA Dance Academy">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1441</div><div class="card-title">2 Fast</div>
+        <div class="card-meta"><span class="tag style-hiphop">Hip-Hop</span><span class="tag">Junior Line</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">DDA Dance Academy</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <!-- 12 & UNDER PRODUCTIONS -->
+    <div class="battle-category">12 &amp; Under Productions</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Not Your Ordinary Dancers" data-level="" data-format="production" data-studio="Not Your Ordinary Dancers">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1609</div><div class="card-title">Be Our Guest</div>
+        <div class="card-meta"><span class="tag fmt-prod">Production · 12 &amp; Under</span></div>
+        <div class="card-dancers">Not Your Ordinary Dancers</div>
+      </div>
+      <div class="card-right"><span class="age-badge">12 &amp; Under</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Center For Dance Arts" data-level="" data-format="production" data-studio="Center For Dance Arts">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1642</div><div class="card-title">Wild Wild West</div>
+        <div class="card-meta"><span class="tag fmt-prod">Production · 12 &amp; Under</span></div>
+        <div class="card-dancers">Center For Dance Arts</div>
+      </div>
+      <div class="card-right"><span class="age-badge">12 &amp; Under</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Broadway Bound Dance Center" data-level="" data-format="production" data-studio="Broadway Bound Dance Center">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1619</div><div class="card-title">Gotta Dance!</div>
+        <div class="card-meta"><span class="tag fmt-prod">Production · 12 &amp; Under</span></div>
+        <div class="card-dancers">Broadway Bound Dance Center</div>
+      </div>
+      <div class="card-right"><span class="age-badge">12 &amp; Under</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Movement Dance Academy" data-level="" data-format="production" data-studio="Movement Dance Academy">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1641</div><div class="card-title">Nicki</div>
+        <div class="card-meta"><span class="tag fmt-prod">Production · 12 &amp; Under</span></div>
+        <div class="card-dancers">Movement Dance Academy</div>
+      </div>
+      <div class="card-right"><span class="age-badge">12 &amp; Under</span></div>
+    </div>
+
+    <!-- COMPETITIVE SMALL GROUPS -->
+    <div class="battle-category">Competitive Small Groups</div>
+
+    <div class="routine-card props-only apdc-card" data-quinn="false" data-props="true" data-dancers="Amanda Page Dance Company" data-level="junior" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1520</div><div class="card-title">Because of You <span class="props-icon">🎭</span><span class="apdc-badge">APDC</span></div>
+        <div class="card-meta"><span class="tag stage-1">Stage 1</span><span class="tag style-contemporary">Contemporary</span><span class="tag">Junior Small Group</span></div>
+        <div class="card-dancers">Amanda Page Dance Company</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="AEDE" data-level="junior" data-format="group" data-studio="AEDE">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1551</div><div class="card-title">Beyond The Sea</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Junior Small Group</span></div>
+        <div class="card-dancers">AEDE</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="The Movement Studios" data-level="petite" data-format="group" data-studio="The Movement Studios">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1658</div><div class="card-title">Particles</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Petite Small Group</span></div>
+        <div class="card-dancers">The Movement Studios</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Petite</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Studio 11 Dance Company" data-level="junior" data-format="group" data-studio="Studio 11 Dance Company">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1529</div><div class="card-title">The SIMS</div>
+        <div class="card-meta"><span class="tag style-hiphop">Hip-Hop</span><span class="tag">Junior Small Group</span></div>
+        <div class="card-dancers">Studio 11 Dance Company</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <div class="routine-card normal apdc-card" data-quinn="false" data-props="false" data-dancers="Amanda Page Dance Company" data-level="mini" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1618</div><div class="card-title">Rainbow<span class="apdc-badge">APDC</span></div>
+        <div class="card-meta"><span class="tag style-lyrical">Lyrical</span><span class="tag">Mini Small Group</span></div>
+        <div class="card-dancers">Amanda Page Dance Company</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Mini</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="The Movement Studios" data-level="junior" data-format="group" data-studio="The Movement Studios">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1523</div><div class="card-title">Tides Of Memories</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Junior Small Group</span></div>
+        <div class="card-dancers">The Movement Studios</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <div class="routine-card props-only apdc-card" data-quinn="false" data-props="true" data-dancers="Amanda Page Dance Company" data-level="petite" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1640</div><div class="card-title">Get The Party Started <span class="props-icon">🎭</span><span class="apdc-badge">APDC</span></div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Petite Small Group</span></div>
+        <div class="card-dancers">Amanda Page Dance Company</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Petite</span></div>
+    </div>
+
+    <!-- COMPETITIVE LARGE GROUPS -->
+    <div class="battle-category">Competitive Large Groups</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="DDA Dance Academy" data-level="junior" data-format="group" data-studio="DDA Dance Academy">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1433</div><div class="card-title">Babylon</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Junior Large Group</span></div>
+        <div class="card-dancers">DDA Dance Academy</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <div class="routine-card normal apdc-card" data-quinn="false" data-props="false" data-dancers="Amanda Page Dance Company" data-level="mini" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1625</div><div class="card-title">You'll Be In My Heart<span class="apdc-badge">APDC</span></div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Mini Large Group</span></div>
+        <div class="card-dancers">Amanda Page Dance Company</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Mini</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="AEDE" data-level="junior" data-format="group" data-studio="AEDE">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1439</div><div class="card-title">Barbee</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Junior Large Group</span></div>
+        <div class="card-dancers">AEDE</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Junior</span></div>
+    </div>
+
+    <div class="routine-card normal apdc-card" data-quinn="false" data-props="false" data-dancers="Amanda Page Dance Company" data-level="petite" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1381</div><div class="card-title">Pump It Up<span class="apdc-badge">APDC</span></div>
+        <div class="card-meta"><span class="tag style-hiphop">Hip-Hop</span><span class="tag">Petite Large Group</span></div>
+        <div class="card-dancers">Amanda Page Dance Company</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Petite</span></div>
+    </div>
+
+    <!-- COMPETITIVE LINES -->
+    <div class="battle-category">Competitive Lines</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Studio 11 Dance Company" data-level="" data-format="group" data-studio="Studio 11 Dance Company">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1450</div><div class="card-title">Simulation</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Line</span></div>
+        <div class="card-dancers">Studio 11 Dance Company</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Line</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Broadway Bound Dance Center" data-level="" data-format="group" data-studio="Broadway Bound Dance Center">
+      <div class="card-time" data-orig-time="1:15 pm">1:15 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1382</div><div class="card-title">Iris</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Line</span></div>
+        <div class="card-dancers">Broadway Bound Dance Center</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Line</span></div>
+    </div>
+
+    <div class="meta-row awards">🏆 Awards</div>
+
+    <!-- ── SESSION 2: SENIOR BATTLE ── -->
+    <div class="battle-category" style="color:#67e8f9;border-bottom-color:rgba(103,232,249,0.2);margin-top:20px;">Session 2 — Senior Battle · Doors 5:30 PM · Starts 6:00 PM</div>
+
+
+    <div class="meta-row">5:30 pm · Doors Open</div>
+    <div class="meta-row">6:00 pm · Senior Dance Battle Starts · Senior National Dance Team Performs</div>
+
+    <!-- INTERMEDIATE SMALL GROUP -->
+    <div class="battle-category">Intermediate Small Group</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="The Movement Studios" data-level="teen" data-format="group" data-studio="The Movement Studios">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1715</div><div class="card-title">The End</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Small Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">The Movement Studios</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Desiree Catania Dance" data-level="senior" data-format="group" data-studio="Desiree Catania Dance">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1570</div><div class="card-title">Koo Koo Fun</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Senior Small Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">Desiree Catania Dance</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Senior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="DDA Dance Academy" data-level="teen" data-format="group" data-studio="DDA Dance Academy">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1688</div><div class="card-title">Like Whaa</div>
+        <div class="card-meta"><span class="tag style-hiphop">Hip-Hop</span><span class="tag">Teen Small Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">DDA Dance Academy</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Sara Jean Dance Company" data-level="senior" data-format="group" data-studio="Sara Jean Dance Company">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1716</div><div class="card-title">Burn</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Senior Small Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">Sara Jean Dance Company</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Senior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Movement Dance Academy" data-level="teen" data-format="group" data-studio="Movement Dance Academy">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1685</div><div class="card-title">Stand Up</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Small Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">Movement Dance Academy</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <!-- INTERMEDIATE LARGE GROUP -->
+    <div class="battle-category">Intermediate Large Group</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="All 4 Dance Performing Arts Studio" data-level="teen" data-format="group" data-studio="All 4 Dance Performing Arts Studio">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1458</div><div class="card-title">Dangerous</div>
+        <div class="card-meta"><span class="tag style-hiphop">Hip-Hop</span><span class="tag">Teen Large Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">All 4 Dance Performing Arts Studio</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="The Movement Studios" data-level="teen" data-format="group" data-studio="The Movement Studios">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1477</div><div class="card-title">Do You Think We'll Last Forever</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Large Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">The Movement Studios</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Dance Mixx Studio" data-level="teen" data-format="group" data-studio="Dance Mixx Studio">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1467</div><div class="card-title">Secretary Stomp</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Teen Large Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">Dance Mixx Studio</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Desiree Catania Dance" data-level="teen" data-format="group" data-studio="Desiree Catania Dance">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1499</div><div class="card-title">Girls</div>
+        <div class="card-meta"><span class="tag style-hiphop">Hip-Hop</span><span class="tag">Teen Large Group</span><span class="tag">Intermediate</span></div>
+        <div class="card-dancers">Desiree Catania Dance</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <!-- 13 & UP PRODUCTIONS -->
+    <div class="battle-category">13 &amp; Up Productions</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="AEDE" data-level="" data-format="production" data-studio="AEDE">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1536</div><div class="card-title">Disco Inferno</div>
+        <div class="card-meta"><span class="tag fmt-prod">Production · 13 &amp; Up</span></div>
+        <div class="card-dancers">AEDE</div>
+      </div>
+      <div class="card-right"><span class="age-badge">13 &amp; Up</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="CMG Dance Project" data-level="" data-format="production" data-studio="CMG Dance Project">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1518</div><div class="card-title">The Orchestra</div>
+        <div class="card-meta"><span class="tag fmt-prod">Production · 13 &amp; Up</span></div>
+        <div class="card-dancers">CMG Dance Project</div>
+      </div>
+      <div class="card-right"><span class="age-badge">13 &amp; Up</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="The Movement Studios" data-level="" data-format="production" data-studio="The Movement Studios">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1540</div><div class="card-title">In Demand</div>
+        <div class="card-meta"><span class="tag fmt-prod">Production · 13 &amp; Up</span></div>
+        <div class="card-dancers">The Movement Studios</div>
+      </div>
+      <div class="card-right"><span class="age-badge">13 &amp; Up</span></div>
+    </div>
+
+    <!-- COMPETITIVE SMALL GROUPS -->
+    <div class="battle-category">Competitive Small Groups</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Dance Mixx Studio" data-level="senior" data-format="group" data-studio="Dance Mixx Studio">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1595</div><div class="card-title">Make Demands</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Senior Small Group</span></div>
+        <div class="card-dancers">Dance Mixx Studio</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Senior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="AEDE" data-level="senior" data-format="group" data-studio="AEDE">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1562</div><div class="card-title">It's Been A Year</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Senior Small Group</span></div>
+        <div class="card-dancers">AEDE</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Senior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="The Movement Studios" data-level="senior" data-format="group" data-studio="The Movement Studios">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1608</div><div class="card-title">Funhouse</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Senior Small Group</span></div>
+        <div class="card-dancers">The Movement Studios</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Senior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Dance Mixx Studio" data-level="teen" data-format="group" data-studio="Dance Mixx Studio">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1745</div><div class="card-title">What Goes Around</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Small Group</span></div>
+        <div class="card-dancers">Dance Mixx Studio</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="AEDE" data-level="teen" data-format="group" data-studio="AEDE">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1748</div><div class="card-title">Somebody To Love</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Small Group</span></div>
+        <div class="card-dancers">AEDE</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="The Movement Studios" data-level="teen" data-format="group" data-studio="The Movement Studios">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1698</div><div class="card-title">Dystopia</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Small Group</span></div>
+        <div class="card-dancers">The Movement Studios</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <!-- COMPETITIVE LARGE GROUPS -->
+    <div class="battle-category">Competitive Large Groups</div>
+
+    <div class="routine-card props-only apdc-card" data-quinn="false" data-props="true" data-dancers="Amanda Page Dance Company" data-level="senior" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1583</div><div class="card-title">Chandelier <span class="props-icon">🎭</span><span class="apdc-badge">APDC</span></div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Senior Large Group</span></div>
+        <div class="card-dancers">Amanda Page Dance Company</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Senior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="AEDE" data-level="teen" data-format="group" data-studio="AEDE">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1493</div><div class="card-title">Nosebleeds</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Large Group</span></div>
+        <div class="card-dancers">AEDE</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Turning Pointe Dance Center" data-level="teen" data-format="group" data-studio="Turning Pointe Dance Center">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1487</div><div class="card-title">Did We Ever Have It</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Large Group</span></div>
+        <div class="card-dancers">Turning Pointe Dance Center</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="The Movement Studios" data-level="teen" data-format="group" data-studio="The Movement Studios">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1495</div><div class="card-title">Match</div>
+        <div class="card-meta"><span class="tag style-jazz">Jazz</span><span class="tag">Teen Large Group</span></div>
+        <div class="card-dancers">The Movement Studios</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Broadway Bound Dance Center" data-level="senior" data-format="group" data-studio="Broadway Bound Dance Center">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1564</div><div class="card-title">Maybe This Time</div>
+        <div class="card-meta"><span class="tag style-musical">Musical Theater</span><span class="tag">Senior Large Group</span></div>
+        <div class="card-dancers">Broadway Bound Dance Center</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Senior</span></div>
+    </div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="AEDE" data-level="senior" data-format="group" data-studio="AEDE">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1582</div><div class="card-title">Joanne</div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Senior Large Group</span></div>
+        <div class="card-dancers">AEDE</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Senior</span></div>
+    </div>
+
+    <!-- COMPETITIVE LINES -->
+    <div class="battle-category">Competitive Lines</div>
+
+    <div class="routine-card normal" data-quinn="false" data-props="false" data-dancers="Dance Mixx Studio" data-level="teen" data-format="group" data-studio="Dance Mixx Studio">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1514</div><div class="card-title">Wild Wild West</div>
+        <div class="card-meta"><span class="tag style-hiphop">Hip-Hop</span><span class="tag">Teen Line</span></div>
+        <div class="card-dancers">Dance Mixx Studio</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <div class="routine-card normal apdc-card" data-quinn="false" data-props="false" data-dancers="Amanda Page Dance Company" data-level="teen" data-format="group" data-studio="Amanda Page Dance Company">
+      <div class="card-time" data-orig-time="6:00 pm">6:00 pm</div>
+      <div class="card-main">
+        <div class="entry-num">#1464</div><div class="card-title">Medicine<span class="apdc-badge">APDC</span></div>
+        <div class="card-meta"><span class="tag style-contemporary">Contemporary</span><span class="tag">Teen Line</span></div>
+        <div class="card-dancers">Amanda Page Dance Company</div>
+      </div>
+      <div class="card-right"><span class="age-badge">Teen</span></div>
+    </div>
+
+    <div class="meta-row awards">🏆 Awards</div>
+
+  </div>
+
+  <div class="no-results" id="no-results">No routines match this filter.</div>
+
+</main>
+
+<script>
+  // ── State ──
+  let activeFilter  = 'all';
+  let activeDay     = 'all';
+  let activeDancers = [];
+  let activeLevel   = '';
+  let activeFormat  = '';
+  let activeStudios = [];
+
+  // ── Element refs ──
+  const showBtns      = document.querySelectorAll('.show-btn');
+  const catBtns       = document.querySelectorAll('.cat-btn');
+  const dayBtns       = document.querySelectorAll('.day-btn');
+  const sections      = document.querySelectorAll('.day-section');
+  const cards         = document.querySelectorAll('.routine-card');
+  const metaRows      = document.querySelectorAll('.meta-row');
+  const callout       = document.getElementById('quinn-callout');
+  const calloutHeader = document.getElementById('callout-header');
+  const calloutSched  = document.getElementById('callout-schedule');
+  const noResults     = document.getElementById('no-results');
+  const dancerInput   = document.getElementById('dancer-input');
+  const dropdown      = document.getElementById('dancer-dropdown');
+  const pillWrap      = document.getElementById('dancer-pill-wrap');
+  const pillRow       = document.getElementById('pill-row');
+  const clearAllBtn     = document.getElementById('clear-all-btn');
+  const studioInput     = document.getElementById('studio-input');
+  const studioDropdown  = document.getElementById('studio-dropdown');
+  const studioPillWrap  = document.getElementById('studio-pill-wrap');
+  const studioRow       = document.getElementById('studio-row');
+  const studioClearBtn  = document.getElementById('studio-clear-btn');
+
+  // ── Build sorted unique studio list ──
+  const allStudios = (() => {
+    const set = new Set();
+    cards.forEach(card => {
+      const s = card.dataset.studio || '';
+      if (s) set.add(s);
+    });
+    return [...set].sort();
+  })();
+
+  // ── Studio dropdown ──
+  function renderStudioDropdown(query) {
+    const q = query.trim().toLowerCase();
+    const available = allStudios.filter(s => !activeStudios.includes(s));
+    const matches = q ? available.filter(s => s.toLowerCase().includes(q)) : available;
+    studioDropdown.innerHTML = '';
+    if (matches.length === 0) {
+      studioDropdown.innerHTML = '<div class="dropdown-empty">No studios found</div>';
+    } else {
+      matches.forEach(name => {
+        const div = document.createElement('div');
+        div.className = 'dropdown-item';
+        if (q) {
+          const idx = name.toLowerCase().indexOf(q);
+          div.innerHTML = name.slice(0, idx)
+            + '<mark>' + name.slice(idx, idx + q.length) + '</mark>'
+            + name.slice(idx + q.length);
+        } else {
+          div.textContent = name;
+        }
+        div.addEventListener('mousedown', e => { e.preventDefault(); addStudio(name); });
+        div.addEventListener('touchstart', e => { e.preventDefault(); addStudio(name); }, { passive: false });
+        studioDropdown.appendChild(div);
+      });
+    }
+    studioDropdown.classList.add('open');
+  }
+
+  function addStudio(name) {
+    if (activeStudios.includes(name)) {
+      studioDropdown.classList.remove('open');
+      studioInput.value = '';
+      studioInput.blur();
+      return;
+    }
+    activeStudios.push(name);
+    studioInput.value = '';
+    studioInput.blur();
+    studioDropdown.classList.remove('open');
+    renderStudioPills();
+    applyFilters();
+  }
+
+  function removeStudio(name) {
+    activeStudios = activeStudios.filter(s => s !== name);
+    renderStudioPills();
+    applyFilters();
+  }
+
+  function renderStudioPills() {
+    studioPillWrap.innerHTML = '';
+    activeStudios.forEach(name => {
+      const pill = document.createElement('div');
+      pill.className = 'dancer-pill';
+      pill.style.background = 'rgba(233,196,106,0.15)';
+      pill.style.borderColor = 'rgba(233,196,106,0.4)';
+      pill.style.color = '#fde68a';
+      const span = document.createElement('span');
+      span.textContent = '🏫 ' + name;
+      const x = document.createElement('button');
+      x.className = 'pill-clear';
+      x.style.color = '#fde68a';
+      x.innerHTML = '&times;';
+      x.addEventListener('click', () => removeStudio(name));
+      pill.appendChild(span);
+      pill.appendChild(x);
+      studioPillWrap.appendChild(pill);
+    });
+    studioClearBtn.style.display = activeStudios.length > 1 ? '' : 'none';
+    studioInput.placeholder = activeStudios.length > 0 ? '🏫 Add studio...' : '🏫 Studio...';
+  }
+
+  studioClearBtn.addEventListener('click', () => {
+    activeStudios = [];
+    renderStudioPills();
+    applyFilters();
+  });
+
+  studioInput.addEventListener('input',  () => renderStudioDropdown(studioInput.value));
+  studioInput.addEventListener('focus',  () => renderStudioDropdown(studioInput.value));
+  studioInput.addEventListener('blur',   () => setTimeout(() => studioDropdown.classList.remove('open'), 200));
+
+  // ── Build sorted unique dancer list ──
+  const allDancers = (() => {
+    const set = new Set();
+    cards.forEach(card => {
+      (card.dataset.dancers || '').split(',').map(s => s.trim()).filter(Boolean).forEach(n => set.add(n));
+    });
+    return [...set].sort();
+  })();
+
+  // ── Render dropdown ──
+  function renderDropdown(query) {
+    const q = query.trim().toLowerCase();
+    const available = allDancers.filter(n => !activeDancers.includes(n));
+    const matches = q ? available.filter(n => n.toLowerCase().includes(q)) : available;
+    dropdown.innerHTML = '';
+    if (matches.length === 0) {
+      dropdown.innerHTML = '<div class="dropdown-empty">No dancers found</div>';
+    } else {
+      matches.forEach(name => {
+        const div = document.createElement('div');
+        div.className = 'dropdown-item';
+        if (q) {
+          const idx = name.toLowerCase().indexOf(q);
+          div.innerHTML = name.slice(0, idx)
+            + '<mark>' + name.slice(idx, idx + q.length) + '</mark>'
+            + name.slice(idx + q.length);
+        } else {
+          div.textContent = name;
+        }
+        // mousedown fires before blur, so we can prevent the input losing focus briefly
+        div.addEventListener('mousedown', e => { e.preventDefault(); addDancer(name); });
+        // touchstart for iOS
+        div.addEventListener('touchstart', e => { e.preventDefault(); addDancer(name); }, { passive: false });
+        dropdown.appendChild(div);
+      });
+    }
+    dropdown.classList.add('open');
+  }
+
+  // ── Add dancer ──
+  function addDancer(name) {
+    if (activeDancers.includes(name)) {
+      dropdown.classList.remove('open');
+      dancerInput.value = '';
+      dancerInput.blur();
+      return;
+    }
+    activeDancers.push(name);
+    showBtns.forEach(b => b.classList.remove('active'));
+    // Clear input and dismiss keyboard immediately
+    dancerInput.value = '';
+    dancerInput.blur();
+    dropdown.classList.remove('open');
+    renderPills();
+    applyFilters();
+  }
+
+  // ── Remove dancer ──
+  function removeDancer(name) {
+    activeDancers = activeDancers.filter(n => n !== name);
+    if (activeDancers.length === 0) {
+      showBtns.forEach(b => b.classList.remove('active'));
+      document.querySelector('.show-btn[data-filter="all"]').classList.add('active');
+      activeFilter = 'all';
+    }
+    renderPills();
+    applyFilters();
+  }
+
+  // ── Render pills ──
+  function renderPills() {
+    pillWrap.innerHTML = '';
+    activeDancers.forEach(name => {
+      const pill = document.createElement('div');
+      pill.className = 'dancer-pill';
+      const span = document.createElement('span');
+      span.textContent = '⭐ ' + name;
+      const x = document.createElement('button');
+      x.className = 'pill-clear';
+      x.innerHTML = '&times;';
+      x.setAttribute('aria-label', 'Remove ' + name);
+      x.addEventListener('click', () => removeDancer(name));
+      pill.appendChild(span);
+      pill.appendChild(x);
+      pillWrap.appendChild(pill);
+    });
+    pillRow.style.display     = activeDancers.length > 0 ? '' : 'none';
+    clearAllBtn.style.display = activeDancers.length > 1 ? '' : 'none';
+    // Update placeholder to hint user can add more
+    dancerInput.placeholder = activeDancers.length > 0 ? '🔍 Add dancer...' : '🔍 Dancer...';
+  }
+
+  // ── Clear all ──
+  clearAllBtn.addEventListener('click', () => {
+    activeDancers = [];
+    renderPills();
+    showBtns.forEach(b => b.classList.remove('active'));
+    document.querySelector('.show-btn[data-filter="all"]').classList.add('active');
+    activeFilter = 'all';
+    applyFilters();
+  });
+
+  // ── Input events ──
+  dancerInput.addEventListener('input', () => renderDropdown(dancerInput.value));
+  dancerInput.addEventListener('focus', () => renderDropdown(dancerInput.value));
+  dancerInput.addEventListener('blur',  () => setTimeout(() => dropdown.classList.remove('open'), 200));
+
+  // ── Show-filter buttons ──
+  showBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeDancers = [];
+      renderPills();
+      dancerInput.value = '';
+      showBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+
+  // ── Category buttons ──
+  catBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      catBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeLevel  = btn.dataset.level;
+      activeFormat = btn.dataset.format;
+      applyFilters();
+    });
+  });
+
+  // ── Day buttons ──
+  dayBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      dayBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeDay = btn.dataset.day;
+      applyFilters();
+    });
+  });
+
+  // ── Build spotlight callout ──
+  function renderCallout() {
+    if (activeDancers.length === 0) { callout.style.display = 'none'; return; }
+
+    const DAY_ORDER = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4 };
+    const entries = [];
+    const seen = new Set();
+
+    cards.forEach(card => {
+      const dancers = card.dataset.dancers || '';
+      if (!activeDancers.some(n => dancers.toLowerCase().includes(n.toLowerCase()))) return;
+      const sec      = card.closest('.day-section');
+      const dayKey   = sec ? sec.dataset.day : 'sun';
+      const timeStr  = card.querySelector('.card-time')?.textContent?.trim() || '';
+      const title    = card.querySelector('.card-title')?.childNodes[0]?.textContent?.trim() || '';
+      const key      = dayKey + timeStr + title;
+      if (seen.has(key)) return;
+      seen.add(key);
+      const hasProps  = card.dataset.props === 'true';
+      const stage     = card.querySelector('.tag.stage-1') ? 'Stage 1' :
+                        card.querySelector('.tag.stage-2') ? 'Stage 2' : '';
+      const dayTitle  = sec?.querySelector('.day-title')?.textContent?.trim() || '';
+      const [tp, ap]  = timeStr.split(' ');
+      const [h, m]    = tp.split(':').map(Number);
+      const mins      = (ap === 'pm' && h !== 12 ? h + 12 : (ap === 'am' && h === 12 ? 0 : h)) * 60 + m;
+      entries.push({ dayOrder: DAY_ORDER[dayKey] ?? 99, mins, title, hasProps, stage, timeStr, dayTitle });
+    });
+
+    entries.sort((a, b) => a.dayOrder - b.dayOrder || a.mins - b.mins);
+
+    calloutHeader.textContent = activeDancers.length === 1
+      ? '✦ All routines for ' + activeDancers[0]
+      : '✦ All routines for selected dancers';
+
+    calloutSched.innerHTML = '';
+    entries.forEach(e => {
+      const item = document.createElement('div');
+      item.className = 'quinn-item';
+      item.innerHTML =
+        '<div class="quinn-item-title">' + e.title + (e.hasProps ? ' 🎭' : '') + '</div>' +
+        '<div class="quinn-item-meta">' + e.dayTitle + ' · ' + e.timeStr + ' · ' + e.stage + '</div>';
+      calloutSched.appendChild(item);
+    });
+
+    callout.style.display = entries.length > 0 ? '' : 'none';
+  }
+
+  // ── Apply all filters ──
+  function applyFilters() {
+    const hasDancers = activeDancers.length > 0;
+    let visibleCards = 0;
+
+    sections.forEach(sec => {
+      const secDay = sec.getAttribute('data-day') || '';
+      const visible = activeDay === 'all' || secDay === activeDay;
+      sec.style.display = visible ? '' : 'none';
+      sec.classList.toggle('hidden', !visible);
+    });
+
+    cards.forEach(card => {
+      const sec      = card.closest('.day-section');
+      const secDay   = sec ? (sec.getAttribute('data-day') || '') : '';
+      const dayMatch = activeDay === 'all' || secDay === activeDay;
+      const dancers  = card.dataset.dancers || '';
+      let showMatch  = false;
+      if (hasDancers)              showMatch = activeDancers.some(n => dancers.toLowerCase().includes(n.toLowerCase()));
+      else if (activeFilter === 'all')   showMatch = true;
+      else if (activeFilter === 'props') showMatch = card.dataset.props === 'true';
+      // Apply level/format filters
+      const levelMatch  = !activeLevel  || card.dataset.level  === activeLevel;
+      const formatMatch = !activeFormat || card.dataset.format === activeFormat;
+      // Apply studio filter
+      const studioMatch = activeStudios.length === 0 ||
+        activeStudios.some(s => (card.dataset.studio || '').toLowerCase() === s.toLowerCase());
+      const show = dayMatch && showMatch && levelMatch && formatMatch && studioMatch;
+      card.classList.toggle('hidden', !show);
+      if (show) visibleCards++;
+    });
+
+    metaRows.forEach(row => {
+      const sec    = row.closest('.day-section');
+      const secDay = sec ? (sec.getAttribute('data-day') || '') : '';
+      const dayMatch = activeDay === 'all' || secDay === activeDay;
+      row.classList.toggle('hidden', hasDancers || activeFilter !== 'all' || !dayMatch);
+    });
+
+    renderCallout();
+    noResults.style.display = visibleCards === 0 ? 'block' : 'none';
+  }
+
+  // ── Schedule offset ──
+  let offsetMinutes = 0;
+  const offsetBtns  = document.querySelectorAll('.offset-btn');
+  const offsetStatus = document.getElementById('offset-status');
+  const cardTimes    = document.querySelectorAll('.card-time[data-orig-time]');
+
+  function parseTime(str) {
+    // e.g. "8:45 am" or "1:06 pm"
+    const [timePart, ampm] = str.trim().split(' ');
+    let [h, m] = timePart.split(':').map(Number);
+    if (ampm === 'pm' && h !== 12) h += 12;
+    if (ampm === 'am' && h === 12) h = 0;
+    return h * 60 + m;
+  }
+
+  function formatTime(totalMins) {
+    let h = Math.floor(totalMins / 60);
+    const m = totalMins % 60;
+    const ampm = h >= 12 ? 'pm' : 'am';
+    if (h > 12) h -= 12;
+    if (h === 0) h = 12;
+    return h + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+  }
+
+  function applyOffset(delta) {
+    offsetMinutes = delta;
+    offsetBtns.forEach(b => b.classList.toggle('active', parseInt(b.dataset.delta) === delta));
+
+    cardTimes.forEach(el => {
+      const orig = el.dataset.origTime;
+      if (delta === 0) {
+        el.innerHTML = orig;
+        el.className = 'card-time';
+      } else {
+        const origMins = parseTime(orig);
+        const newMins  = origMins + delta;
+        const newTime  = formatTime(newMins);
+        el.innerHTML   = '<span class="time-adjusted">' + newTime + '</span>'
+                       + '<span class="time-original">' + orig + '</span>';
+        el.className   = 'card-time card-time--shifted';
+      }
+    });
+
+    // Update status label
+    if (delta === 0) {
+      offsetStatus.style.display = 'none';
+    } else {
+      const sign = delta < 0 ? '' : '+';
+      offsetStatus.textContent = 'Running ' + sign + delta + ' min';
+      offsetStatus.style.display = '';
+    }
+  }
+
+  offsetBtns.forEach(btn => {
+    btn.addEventListener('click', () => applyOffset(parseInt(btn.dataset.delta)));
+  });
+
+
+  // ── Service Worker ──
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+    });
+  }
+
+  // ── Init ── ensure no sections start hidden ──
+  document.querySelectorAll('.day-section').forEach(s => {
+    s.style.display = '';
+    s.classList.remove('hidden');
+  });
+  applyFilters();
+</script>
+
+</body>
+</html>
