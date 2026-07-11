@@ -40,6 +40,7 @@
       <input class="dancer-input" id="dancer-input" type="text" placeholder="Dancer..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
       <div class="dancer-dropdown" id="dancer-dropdown"></div>
     </div>
+    <button class="btn filter-toggle" id="filter-toggle" aria-expanded="false" aria-controls="filter-extra"></button>
   </div>
 
   <!-- Row 2: Active pills — only visible when dancers selected -->
@@ -49,35 +50,40 @@
     <button class="btn" id="clear-all-btn" style="display:none;font-size:10px;padding:4px 8px;color:#8878b0;border-color:rgba(255,255,255,0.08);flex-shrink:0;">Clear all</button>
   </div>
 
-  <!-- Row 3: Studio search -->
-  <div class="filter-row" id="studio-row">
-    <span class="filter-label">Studio</span>
-    <div class="search-wrap" id="studio-search-wrap">
-      <span class="search-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1"/><line x1="9" y1="7.5" x2="9" y2="7.51"/><line x1="15" y1="7.5" x2="15" y2="7.51"/><line x1="9" y1="11.5" x2="9" y2="11.51"/><line x1="15" y1="11.5" x2="15" y2="11.51"/><line x1="10" y1="21" x2="10" y2="17"/><line x1="14" y1="21" x2="14" y2="17"/></svg></span>
-      <input class="dancer-input" id="studio-input" type="text" placeholder="Studio..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-      <div class="dancer-dropdown" id="studio-dropdown"></div>
+  <!-- Studio / Type / Day filters — collapsed by default, toggled via #filter-toggle -->
+  <div class="filter-extra" id="filter-extra">
+  <div class="filter-extra-inner">
+
+    <div class="filter-row" id="studio-row">
+      <span class="filter-label">Studio</span>
+      <div class="search-wrap" id="studio-search-wrap">
+        <span class="search-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1"/><line x1="9" y1="7.5" x2="9" y2="7.51"/><line x1="15" y1="7.5" x2="15" y2="7.51"/><line x1="9" y1="11.5" x2="9" y2="11.51"/><line x1="15" y1="11.5" x2="15" y2="11.51"/><line x1="10" y1="21" x2="10" y2="17"/><line x1="14" y1="21" x2="14" y2="17"/></svg></span>
+        <input class="dancer-input" id="studio-input" type="text" placeholder="Studio..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+        <div class="dancer-dropdown" id="studio-dropdown"></div>
+      </div>
+      <div id="studio-pill-wrap" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;flex:1;min-width:0;"></div>
+      <button class="btn" id="studio-clear-btn" style="display:none;font-size:10px;padding:4px 8px;color:#8878b0;border-color:rgba(255,255,255,0.08);flex-shrink:0;">Clear</button>
     </div>
-    <div id="studio-pill-wrap" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;flex:1;min-width:0;"></div>
-    <button class="btn" id="studio-clear-btn" style="display:none;font-size:10px;padding:4px 8px;color:#8878b0;border-color:rgba(255,255,255,0.08);flex-shrink:0;">Clear</button>
-  </div>
 
-  <!-- Row 4: Category filters -->
-  <div class="filter-row" id="cat-row">
-    <span class="filter-label">Type</span>
-    <button class="btn cat-btn active" data-level="" data-format="" aria-pressed="true">All</button>
-    <button class="btn cat-btn" data-level="" data-format="solo" aria-pressed="false">Solo</button>
-    <button class="btn cat-btn" data-level="" data-format="group" aria-pressed="false">Groups</button>
-    <button class="btn cat-btn" data-level="" data-format="production" aria-pressed="false">Production</button>
-    <button class="btn cat-btn" data-level="petite" data-format="" aria-pressed="false">Petite</button>
-    <button class="btn cat-btn" data-level="junior" data-format="" aria-pressed="false">Junior</button>
-    <button class="btn cat-btn" data-level="teen" data-format="" aria-pressed="false">Teen</button>
-    <button class="btn cat-btn" data-level="senior" data-format="" aria-pressed="false">Senior</button>
-  </div>
+    <div class="filter-row" id="cat-row">
+      <span class="filter-label">Type</span>
+      <button class="btn cat-btn active" data-level="" data-format="" aria-pressed="true">All</button>
+      <button class="btn cat-btn" data-level="" data-format="solo" aria-pressed="false">Solo</button>
+      <button class="btn cat-btn" data-level="" data-format="group" aria-pressed="false">Groups</button>
+      <button class="btn cat-btn" data-level="" data-format="production" aria-pressed="false">Production</button>
+      <button class="btn cat-btn" data-level="petite" data-format="" aria-pressed="false">Petite</button>
+      <button class="btn cat-btn" data-level="junior" data-format="" aria-pressed="false">Junior</button>
+      <button class="btn cat-btn" data-level="teen" data-format="" aria-pressed="false">Teen</button>
+      <button class="btn cat-btn" data-level="senior" data-format="" aria-pressed="false">Senior</button>
+    </div>
 
-  <!-- Row 5: Day filters (remaining buttons injected by schedule-engine.js) -->
-  <div class="filter-row" id="day-filter-row">
-    <span class="filter-label">Day</span>
-    <button class="btn day-btn active" data-day="all" aria-pressed="true">All</button>
+    <!-- Day filters (remaining buttons injected by schedule-engine.js) -->
+    <div class="filter-row" id="day-filter-row">
+      <span class="filter-label">Day</span>
+      <button class="btn day-btn active" data-day="all" aria-pressed="true">All</button>
+    </div>
+
+  </div>
   </div>
 
 </div>

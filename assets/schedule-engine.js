@@ -172,6 +172,32 @@ const studioPillWrap = document.getElementById('studio-pill-wrap');
 const studioClearBtn = document.getElementById('studio-clear-btn');
 const offsetBtns     = document.querySelectorAll('.offset-btn');
 const offsetStatus   = document.getElementById('offset-status');
+const filterToggle   = document.getElementById('filter-toggle');
+const filterExtra    = document.getElementById('filter-extra');
+const filterBadge    = document.getElementById('filter-badge');
+
+if (filterToggle) {
+  filterToggle.innerHTML = 'Filters ' + ICONS.chevron + ' <span class="filter-badge" id="filter-badge" style="display:none">0</span>';
+}
+
+function updateFilterBadge() {
+  const badge = document.getElementById('filter-badge');
+  if (!badge) return;
+  let count = 0;
+  if (activeStudios.length > 0) count++;
+  if (activeLevel || activeFormat) count++;
+  if (activeDay !== 'all') count++;
+  badge.textContent = String(count);
+  badge.style.display = count > 0 ? '' : 'none';
+}
+
+if (filterToggle && filterExtra) {
+  filterToggle.addEventListener('click', () => {
+    const expanded = filterExtra.classList.toggle('expanded');
+    filterToggle.classList.toggle('open', expanded);
+    filterToggle.setAttribute('aria-expanded', String(expanded));
+  });
+}
 
 function setActiveInGroup(nodeList, activeEl) {
   nodeList.forEach(b => {
@@ -227,6 +253,7 @@ function applyFilters() {
 
   renderCallout();
   noResults.style.display = visible === 0 ? 'block' : 'none';
+  updateFilterBadge();
 }
 
 // ── Callout ──

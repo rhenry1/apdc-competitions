@@ -158,9 +158,58 @@ h1 {
 .btn:focus-visible,
 .offset-btn:focus-visible,
 .dancer-input:focus-visible,
-.pill-clear:focus-visible {
+.pill-clear:focus-visible,
+.filter-toggle:focus-visible {
   outline: 2px solid rgba(196,181,253,0.7);
   outline-offset: 2px;
+}
+
+/* ── COLLAPSIBLE FILTERS ── */
+.filter-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.filter-toggle .icon {
+  transition: transform 0.2s ease;
+}
+.filter-toggle.open .icon {
+  transform: rotate(180deg);
+}
+.filter-toggle.open {
+  border-color: var(--accent-quinn);
+  color: var(--accent-quinn);
+}
+
+.filter-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--accent-quinn);
+  color: #1a0f3a;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.filter-extra {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+.filter-extra.expanded { grid-template-rows: 1fr; }
+
+.filter-extra-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  min-height: 0;
 }
 
 /* ── DANCER SEARCH ── */
