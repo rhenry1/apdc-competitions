@@ -135,10 +135,16 @@ for (const { name, path } of PAGES) {
       await page.goto(path);
       await page.waitForLoadState('networkidle');
 
-      const location = await page.evaluate(() => COMPETITION_CONFIG.location);
+      // location is a structured object now; the maps query is derived via
+      // window.APDC.mapsQuery() and the visible label via locationLabel().
+      const { query, label } = await page.evaluate(() => ({
+        query: window.APDC.mapsQuery(window.APDC.config().location),
+        label: window.APDC.locationLabel(window.APDC.config().location),
+      }));
       const href = await page.locator('#header-subtitle a').getAttribute('href');
       expect(href).toContain('maps');
-      expect(decodeURIComponent(href)).toContain(location);
+      expect(decodeURIComponent(href)).toContain(query);
+      await expect(page.locator('#header-subtitle a')).toContainText(label);
     });
 
     test('Share falls back to copying routine details to the clipboard', async ({ page, context }) => {

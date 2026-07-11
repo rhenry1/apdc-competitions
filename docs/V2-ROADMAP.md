@@ -66,12 +66,19 @@ Must not break:
 
 Foundation first (unblocks favorites, search, share-state):
 
-- **P1.0 Data-architecture refactor** — normalize `COMPETITION_CONFIG` (add `id`,
-  `type`, `season`, `startDate`/`endDate`, `location{}`, `livestream{}`,
-  `resources[]`, `lastUpdated`) and give every routine a stable
-  `id` (`<competition-id>-r<routineNumber>`), `dancers[]` as an array, and
-  explicit `division`/`style`/`stage`/`props[]`. Engine consumes the new shape;
-  rendered output unchanged. Pure refactor + tests. **[ship-safe]**
+- **P1.0 Data-architecture refactor** — ✅ DONE (branch `v2-p1.0-data-architecture`).
+  Added a `normalizeRoutine()` layer producing the canonical runtime model
+  (`window.APDC.routines()`); authored per-page `SCHEDULE` format preserved as-is
+  and normalized at load. Expanded `COMPETITION_CONFIG` (`id`, `type`, `season`,
+  `status`, `startDate`/`endDate`, structured `location{venue,city,state,address}`,
+  `livestream{url,password}`, `resources[]`, `lastUpdated`); added `locationLabel()`
+  / `mapsQuery()` helpers (string-or-object tolerant). Rendered output unchanged.
+  **Key decision:** routine `id` is **day-scoped** —
+  `<competition-id>-<dayKey>-r<routineNumber>` — because 7 nationals routine
+  numbers legitimately appear on two days (regular day + Battle Day). This keeps
+  ids unique per scheduled instance while `routineNumber` still links repeats.
+  Favorites (P1.6) will decide whether to key on `id` (per-instance) or
+  `routineNumber` (logical routine). `window.APDC` exposes read-only accessors.
 - **P1.1 Design tokens + reduced-motion** — centralize color/spacing/radius/shadow
   CSS custom properties in one file; begin replacing hardcoded values; add
   `@media (prefers-reduced-motion: reduce)`. Audit tap targets ≥44px + safe-area. **[ship-safe]**
