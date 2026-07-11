@@ -8,10 +8,10 @@
 <meta name="theme-color" content="#06041a">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <title>APDC Competitions</title>
+<link rel="stylesheet" href="assets/pwa.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Inter:wght@200;300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
@@ -142,6 +142,11 @@
   .comp-row.soon::before { opacity: 0.2; }
   .comp-row:not(.soon):active { opacity: 0.75; }
 
+  /* Past/completed events are de-emphasized so the upcoming season stays the focus */
+  .comp-row.completed::before { background: rgba(255,255,255,0.18) !important; opacity: 1; }
+  .comp-row.completed:not(.soon) .comp-type { color: rgba(255,255,255,0.35); }
+  .comp-row.completed .comp-index { color: rgba(255,255,255,0.15); }
+
   .comp-inner {
     display: grid; grid-template-columns: 36px 1fr auto;
     gap: 0 18px; align-items: center;
@@ -171,6 +176,7 @@
     color: #ffffff; line-height: 1.15; margin-bottom: 9px;
   }
   .comp-row.soon .comp-name { color: rgba(255,255,255,0.28); }
+  .comp-row.completed .comp-name { color: rgba(240,235,255,0.7); }
 
   .comp-details {
     display: flex; flex-wrap: wrap; gap: 3px 18px;
@@ -227,218 +233,6 @@
     letter-spacing: 0.14em; color: rgba(255,255,255,0.07);
   }
 
-
-  /* ── INSTALL BUTTON ── */
-  .install-btn-wrap {
-    margin-bottom: 44px;
-  }
-
-  .install-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 0;
-    border: none;
-    background: none;
-    color: rgba(196,181,253,0.45);
-    font-family: 'Inter', sans-serif;
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: color 0.2s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .install-btn::before {
-    content: '';
-    display: block;
-    width: 20px;
-    height: 1px;
-    background: rgba(196,181,253,0.3);
-    transition: width 0.2s, background 0.2s;
-  }
-  .install-btn:hover { color: rgba(196,181,253,0.75); }
-  .install-btn:hover::before { width: 28px; background: rgba(196,181,253,0.5); }
-  .install-btn:active { opacity: 0.6; }
-
-  /* iOS instruction — minimal inline text */
-  .ios-instructions {
-    display: none;
-    margin-top: 20px;
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
-  .ios-instructions.visible {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .ios-step {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    margin-bottom: 10px;
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    font-weight: 300;
-    color: rgba(196,181,253,0.5);
-    line-height: 1.6;
-    letter-spacing: 0.01em;
-  }
-  .ios-step:last-child { margin-bottom: 0; }
-
-  .ios-step-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 8px;
-    color: rgba(253,230,138,0.4);
-    flex-shrink: 0;
-    letter-spacing: 0.05em;
-  }
-
-  .ios-step strong {
-    color: rgba(224,212,255,0.75);
-    font-weight: 500;
-  }
-
-  /* ── INSTALL BANNER ── */
-  .install-banner {
-    position: fixed;
-    bottom: max(24px, env(safe-area-inset-bottom));
-    left: 50%;
-    transform: translateX(-50%) translateY(120px);
-    width: calc(100% - 48px);
-    max-width: 560px;
-    background: #14103a;
-    border: 1px solid rgba(196,181,253,0.25);
-    border-radius: 16px;
-    padding: 18px 18px 18px 20px;
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(196,181,253,0.1);
-    z-index: 999;
-    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
-    opacity: 0;
-  }
-  .install-banner.visible {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-  }
-  .install-banner.hidden { display: none; }
-
-  .banner-icon {
-    font-size: 26px;
-    flex-shrink: 0;
-    line-height: 1;
-    margin-top: 2px;
-  }
-
-  .banner-text { flex: 1; min-width: 0; }
-
-  .banner-title {
-    font-family: 'Tenor Sans', serif;
-    font-size: 15px;
-    font-weight: 400;
-    color: #ffffff;
-    letter-spacing: 0.02em;
-    margin-bottom: 4px;
-  }
-
-  .banner-body {
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    font-weight: 300;
-    color: rgba(196,181,253,0.7);
-    line-height: 1.5;
-  }
-  .banner-body strong { color: #c4b5fd; font-weight: 500; }
-
-  .banner-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  .banner-btn-install {
-    padding: 7px 16px;
-    border-radius: 20px;
-    border: none;
-    background: linear-gradient(135deg, #7c3aed, #6d28d9);
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    letter-spacing: 0.02em;
-    transition: opacity 0.15s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .banner-btn-install:hover { opacity: 0.85; }
-
-  .banner-btn-dismiss {
-    padding: 7px 12px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: transparent;
-    color: rgba(255,255,255,0.3);
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    cursor: pointer;
-    transition: color 0.15s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .banner-btn-dismiss:hover { color: rgba(255,255,255,0.5); }
-
-  .banner-close {
-    flex-shrink: 0;
-    background: none;
-    border: none;
-    color: rgba(255,255,255,0.25);
-    font-size: 18px;
-    line-height: 1;
-    cursor: pointer;
-    padding: 0 0 0 4px;
-    -webkit-tap-highlight-color: transparent;
-    margin-top: -2px;
-  }
-  .banner-close:hover { color: rgba(255,255,255,0.5); }
-
-
-  /* ── PWA CLOSE BUTTON (standalone only) ── */
-  .pwa-close {
-    display: none;
-    position: fixed;
-    top: max(12px, env(safe-area-inset-top));
-    right: 14px;
-    z-index: 1000;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid rgba(196,181,253,0.25);
-    background: rgba(20,16,58,0.85);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    color: rgba(196,181,253,0.8);
-    font-size: 16px;
-    line-height: 1;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    transition: background 0.15s, color 0.15s;
-  }
-  .pwa-close:hover, .pwa-close:active {
-    background: rgba(30,24,80,0.95);
-    color: #e9d5ff;
-  }
-  body.standalone .pwa-close { display: flex; }
-
-
-
   /* ── COMPLETED STATE ── */
   .completed-badge {
     display: inline-flex;
@@ -449,24 +243,21 @@
     font-weight: 500;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: rgba(253,230,138,0.7);
+    color: rgba(255,255,255,0.4);
     white-space: nowrap;
   }
   .completed-check {
     width: 14px; height: 14px;
     border-radius: 50%;
-    border: 1px solid rgba(253,230,138,0.4);
+    border: 1px solid rgba(255,255,255,0.3);
     display: flex; align-items: center; justify-content: center;
     font-size: 8px;
-    color: rgba(253,230,138,0.8);
+    color: rgba(255,255,255,0.55);
   }
-  .comp-row.completed .comp-name { color: rgba(240,235,255,0.75); }
-  .comp-row.completed::before { opacity: 0.55; }
-
 </style>
 </head>
 <body style="background:#06041a;">
-<button class="pwa-close" id="pwa-close" aria-label="Close">✕</button>
+<button class="pwa-close" id="pwa-close" aria-label="Close"></button>
 
 <div class="bg"></div>
 <div class="wrap">
@@ -483,11 +274,11 @@
     <div class="ios-instructions" id="ios-instructions">
       <div class="ios-step">
         <div class="ios-step-num">1</div>
-        <div>Tap the <strong>share icon</strong> <span style="display:inline-block;border:1px solid rgba(224,212,255,0.5);border-radius:3px;padding:0 4px;font-size:10px;line-height:1.6;vertical-align:middle;color:rgba(224,212,255,0.7);">↑</span> at the bottom of Safari</div>
+        <div id="install-step-1-text">Tap the <strong>share icon</strong> at the bottom of Safari</div>
       </div>
       <div class="ios-step">
         <div class="ios-step-num">2</div>
-        <div>Scroll down and tap <strong>Add to Home Screen</strong></div>
+        <div id="install-step-2-text">Scroll down and tap <strong>Add to Home Screen</strong></div>
       </div>
       <div class="ios-step">
         <div class="ios-step-num">3</div>
@@ -498,37 +289,7 @@
 
   </div>
 
-  <!-- ── 2025–2026 ── -->
-  <div class="season-block">
-    <div class="season-label">
-      <span class="season-year">2025 – 2026 Season</span>
-      <div class="season-rule"></div>
-    </div>
-
-    <a class="comp-row nationals-row completed" href="nationals-2026/">
-      <div class="comp-inner">
-        <div class="comp-index">01</div>
-        <div class="comp-body">
-          <div class="comp-type">Nationals</div>
-          <div class="comp-name">Turn It Up Nationals 2026</div>
-          <div class="comp-details">
-            <span>Long Branch, NJ</span>
-            <span>June 28 – July 3</span>
-          </div>
-          <div class="completed-badge" style="margin-top:12px;">
-            <span class="completed-check">✓</span> Completed
-          </div>
-        </div>
-        <div class="comp-right">
-          <div class="arrow">›</div>
-        </div>
-      </div>
-    </a>
-  </div>
-
-  <div class="season-gap"></div>
-
-  <!-- ── 2026–2027 ── -->
+  <!-- ── 2026–2027 (upcoming season, shown first) ── -->
   <div class="season-block">
     <div class="season-label">
       <span class="season-year">2026 – 2027 Season</span>
@@ -537,7 +298,7 @@
 
     <div class="comp-row regional-row soon">
       <div class="comp-inner">
-        <div class="comp-index">02</div>
+        <div class="comp-index">01</div>
         <div class="comp-body">
           <div class="comp-type">Regional</div>
           <div class="comp-name">Regional Competition 1</div>
@@ -549,7 +310,7 @@
 
     <div class="comp-row regional-row soon">
       <div class="comp-inner">
-        <div class="comp-index">03</div>
+        <div class="comp-index">02</div>
         <div class="comp-body">
           <div class="comp-type">Regional</div>
           <div class="comp-name">Regional Competition 2</div>
@@ -561,7 +322,7 @@
 
     <div class="comp-row regional-row soon">
       <div class="comp-inner">
-        <div class="comp-index">04</div>
+        <div class="comp-index">03</div>
         <div class="comp-body">
           <div class="comp-type">Regional</div>
           <div class="comp-name">Regional Competition 3</div>
@@ -573,7 +334,7 @@
 
     <div class="comp-row nationals-row soon">
       <div class="comp-inner">
-        <div class="comp-index">05</div>
+        <div class="comp-index">04</div>
         <div class="comp-body">
           <div class="comp-type">Nationals</div>
           <div class="comp-name">Nationals 2027</div>
@@ -585,92 +346,68 @@
 
   </div>
 
+  <div class="season-gap"></div>
+
+  <!-- ── 2025–2026 (past season) ── -->
+  <div class="season-block">
+    <div class="season-label">
+      <span class="season-year">2025 – 2026 Season · Past</span>
+      <div class="season-rule"></div>
+    </div>
+
+    <a class="comp-row nationals-row completed" href="nationals-2026/">
+      <div class="comp-inner">
+        <div class="comp-index">00</div>
+        <div class="comp-body">
+          <div class="comp-type">Nationals</div>
+          <div class="comp-name">Turn It Up Nationals 2026</div>
+          <div class="comp-details">
+            <span>Long Branch, NJ</span>
+            <span>June 28 – July 3</span>
+          </div>
+          <div class="completed-badge" style="margin-top:12px;">
+            <span class="completed-check" id="completed-check"></span> Completed
+          </div>
+        </div>
+        <div class="comp-right">
+          <div class="arrow">›</div>
+        </div>
+      </div>
+    </a>
+  </div>
+
   <footer>rhenry1.github.io / apdc-competitions</footer>
 </div>
 
+<script src="assets/icons.js"></script>
+<script src="assets/pwa.js"></script>
 <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () =>
-      navigator.serviceWorker.register('/apdc-competitions/service-worker.js').catch(() => {})
-    );
-  }
-
-  const DISMISSED = 'apdc-install-dismissed';
-  let deferredPrompt = null;
-
-  function isIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream; }
-  function isStandalone() {
-    return ('standalone' in navigator && navigator.standalone) ||
-           window.matchMedia('(display-mode: standalone)').matches;
-  }
-
-  // ── Banner ──
-  function getBanner() { return document.getElementById('install-banner'); }
-  function showBanner() {
-    const b = getBanner();
-    b.classList.remove('hidden');
-    setTimeout(() => b.classList.add('visible'), 50);
-  }
-  function dismiss() {
-    const b = getBanner();
-    b.classList.remove('visible');
-    setTimeout(() => b.classList.add('hidden'), 400);
-    localStorage.setItem(DISMISSED, '1');
-  }
-
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredPrompt = e;
-  });
+  document.getElementById('completed-check').innerHTML = ICONS.check;
+  document.getElementById('install-step-1-text').innerHTML =
+    'Tap the <strong>share icon</strong> ' + ICONS.share + ' at the bottom of Safari';
 
   window.addEventListener('DOMContentLoaded', () => {
-    const banner        = document.getElementById('install-banner');
-    const bannerBody    = document.getElementById('banner-body');
-    const bannerInstall = document.getElementById('banner-install');
-    const btnWrap       = document.getElementById('install-btn-wrap');
-    const btnMain       = document.getElementById('install-btn-main');
-    const iosPanel      = document.getElementById('ios-instructions');
+    const btnWrap  = document.getElementById('install-btn-wrap');
+    const btnMain  = document.getElementById('install-btn-main');
+    const iosPanel = document.getElementById('ios-instructions');
+    const step1    = document.getElementById('install-step-1-text');
+    const step2    = document.getElementById('install-step-2-text');
 
-    document.getElementById('banner-dismiss').addEventListener('click', dismiss);
-    document.getElementById('banner-close').addEventListener('click', dismiss);
-    document.getElementById('banner-install').addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        deferredPrompt = null;
-        if (outcome === 'accepted') { dismiss(); btnWrap.style.display = 'none'; }
-      }
-    });
+    if (APDCPwa.isStandalone()) { btnWrap.style.display = 'none'; return; }
 
-    // Detect Chrome on iOS vs Safari
-    const isChrome = /CriOS/i.test(navigator.userAgent);
-    const shareIcon = '<span style="display:inline-block;border:1px solid rgba(224,212,255,0.4);border-radius:3px;padding:0 5px;font-size:10px;line-height:1.7;vertical-align:middle;color:rgba(224,212,255,0.7);">&#8679;</span>';
-
-    const step1 = document.getElementById('install-step-1-text');
-    const step2 = document.getElementById('install-step-2-text');
-    if (step1 && step2) {
-      if (isChrome) {
-        step1.innerHTML = 'Tap the <strong>three dots</strong> menu in the top-right corner of Chrome';
-        step2.innerHTML = 'Tap <strong>Add to Home Screen</strong>';
-      } else {
-        step1.innerHTML = 'Tap the share icon ' + shareIcon + ' at the <strong>bottom</strong> of Safari';
-        step2.innerHTML = 'Scroll down and tap <strong>Add to Home Screen</strong>';
-      }
+    if (APDCPwa.isIOS() && APDCPwa.isChrome()) {
+      step1.innerHTML = 'Tap the <strong>three dots</strong> menu in the top-right corner of Chrome';
+      step2.innerHTML = 'Tap <strong>Add to Home Screen</strong>';
     }
 
-    // Hide install button if already standalone
-    if (isStandalone()) { btnWrap.style.display = 'none'; return; }
-
-    // Wire main button
     btnMain.addEventListener('click', async () => {
+      const deferredPrompt = APDCPwa.getDeferredPrompt();
       if (deferredPrompt) {
-        // Android — native prompt
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        deferredPrompt = null;
-        if (outcome === 'accepted') { btnWrap.style.display = 'none'; dismiss(); }
-      } else if (isIOS()) {
-        // iOS — toggle instruction panel
+        APDCPwa.clearDeferredPrompt();
+        if (outcome === 'accepted') { btnWrap.style.display = 'none'; APDCPwa.markDismissed(); }
+      } else if (APDCPwa.isIOS()) {
         const open = !iosPanel.classList.contains('visible');
         if (open) {
           iosPanel.style.display = 'block';
@@ -679,47 +416,18 @@
         } else {
           iosPanel.classList.remove('visible');
           setTimeout(() => { iosPanel.style.display = 'none'; }, 300);
-          btnMain.innerHTML = 'Add to Home Screen';
+          btnMain.textContent = 'Add to Home Screen';
         }
       }
     });
 
-    // iOS: also show slide-up banner after delay
-    if (isIOS() && localStorage.getItem(DISMISSED) !== '1') {
-      bannerBody.innerHTML = 'Tap the share icon <span style="display:inline-block;border:1px solid rgba(196,181,253,0.5);border-radius:3px;padding:0 4px;font-size:10px;line-height:1.6;vertical-align:middle;">↑</span> at the bottom of Safari, then <strong>Add to Home Screen</strong>.';
-      bannerInstall.style.display = 'none';
-      setTimeout(showBanner, 2500);
-    }
+    APDCPwa.initServiceWorker('service-worker.js');
   });
-
-  // ── PWA close button (standalone launch only) ──
-  (function() {
-    function isStandalone() {
-      return ('standalone' in navigator && navigator.standalone) ||
-             window.matchMedia('(display-mode: standalone)').matches;
-    }
-    if (isStandalone()) {
-      document.body.classList.add('standalone');
-    }
-    var closeBtn = document.getElementById('pwa-close');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function() {
-        // Try to close; if blocked, navigate back to hub
-        window.close();
-        // Fallback — go to hub landing (or blank)
-        setTimeout(function() {
-          window.location.href = 'about:blank';
-        }, 100);
-      });
-    }
-  })();
-
 </script>
-
 
 <!-- ── INSTALL BANNER ── -->
 <div class="install-banner hidden" id="install-banner">
-  <div class="banner-icon">💃</div>
+  <div class="banner-icon" id="banner-icon"></div>
   <div class="banner-text">
     <div class="banner-title">Add to Home Screen</div>
     <div class="banner-body" id="banner-body"></div>
@@ -728,7 +436,7 @@
       <button class="banner-btn-dismiss" id="banner-dismiss">Maybe later</button>
     </div>
   </div>
-  <button class="banner-close" id="banner-close" aria-label="Close">✕</button>
+  <button class="banner-close" id="banner-close" aria-label="Close"></button>
 </div>
 
 </body>
