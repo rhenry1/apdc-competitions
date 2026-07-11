@@ -462,18 +462,20 @@ body::after {
 /* ── ROUTINE CARD ── */
 .routine-card {
   display: grid;
-  grid-template-columns: 58px 1fr auto;
-  gap: 0 12px;
+  grid-template-columns: 62px 1fr auto;
+  gap: 2px var(--space-4);
   align-items: start;
-  padding: 11px 12px 11px 16px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  margin-bottom: 6px;
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  margin-bottom: var(--space-2);
   position: relative;
   overflow: hidden;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
 }
+.routine-card:hover { box-shadow: var(--shadow-md); }
 
 .routine-card::before {
   content: '';
@@ -494,26 +496,28 @@ body::after {
 
 .card-time {
   font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  font-weight: 500;
-  color: #9d8ec4;
-  padding-top: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--purple-light);
+  padding-top: 1px;
   white-space: nowrap;
   display: flex;
   flex-direction: column;
   gap: 2px;
-  line-height: 1.3;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
 }
 
 .card-main { min-width: 0; }
 
 .card-title {
   font-family: 'Inter', sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  color: #ffffff;
-  margin-bottom: 4px;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
   line-height: 1.3;
+  letter-spacing: -0.01em;
 }
 
 .quinn-star { color: var(--accent-quinn); margin-left: 3px; }
@@ -522,19 +526,20 @@ body::after {
 .card-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
-  margin-bottom: 4px;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
 }
 
 .tag {
   display: inline-flex;
   align-items: center;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
   font-size: 10px;
   font-weight: 500;
-  background: rgba(255,255,255,0.08);
-  color: #c4b5fd;
+  letter-spacing: 0.01em;
+  background: rgba(255,255,255,0.06);
+  color: var(--purple-light);
   white-space: nowrap;
 }
 
@@ -550,39 +555,39 @@ body::after {
 .tag.stage-2            { background: rgba(103,232,249,0.15); color: #a5f3fc; }
 
 .card-dancers {
-  font-size: 11px;
-  color: #a89cc8;
+  font-size: 12px;
+  color: var(--color-text-muted);
   line-height: 1.4;
 }
 
 /* ── CARD ACTIONS (share / add to calendar) ── */
 .card-actions {
   display: flex;
-  gap: 4px;
-  margin-top: 6px;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
 }
 
 .card-action-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 34px;
+  height: 34px;
   padding: 0;
-  border-radius: 6px;
-  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
   background: rgba(255,255,255,0.03);
-  color: #7a6fa0;
-  font-size: 12px;
+  color: var(--color-text-subtle);
+  font-size: 15px;
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s, background 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
 .card-action-btn:hover,
 .card-action-btn:focus-visible {
-  color: var(--accent-quinn);
-  border-color: var(--accent-quinn);
-  background: rgba(167,139,250,0.1);
+  color: var(--purple-light);
+  border-color: var(--color-border-strong);
+  background: rgba(167,139,250,0.12);
   outline: none;
 }
 
@@ -622,18 +627,70 @@ body::after {
 
 .entry-num {
   font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  font-weight: 600;
-  color: #c4b5fd;
-  letter-spacing: 0.02em;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-subtle);
+  letter-spacing: 0.06em;
+  margin-bottom: 3px;
 }
 
 .age-badge {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
-  color: #9d8ec4;
+  color: var(--color-text-muted);
   text-align: right;
 }
+
+/* ── DENSITY TOGGLE (comfortable / compact) ── */
+.schedule-tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.density-toggle {
+  display: inline-flex;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: rgba(255,255,255,0.03);
+}
+.density-toggle button {
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 7px 14px;
+  min-height: 34px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.density-toggle button.active {
+  background: rgba(167,139,250,0.16);
+  color: var(--purple-light);
+}
+.density-toggle button:focus-visible {
+  outline: 2px solid rgba(196,181,253,0.7);
+  outline-offset: -2px;
+}
+
+/* ── COMPACT VIEW ── denser scan; hides tags + per-card actions ── */
+body.compact .routine-card {
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
+  margin-bottom: var(--space-1);
+  box-shadow: none;
+}
+body.compact .card-meta,
+body.compact .card-actions { display: none; }
+body.compact .card-title { font-size: 14px; margin-bottom: 2px; }
+body.compact .entry-num { margin-bottom: 1px; }
+body.compact .card-dancers { font-size: 11px; }
 
 /* ── META ROWS (awards / breaks) ── */
 .meta-row {

@@ -92,9 +92,16 @@ Foundation first (unblocks favorites, search, share-state):
   it's folded into P1.2 (card redesign) / P1.3 (toolbar) rather than forced here.
   Safe-area insets are already handled via `env()` in existing CSS.
   **TODO (Phase 3):** add `tokens.css` to the service-worker precache list.
-- **P1.2 Schedule card redesign** — clear hierarchy (time → name → number →
-  dancer → type/style → stage → studio → props → awards); session grouping;
-  sticky day headers; compact-view toggle persisted locally.
+- **P1.2 Schedule card redesign** — ✅ DONE (branch `v2-p1.2-card-redesign`).
+  Token-based card refresh: time as the scan anchor, routine name as hero with
+  entry # as a muted kicker, pill tags, 34px action buttons, softer shadows/radii.
+  Added a persisted Comfortable/Compact density toggle (Compact hides tags +
+  per-card actions for dense scanning). DOM/classes unchanged so prior tests hold;
+  added `card-view.spec.js`. Kept the existing category/meta rows for session
+  grouping (data only has explicit sessions on Battle Day).
+  **Deferred:** sticky day headers → P1.3 (their sticky offset depends on the
+  consolidated toolbar height). Desktop wide-card sparseness → left as-is per
+  user (mobile-first is the priority; not a concern for them).
 - **P1.3 Sticky toolbar** — consolidate search + favorites toggle + filter button
   (with active-filter count) + day selector + offset + clear-all into one compact
   sticky bar.
