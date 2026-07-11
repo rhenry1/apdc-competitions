@@ -186,6 +186,15 @@
   .comp-row.nationals-row:not(.soon) .comp-details { color: rgba(255,255,255,0.45); }
   .comp-row.soon .comp-details { color: rgba(255,255,255,0.1); }
 
+  .map-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: none; border: none; padding: 0; margin: 0;
+    font: inherit; color: inherit; letter-spacing: inherit;
+    cursor: pointer; text-decoration: none;
+    transition: color 0.15s;
+  }
+  .map-link:hover, .map-link:focus-visible { color: #c4b5fd; text-decoration: underline; }
+
   .comp-right {
     display: flex; flex-direction: column;
     align-items: flex-end; gap: 10px; flex-shrink: 0;
@@ -360,7 +369,7 @@
           <div class="comp-type">Nationals</div>
           <div class="comp-name">Turn It Up Nationals 2026</div>
           <div class="comp-details">
-            <span>Long Branch, NJ</span>
+            <button type="button" class="map-link" data-address="Long Branch, NJ"></button>
             <span>June 28 – July 3</span>
           </div>
           <div class="completed-badge" style="margin-top:12px;">
@@ -381,6 +390,16 @@
 <script src="assets/pwa.js"></script>
 <script>
   document.getElementById('completed-check').innerHTML = ICONS.check;
+
+  document.querySelectorAll('.map-link').forEach(btn => {
+    const address = btn.dataset.address;
+    btn.innerHTML = ICONS.pin + address;
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(address), '_blank', 'noopener');
+    });
+  });
 
   window.addEventListener('DOMContentLoaded', () => {
     const btnWrap  = document.getElementById('install-btn-wrap');
