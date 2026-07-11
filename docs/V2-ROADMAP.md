@@ -79,9 +79,19 @@ Foundation first (unblocks favorites, search, share-state):
   ids unique per scheduled instance while `routineNumber` still links repeats.
   Favorites (P1.6) will decide whether to key on `id` (per-instance) or
   `routineNumber` (logical routine). `window.APDC` exposes read-only accessors.
-- **P1.1 Design tokens + reduced-motion** — centralize color/spacing/radius/shadow
-  CSS custom properties in one file; begin replacing hardcoded values; add
-  `@media (prefers-reduced-motion: reduce)`. Audit tap targets ≥44px + safe-area. **[ship-safe]**
+- **P1.1 Design tokens + reduced-motion** — ✅ DONE (branch `v2-p1.1-design-tokens`).
+  Added `assets/tokens.css` (loaded first on all 3 pages): brand purple scale,
+  gold accent, surfaces, text, borders, status colors, radii, 4px spacing scale,
+  subtle shadows, `--tap-min: 44px`. Values match current palette → no visual
+  change. Began adoption by aliasing `schedule-theme` `--bg/--card/--border/--text/
+  --muted/--stage1/--gold` to the tokens. Added site-wide
+  `@media (prefers-reduced-motion: reduce)` that collapses animations/transitions
+  while letting animate-in elements settle visible. Tests: `design-system.spec.js`.
+  **Deferred:** the small `.card-action-btn` (24px) and dense filter/offset
+  buttons are below the 44px tap-target target; enforcing that changes layout, so
+  it's folded into P1.2 (card redesign) / P1.3 (toolbar) rather than forced here.
+  Safe-area insets are already handled via `env()` in existing CSS.
+  **TODO (Phase 3):** add `tokens.css` to the service-worker precache list.
 - **P1.2 Schedule card redesign** — clear hierarchy (time → name → number →
   dancer → type/style → stage → studio → props → awards); session grouping;
   sticky day headers; compact-view toggle persisted locally.

@@ -5,23 +5,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Inter:wght@200;300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg: #06041a;
-  --card: #160d35;
-  --card-elevated: #1e1245;
-  --border: rgba(255,255,255,0.07);
-  --border-strong: rgba(167,139,250,0.4);
-  --text: #ffffff;
+  /* Schedule-specific aliases now source from the shared design tokens
+     (assets/tokens.css). Values are unchanged — this begins the migration
+     off scattered literals without altering the rendered result. */
+  --bg: var(--color-bg);
+  --card: var(--color-surface);
+  --card-elevated: var(--color-surface-2);
+  --border: var(--color-border);
+  --border-strong: var(--color-border-strong);
+  --text: var(--color-text);
   --text-secondary: #e2d9f3;
-  --muted: #a89cc8;
+  --muted: var(--color-text-muted);
   --accent-quinn: #d8b4fe;
   --accent-quinn-dim: rgba(216,180,254,0.15);
   --accent-props: #f9a8d4;
   --accent-props-dim: rgba(249,168,212,0.12);
   --accent-both: #a5b4fc;
   --accent-both-dim: rgba(165,180,252,0.15);
-  --stage1: #c4b5fd;
+  --stage1: var(--purple-light);
   --stage2: #67e8f9;
-  --gold: #fde68a;
+  --gold: var(--accent);
   --gold-dim: rgba(253,230,138,0.12);
   --card-quinn-bg: #231050;
   --card-quinn-border: rgba(216,180,254,0.35);

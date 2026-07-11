@@ -1,0 +1,75 @@
+/* APDC — centralized design tokens (V2 P1.1).
+   Single source of truth for color, spacing, radius, and shadow values.
+   Loaded first on every page so downstream stylesheets can reference these.
+   Values here match the palette already in use, so introducing the tokens is
+   a no-op visually; components adopt them incrementally in later phases. */
+
+:root {
+  /* ── Brand purple ── */
+  --purple:          #7c3aed;   /* primary — buttons, key accents */
+  --purple-dark:     #4c1d95;   /* deep gradient anchor */
+  --purple-mid:      #6d28d9;
+  --purple-light:    #c4b5fd;   /* light lilac text/among stages */
+  --purple-soft:     #a78bfa;
+
+  /* ── Accent (APDC gold) ── */
+  --accent:          #fde68a;
+  --accent-dim:      rgba(253,230,138,0.12);
+
+  /* ── Surfaces ── */
+  --color-bg:        #06041a;   /* app background */
+  --color-surface:   #160d35;   /* card / elevated surface */
+  --color-surface-2: #1e1245;   /* raised surface */
+
+  /* ── Text ── */
+  --color-text:        #ffffff;
+  --color-text-muted:  #a89cc8;
+  --color-text-subtle: #7a6fa0;
+
+  /* ── Lines ── */
+  --color-border:        rgba(255,255,255,0.07);
+  --color-border-strong: rgba(167,139,250,0.4);
+
+  /* ── Status ── */
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-error:   #f43f5e;
+
+  /* ── Radii ── */
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-pill: 999px;
+
+  /* ── Spacing scale (4px base) ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* ── Shadows (subtle, per V2 design direction) ── */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.35);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.5);
+
+  /* ── Minimum accessible tap target ── */
+  --tap-min: 44px;
+}
+
+/* Respect users who ask for reduced motion: neutralize animations and
+   transitions site-wide while still letting animate-in elements settle on
+   their final (visible) state. Applies to every page that loads this file. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;          /* neutralize staggered entrance delays so nothing stays hidden */
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+}
