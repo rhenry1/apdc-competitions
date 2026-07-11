@@ -18,19 +18,67 @@ let allRoutines = [];
 let allDancers = [];
 let allStudios = [];
 
-function collectRoutines() {
-  const out = [];
-  COMPETITION_CONFIG.dayButtons.forEach(({ key }) => {
-    (SCHEDULE[key] || []).forEach(item => {
-      if (item.type === 'routine') out.push({ ...item, day: key });
-    });
-  });
-  return out;
+function slugify(s) {
+  return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+// Human-readable venue label, e.g. "Long Branch, NJ" or "Venue · City, ST".
+// Accepts the new structured location object or a legacy plain string.
+function locationLabel(loc) {
+  if (!loc) return '';
+  if (typeof loc === 'string') return loc;
+  const cityState = [loc.city, loc.state].filter(Boolean).join(', ');
+  return [loc.venue, cityState].filter(Boolean).join(' · ');
+}
+
+// Best query string for a maps search — prefers a full street address.
+function mapsQuery(loc) {
+  if (!loc) return '';
+  if (typeof loc === 'string') return loc;
+  return loc.address || [loc.venue, loc.city, loc.state].filter(Boolean).join(' ') || locationLabel(loc);
+}
+
+// Convert a raw authored routine (compact per-page format) into the canonical
+// runtime model used across the app. The authored SCHEDULE data is preserved
+// as-is; normalization happens once at load. `id` is stable and derived from the
+// competition id + routine number (never array position), so favorites and
+// shareable state can reference a routine reliably across sessions.
+function normalizeRoutine(raw, dayKey, dayConf, index) {
+  const compId = COMPETITION_CONFIG.id || slugify(COMPETITION_CONFIG.name);
+  const routineNumber = raw.entry || '';
+  // Day-scoped so a routine number scheduled on two days (e.g. a regular-day
+  // performance and a Battle-Day repeat) yields two distinct instance ids;
+  // `routineNumber` still links them. Index is only a last-resort tiebreaker.
+  const idSuffix = routineNumber ? 'r' + routineNumber : 'i' + index;
+  const dancersText = raw.dancers || '';
+  const dancers = dancersText.split(',').map(s => s.trim()).filter(Boolean);
+  return {
+    id: compId + '-' + dayKey + '-' + idSuffix,
+    day: dayKey,
+    routineNumber,
+    routineName: raw.title || '',
+    dancers,                                   // array — for favorites / search
+    dancersText,                               // original joined string — for display + substring filters
+    studio: raw.studio || '',
+    scheduledDate: (dayConf && dayConf.date) || '',
+    scheduledTime: raw.time || '',             // display form, e.g. "8:45 am"
+    type: raw.format || '',                    // solo | group | production
+    style: raw.style || '',
+    division: raw.level || '',                 // mini | petite | junior | teen | senior
+    stage: raw.stage || '',
+    props: !!raw.props,
+    isApdc: !!raw.isApdc,
+    spotlight: !!raw.spotlight,
+    formatTag: raw.formatTag || '',
+    ageLabel: raw.ageLabel || '',
+    awardsSessionId: raw.awardsSessionId || null,
+    notes: raw.notes || ''
+  };
 }
 
 function buildDancerList() {
   const set = new Set();
-  allRoutines.forEach(r => r.dancers.split(',').map(s => s.trim()).filter(Boolean).forEach(n => set.add(n)));
+  allRoutines.forEach(r => r.dancers.forEach(n => set.add(n)));
   allDancers = [...set].sort();
 }
 
@@ -48,11 +96,12 @@ function renderRoutineCard(r, dayKey, dayConf) {
   const styleClass = STYLE_CLASS[r.style] || '';
   const card = document.createElement('div');
   card.className = `routine-card ${cardClass}`;
+  card.dataset.routineId = r.id;
   card.dataset.quinn   = String(r.spotlight);
   card.dataset.props   = String(r.props);
-  card.dataset.dancers = r.dancers;
-  card.dataset.level   = r.level;
-  card.dataset.format  = r.format;
+  card.dataset.dancers = r.dancersText;
+  card.dataset.level   = r.division;
+  card.dataset.format  = r.type;
   card.dataset.studio  = r.studio;
   card.dataset.day     = dayKey;
 
@@ -61,17 +110,17 @@ function renderRoutineCard(r, dayKey, dayConf) {
   const fmtTag    = r.formatTag ? `<span class="tag">${r.formatTag}</span>` : '';
   const propsIcon = r.props ? ` <span class="props-icon">${ICONS.props}</span>` : '';
   const apdcBadge = r.isApdc ? '<span class="apdc-badge">APDC</span>' : '';
-  const entryNum  = r.entry ? `<div class="entry-num">#${r.entry}</div>` : '';
+  const entryNum  = r.routineNumber ? `<div class="entry-num">#${r.routineNumber}</div>` : '';
 
   card.innerHTML = `
-    <div class="card-time" data-orig-time="${r.time}">${r.time}</div>
+    <div class="card-time" data-orig-time="${r.scheduledTime}">${r.scheduledTime}</div>
     <div class="card-main">
-      ${entryNum}<div class="card-title">${r.title}${propsIcon}${apdcBadge}</div>
+      ${entryNum}<div class="card-title">${r.routineName}${propsIcon}${apdcBadge}</div>
       <div class="card-meta">${stageTag}${styleTag}${fmtTag}</div>
-      <div class="card-dancers">${r.dancers}</div>
+      <div class="card-dancers">${r.dancersText}</div>
       <div class="card-actions">
-        <button class="card-action-btn" type="button" title="Share this routine" aria-label="Share ${r.title}">${ICONS.share}</button>
-        <button class="card-action-btn" type="button" title="Add to calendar" aria-label="Add ${r.title} to calendar">${ICONS.calendar}</button>
+        <button class="card-action-btn" type="button" title="Share this routine" aria-label="Share ${r.routineName}">${ICONS.share}</button>
+        <button class="card-action-btn" type="button" title="Add to calendar" aria-label="Add ${r.routineName} to calendar">${ICONS.calendar}</button>
       </div>
     </div>
     <div class="card-right"><span class="age-badge">${r.ageLabel}</span></div>
@@ -101,13 +150,13 @@ function showToast(message) {
 }
 
 async function shareRoutine(r, dayConf) {
-  const text = `${r.title} — ${dayConf.title || ''} at ${r.time}` +
+  const text = `${r.routineName} — ${dayConf.title || ''} at ${r.scheduledTime}` +
     (r.stage ? ` (Stage ${r.stage})` : '') +
-    (r.dancers ? `\n${r.dancers}` : '') +
+    (r.dancersText ? `\n${r.dancersText}` : '') +
     `\n${COMPETITION_CONFIG.name}`;
 
   if (navigator.share) {
-    try { await navigator.share({ title: r.title, text }); } catch (e) { /* user cancelled */ }
+    try { await navigator.share({ title: r.routineName, text }); } catch (e) { /* user cancelled */ }
     return;
   }
   try {
@@ -128,18 +177,20 @@ function icsDateTime(date) {
 }
 
 function downloadICS(r, dayConf) {
-  if (!dayConf || !dayConf.date) { showToast('Date unavailable for this routine'); return; }
+  const scheduledDate = r.scheduledDate || (dayConf && dayConf.date);
+  if (!scheduledDate) { showToast('Date unavailable for this routine'); return; }
 
-  const [timePart, ampm] = r.time.trim().split(' ');
+  const [timePart, ampm] = r.scheduledTime.trim().split(' ');
   let [hour, minute] = timePart.split(':').map(Number);
   if (ampm === 'pm' && hour !== 12) hour += 12;
   if (ampm === 'am' && hour === 12) hour = 0;
 
-  const [y, mo, d] = dayConf.date.split('-').map(Number);
+  const [y, mo, d] = scheduledDate.split('-').map(Number);
   const start = new Date(y, mo - 1, d, hour, minute);
   const end = new Date(start.getTime() + 15 * 60000); // short reminder block — routines run just a few minutes
 
-  const description = [r.dancers, r.formatTag, r.stage ? `Stage ${r.stage}` : '', 'Arrive a few minutes early — routines run quickly.']
+  const description = [r.dancersText, r.formatTag, r.stage ? `Stage ${r.stage}` : '',
+    'Scheduled time — competition times may change. Arrive a few minutes early.']
     .filter(Boolean).join('\n');
 
   const ics = [
@@ -147,19 +198,19 @@ function downloadICS(r, dayConf) {
     'VERSION:2.0',
     'PRODID:-//APDC Competitions//EN',
     'BEGIN:VEVENT',
-    `UID:${r.entry || Math.random().toString(36).slice(2)}-${dayConf.date}@apdc-competitions`,
+    `UID:${r.id}@apdc-competitions`,
     `DTSTART:${icsDateTime(start)}`,
     `DTEND:${icsDateTime(end)}`,
-    `SUMMARY:${icsEscape(r.title + (r.entry ? ` (#${r.entry})` : '') + ' — ' + COMPETITION_CONFIG.name)}`,
+    `SUMMARY:${icsEscape(r.routineName + (r.routineNumber ? ` (#${r.routineNumber})` : '') + ' — ' + COMPETITION_CONFIG.name)}`,
     `DESCRIPTION:${icsEscape(description)}`,
-    `LOCATION:${icsEscape(COMPETITION_CONFIG.location)}`,
+    `LOCATION:${icsEscape(locationLabel(COMPETITION_CONFIG.location))}`,
     'END:VEVENT',
     'END:VCALENDAR'
   ].join('\r\n');
 
   const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
   const url = URL.createObjectURL(blob);
-  const filename = `${r.entry || 'routine'}-${r.title}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) + '.ics';
+  const filename = `${r.routineNumber || 'routine'}-${r.routineName}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) + '.ics';
 
   const a = document.createElement('a');
   a.href = url;
@@ -171,9 +222,13 @@ function downloadICS(r, dayConf) {
 }
 
 function buildSchedule() {
+  allRoutines = [];
   document.getElementById('header-title').textContent = COMPETITION_CONFIG.name;
-  document.getElementById('header-subtitle').innerHTML =
-    `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(COMPETITION_CONFIG.location)}" target="_blank" rel="noopener noreferrer">${ICONS.pin}${COMPETITION_CONFIG.location}</a> &middot; ${COMPETITION_CONFIG.dates}`;
+  const locLabel = locationLabel(COMPETITION_CONFIG.location);
+  const locHtml = locLabel
+    ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery(COMPETITION_CONFIG.location))}" target="_blank" rel="noopener noreferrer">${ICONS.pin}${locLabel}</a> &middot; `
+    : '';
+  document.getElementById('header-subtitle').innerHTML = locHtml + (COMPETITION_CONFIG.dates || '');
 
   const dayRow = document.getElementById('day-filter-row');
   COMPETITION_CONFIG.dayButtons.forEach(btn => {
@@ -204,9 +259,12 @@ function buildSchedule() {
       </div>
     `;
 
+    let routineIndex = 0;
     items.forEach(item => {
       if (item.type === 'routine') {
-        section.appendChild(renderRoutineCard(item, key, dayConf));
+        const routine = normalizeRoutine(item, key, dayConf, routineIndex++);
+        allRoutines.push(routine);
+        section.appendChild(renderRoutineCard(routine, key, dayConf));
       } else if (item.type === 'category') {
         const cat = document.createElement('div');
         cat.className = 'battle-category';
@@ -236,7 +294,6 @@ function buildSchedule() {
     });
   });
 
-  allRoutines = collectRoutines();
   buildDancerList();
   buildStudioList();
 }
@@ -363,8 +420,8 @@ function renderCallout() {
   COMPETITION_CONFIG.dayButtons.forEach((b, i) => dayIndex[b.key] = i);
   const seen = new Set();
   const entries = allRoutines
-    .filter(r => activeDancers.some(n => r.dancers.toLowerCase().includes(n.toLowerCase())))
-    .filter(r => { const k = r.day + r.time + r.title; if (seen.has(k)) return false; seen.add(k); return true; })
+    .filter(r => activeDancers.some(n => r.dancersText.toLowerCase().includes(n.toLowerCase())))
+    .filter(r => { const k = r.day + r.scheduledTime + r.routineName; if (seen.has(k)) return false; seen.add(k); return true; })
     .sort((a, b) => (dayIndex[a.day] ?? 99) - (dayIndex[b.day] ?? 99));
 
   calloutHeader.innerHTML = ICONS.sparkle + (activeDancers.length === 1
@@ -375,8 +432,8 @@ function renderCallout() {
     const dayTitle = (COMPETITION_CONFIG.days[r.day] || {}).title || r.day;
     const item = document.createElement('div');
     item.className = 'quinn-item';
-    item.innerHTML = `<div class="quinn-item-title">${r.title}${r.props ? ' ' + ICONS.props : ''}</div>
-      <div class="quinn-item-meta">${dayTitle} · ${r.time}${r.stage ? ' · Stage ' + r.stage : ''}</div>`;
+    item.innerHTML = `<div class="quinn-item-title">${r.routineName}${r.props ? ' ' + ICONS.props : ''}</div>
+      <div class="quinn-item-meta">${dayTitle} · ${r.scheduledTime}${r.stage ? ' · Stage ' + r.stage : ''}</div>`;
     calloutSched.appendChild(item);
   });
   callout.style.display = entries.length > 0 ? '' : 'none';
@@ -546,6 +603,17 @@ function applyOffset(delta, { persist = true } = {}) {
   if (persist) localStorage.setItem(OFFSET_KEY, String(delta));
 }
 offsetBtns.forEach(btn => btn.addEventListener('click', () => applyOffset(parseInt(btn.dataset.delta))));
+
+// Public runtime API — the normalized data model other features (favorites,
+// unified search, personal summary) and the test suite build on. Read-only
+// accessors so callers never mutate engine state directly.
+window.APDC = {
+  config: () => COMPETITION_CONFIG,
+  routines: () => allRoutines.slice(),
+  dancers: () => allDancers.slice(),
+  studios: () => allStudios.slice(),
+  locationLabel, mapsQuery, normalizeRoutine
+};
 
 window.addEventListener('DOMContentLoaded', () => {
   buildSchedule();
