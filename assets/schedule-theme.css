@@ -97,30 +97,6 @@ h1 {
   line-height: 1.2;
 }
 
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 16px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: #8878a8;
-}
-
-.legend-dot {
-  width: 10px; height: 10px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-.ld-quinn  { background: var(--accent-quinn); box-shadow: 0 0 6px rgba(192,132,252,0.5); }
-.ld-props  { background: var(--accent-props); box-shadow: 0 0 6px rgba(244,114,182,0.4); }
-.ld-both   { background: var(--accent-both); box-shadow: 0 0 6px rgba(129,140,248,0.4); }
-.ld-normal { background: rgba(139,92,246,0.3); }
-
 /* ── FILTER BAR ── */
 .filter-bar {
   max-width: 960px;
@@ -785,8 +761,6 @@ body::after {
   }
 
   h1 { font-size: 22px; margin-bottom: 10px; }
-
-  .legend { gap: 6px 14px; }
 
   .filter-bar {
     padding: 10px 16px;
