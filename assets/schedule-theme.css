@@ -1,6 +1,6 @@
 /* APDC — shared visual theme for competition schedule pages
    (nationals-2026, regionals-spring-2027, and future events).
-   Requires assets/pwa.css for .pwa-close / .install-banner / .icon. */
+   Requires assets/pwa.css for .install-banner / .icon. */
 
 @import url('https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Inter:wght@200;300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
@@ -97,30 +97,6 @@ h1 {
   line-height: 1.2;
 }
 
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 16px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: #8878a8;
-}
-
-.legend-dot {
-  width: 10px; height: 10px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-.ld-quinn  { background: var(--accent-quinn); box-shadow: 0 0 6px rgba(192,132,252,0.5); }
-.ld-props  { background: var(--accent-props); box-shadow: 0 0 6px rgba(244,114,182,0.4); }
-.ld-both   { background: var(--accent-both); box-shadow: 0 0 6px rgba(129,140,248,0.4); }
-.ld-normal { background: rgba(139,92,246,0.3); }
-
 /* ── FILTER BAR ── */
 .filter-bar {
   max-width: 960px;
@@ -182,9 +158,92 @@ h1 {
 .btn:focus-visible,
 .offset-btn:focus-visible,
 .dancer-input:focus-visible,
-.pill-clear:focus-visible {
+.pill-clear:focus-visible,
+.filter-toggle-btn:focus-visible {
   outline: 2px solid rgba(196,181,253,0.7);
   outline-offset: 2px;
+}
+
+/* ── COLLAPSIBLE FILTERS ── */
+.filter-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 14px;
+  border-radius: 10px;
+  border: 1px dashed rgba(167,139,250,0.35);
+  background: rgba(167,139,250,0.07);
+  color: var(--accent-quinn);
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.filter-toggle-btn:hover {
+  background: rgba(167,139,250,0.12);
+  border-color: rgba(167,139,250,0.55);
+}
+.filter-toggle-btn.open {
+  border-style: solid;
+  background: rgba(167,139,250,0.1);
+}
+.filter-toggle-btn .icon {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.filter-toggle-btn.open .icon {
+  transform: rotate(180deg);
+}
+
+.filter-toggle-text {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.filter-toggle-sub {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+
+.filter-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--accent-quinn);
+  color: #1a0f3a;
+  font-size: 9px;
+  font-weight: 700;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.filter-extra {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+.filter-extra.expanded { grid-template-rows: 1fr; }
+
+.filter-extra-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  min-height: 0;
 }
 
 /* ── DANCER SEARCH ── */
@@ -785,8 +844,6 @@ body::after {
   }
 
   h1 { font-size: 22px; margin-bottom: 10px; }
-
-  .legend { gap: 6px 14px; }
 
   .filter-bar {
     padding: 10px 16px;

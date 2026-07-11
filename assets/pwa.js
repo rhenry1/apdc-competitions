@@ -1,4 +1,4 @@
-// APDC — shared PWA install-banner, standalone-close button, and service-worker registration.
+// APDC — shared PWA install-banner and service-worker registration.
 // Requires assets/icons.js to be loaded first.
 (function () {
   const DISMISSED_KEY = 'apdc-install-dismissed';
@@ -71,17 +71,6 @@
     }
   }
 
-  function initPwaClose() {
-    const btn = document.getElementById('pwa-close');
-    if (!btn) return;
-    btn.innerHTML = ICONS.close;
-    if (isStandalone()) document.body.classList.add('standalone');
-    btn.addEventListener('click', () => {
-      window.close();
-      setTimeout(() => { window.location.href = 'about:blank'; }, 100);
-    });
-  }
-
   function initServiceWorker(swPath) {
     if (!('serviceWorker' in navigator)) return;
     window.addEventListener('load', () =>
@@ -97,7 +86,6 @@
   };
 
   window.addEventListener('DOMContentLoaded', () => {
-    initPwaClose();
     initBanner();
   });
 })();
