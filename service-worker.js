@@ -1,14 +1,16 @@
 // APDC Competitions — Service Worker
-const CACHE = 'apdc-v1';
+const CACHE = 'apdc-v2';
 const BASE  = '/apdc-competitions';
 const ASSETS = [
   BASE + '/',
   BASE + '/index.html',
   BASE + '/manifest.json',
   BASE + '/favicon.ico',
-  BASE + '/favicon.svg',
   BASE + '/icon-192.png',
-  BASE + '/icon-512.png'
+  BASE + '/icon-512.png',
+  BASE + '/assets/icons.js',
+  BASE + '/assets/pwa.js',
+  BASE + '/assets/pwa.css'
 ];
 
 self.addEventListener('install', e => {
