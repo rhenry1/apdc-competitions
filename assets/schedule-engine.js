@@ -177,7 +177,11 @@ const filterExtra    = document.getElementById('filter-extra');
 const filterBadge    = document.getElementById('filter-badge');
 
 if (filterToggle) {
-  filterToggle.innerHTML = 'Filters ' + ICONS.chevron + ' <span class="filter-badge" id="filter-badge" style="display:none">0</span>';
+  filterToggle.innerHTML =
+    ICONS.chevron +
+    '<span class="filter-toggle-text">More Filters</span>' +
+    '<span class="filter-toggle-sub">Studio &middot; Type &middot; Day</span>' +
+    '<span class="filter-badge" id="filter-badge" style="display:none">0</span>';
 }
 
 function updateFilterBadge() {
