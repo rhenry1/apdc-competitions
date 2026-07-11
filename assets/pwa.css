@@ -1,4 +1,4 @@
-/* APDC — shared PWA install-banner + standalone-close button styles. */
+/* APDC — shared PWA install-banner styles. */
 
 .icon {
   width: 1em;
@@ -6,34 +6,6 @@
   vertical-align: -0.15em;
   display: inline-block;
 }
-
-/* ── PWA CLOSE BUTTON (standalone launch only) ── */
-.pwa-close {
-  display: none;
-  position: fixed;
-  top: max(12px, env(safe-area-inset-top));
-  right: 14px;
-  z-index: 1000;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid rgba(196,181,253,0.25);
-  background: rgba(20,16,58,0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: rgba(196,181,253,0.8);
-  font-size: 15px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: background 0.15s, color 0.15s;
-}
-.pwa-close:hover, .pwa-close:active {
-  background: rgba(30,24,80,0.95);
-  color: #e9d5ff;
-}
-body.standalone .pwa-close { display: flex; }
 
 /* ── INSTALL BANNER ── */
 .install-banner {
