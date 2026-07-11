@@ -96,6 +96,10 @@ for (const { name, path } of PAGES) {
     });
 
     test('More Filters toggle expands and shows an active-filter badge when collapsed', async ({ page }) => {
+      // Collapse the filter drawer's expand animation so the day-button click
+      // below never lands mid-transition (a parallel-load flake source). This
+      // exercises badge logic, not animation.
+      await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.goto(path);
       await page.waitForLoadState('networkidle');
 
