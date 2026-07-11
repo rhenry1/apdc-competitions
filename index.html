@@ -272,11 +272,11 @@
     <div class="ios-instructions" id="ios-instructions">
       <div class="ios-step">
         <div class="ios-step-num">1</div>
-        <div id="install-step-1-text">Tap the <strong>share icon</strong> at the bottom of Safari</div>
+        <div>Tap the <strong>share icon</strong> <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7 12 3 16 7"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg> at the bottom of Safari</div>
       </div>
       <div class="ios-step">
         <div class="ios-step-num">2</div>
-        <div id="install-step-2-text">Scroll down and tap <strong>Add to Home Screen</strong></div>
+        <div>Scroll down and tap <strong>Add to Home Screen</strong></div>
       </div>
       <div class="ios-step">
         <div class="ios-step-num">3</div>
@@ -381,21 +381,21 @@
 <script src="assets/pwa.js"></script>
 <script>
   document.getElementById('completed-check').innerHTML = ICONS.check;
-  document.getElementById('install-step-1-text').innerHTML =
-    'Tap the <strong>share icon</strong> ' + ICONS.share + ' at the bottom of Safari';
 
   window.addEventListener('DOMContentLoaded', () => {
     const btnWrap  = document.getElementById('install-btn-wrap');
     const btnMain  = document.getElementById('install-btn-main');
     const iosPanel = document.getElementById('ios-instructions');
-    const step1    = document.getElementById('install-step-1-text');
-    const step2    = document.getElementById('install-step-2-text');
 
     if (APDCPwa.isStandalone()) { btnWrap.style.display = 'none'; return; }
 
-    if (APDCPwa.isIOS() && APDCPwa.isChrome()) {
-      step1.innerHTML = 'Tap the <strong>three dots</strong> menu in the top-right corner of Chrome';
-      step2.innerHTML = 'Tap <strong>Add to Home Screen</strong>';
+    const info = APDCPwa.installInstructions();
+    if (!info) { btnWrap.style.display = 'none'; return; } // no install path on this browser
+
+    // The default 3-step panel markup matches Safari's real flow exactly;
+    // every other browser gets a single tailored instruction instead.
+    if (!(APDCPwa.isIOS() && APDCPwa.isSafari())) {
+      iosPanel.innerHTML = '<div class="ios-step"><div>' + info.html + '</div></div>';
     }
 
     btnMain.addEventListener('click', async () => {
@@ -405,17 +405,17 @@
         const { outcome } = await deferredPrompt.userChoice;
         APDCPwa.clearDeferredPrompt();
         if (outcome === 'accepted') { btnWrap.style.display = 'none'; APDCPwa.markDismissed(); }
-      } else if (APDCPwa.isIOS()) {
-        const open = !iosPanel.classList.contains('visible');
-        if (open) {
-          iosPanel.style.display = 'block';
-          requestAnimationFrame(() => iosPanel.classList.add('visible'));
-          btnMain.textContent = 'Dismiss';
-        } else {
-          iosPanel.classList.remove('visible');
-          setTimeout(() => { iosPanel.style.display = 'none'; }, 300);
-          btnMain.textContent = 'Add to Home Screen';
-        }
+        return;
+      }
+      const open = !iosPanel.classList.contains('visible');
+      if (open) {
+        iosPanel.style.display = 'block';
+        requestAnimationFrame(() => iosPanel.classList.add('visible'));
+        btnMain.textContent = 'Dismiss';
+      } else {
+        iosPanel.classList.remove('visible');
+        setTimeout(() => { iosPanel.style.display = 'none'; }, 300);
+        btnMain.textContent = 'Add to Home Screen';
       }
     });
 
