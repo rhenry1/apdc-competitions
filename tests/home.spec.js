@@ -38,7 +38,7 @@ const INSTALL_CASES = [
     name: 'iOS Chrome',
     ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.169 Mobile/15E148 Safari/604.1',
     visible: true,
-    snippet: 'three dots',
+    snippet: 'safari',
   },
   {
     name: 'iOS Firefox',

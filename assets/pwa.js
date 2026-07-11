@@ -33,11 +33,12 @@
       if (isSafari()) {
         return { html: 'Tap the share icon ' + ICONS.share + ' at the bottom of Safari, then <strong>Add to Home Screen</strong>.', button: false };
       }
-      if (isFirefox()) {
-        return { html: 'Open this page in <strong>Safari</strong> for the full app experience, tap the share icon, then <strong>Add to Home Screen</strong>.', button: false };
-      }
-      // Chrome, Edge, and most other iOS browsers share this flow.
-      return { html: 'Tap the <strong>three dots</strong> menu in the top-right corner, then <strong>Add to Home Screen</strong>.', button: false };
+      // Every other iOS browser is a WebKit wrapper with its own menu layout
+      // that varies by app and changes often (Chrome-for-iOS, for example,
+      // has since moved its menu from top-right to the bottom toolbar) —
+      // rather than guess a specific menu location and risk being wrong,
+      // point people to Safari, the one flow guaranteed to actually work.
+      return { html: 'Open this page in <strong>Safari</strong> for the full app experience — tap the share icon, then <strong>Add to Home Screen</strong>.', button: false };
     }
     if (isAndroid()) {
       if (isSamsung()) {
