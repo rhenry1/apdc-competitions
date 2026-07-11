@@ -13,6 +13,7 @@ const STYLE_CLASS = {
 };
 
 const OFFSET_KEY = 'apdc-schedule-offset';
+const DENSITY_KEY = 'apdc-schedule-density';
 
 let allRoutines = [];
 let allDancers = [];
@@ -604,6 +605,38 @@ function applyOffset(delta, { persist = true } = {}) {
 }
 offsetBtns.forEach(btn => btn.addEventListener('click', () => applyOffset(parseInt(btn.dataset.delta))));
 
+// ── Density toggle (comfortable / compact), persisted locally ──
+function applyDensity(mode, { persist = true } = {}) {
+  const compact = mode === 'compact';
+  document.body.classList.toggle('compact', compact);
+  document.querySelectorAll('.density-toggle button').forEach(b => {
+    const on = b.dataset.density === mode;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', String(on));
+  });
+  if (persist) localStorage.setItem(DENSITY_KEY, mode);
+}
+
+function initDensityToggle() {
+  const container = document.getElementById('schedule-container');
+  if (!container || document.querySelector('.density-toggle')) return;
+  const saved = localStorage.getItem(DENSITY_KEY) === 'compact' ? 'compact' : 'comfortable';
+
+  const tools = document.createElement('div');
+  tools.className = 'schedule-tools';
+  tools.innerHTML =
+    '<div class="density-toggle" role="group" aria-label="Schedule density">' +
+    '<button type="button" data-density="comfortable" aria-pressed="true">Comfortable</button>' +
+    '<button type="button" data-density="compact" aria-pressed="false">Compact</button>' +
+    '</div>';
+  container.parentNode.insertBefore(tools, container);
+
+  tools.querySelectorAll('.density-toggle button').forEach(b => {
+    b.addEventListener('click', () => applyDensity(b.dataset.density));
+  });
+  applyDensity(saved, { persist: false });
+}
+
 // Public runtime API — the normalized data model other features (favorites,
 // unified search, personal summary) and the test suite build on. Read-only
 // accessors so callers never mutate engine state directly.
@@ -622,6 +655,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const savedOffset = parseInt(localStorage.getItem(OFFSET_KEY));
   applyOffset(Number.isFinite(savedOffset) ? savedOffset : 0, { persist: false });
 
+  initDensityToggle();
   applyFilters();
   APDCPwa.initServiceWorker('../service-worker.js');
 });
