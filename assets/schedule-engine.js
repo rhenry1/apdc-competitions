@@ -40,7 +40,7 @@ function buildStudioList() {
   allStudios = [...set].sort();
 }
 
-function renderRoutineCard(r, dayKey) {
+function renderRoutineCard(r, dayKey, dayConf) {
   const cardClass = r.isApdc
     ? [r.spotlight && r.props ? 'quinn-and-props' : r.props ? 'props-only' : r.spotlight ? 'quinn-only' : 'normal', 'apdc-card'].join(' ')
     : (r.spotlight && r.props ? 'quinn-and-props' : r.props ? 'props-only' : r.spotlight ? 'quinn-only' : 'normal');
@@ -69,15 +69,111 @@ function renderRoutineCard(r, dayKey) {
       ${entryNum}<div class="card-title">${r.title}${propsIcon}${apdcBadge}</div>
       <div class="card-meta">${stageTag}${styleTag}${fmtTag}</div>
       <div class="card-dancers">${r.dancers}</div>
+      <div class="card-actions">
+        <button class="card-action-btn" type="button" title="Share this routine" aria-label="Share ${r.title}">${ICONS.share}</button>
+        <button class="card-action-btn" type="button" title="Add to calendar" aria-label="Add ${r.title} to calendar">${ICONS.calendar}</button>
+      </div>
     </div>
     <div class="card-right"><span class="age-badge">${r.ageLabel}</span></div>
   `;
+
+  const [shareBtn, calendarBtn] = card.querySelectorAll('.card-action-btn');
+  shareBtn.addEventListener('click', (e) => { e.stopPropagation(); shareRoutine(r, dayConf); });
+  calendarBtn.addEventListener('click', (e) => { e.stopPropagation(); downloadICS(r, dayConf); });
+
   return card;
 }
 
+// ── Share + Add to Calendar ──
+function showToast(message) {
+  let toast = document.getElementById('action-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'action-toast';
+    toast.className = 'action-toast';
+    toast.setAttribute('aria-live', 'polite');
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add('visible');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toast.classList.remove('visible'), 2200);
+}
+
+async function shareRoutine(r, dayConf) {
+  const text = `${r.title} — ${dayConf.title || ''} at ${r.time}` +
+    (r.stage ? ` (Stage ${r.stage})` : '') +
+    (r.dancers ? `\n${r.dancers}` : '') +
+    `\n${COMPETITION_CONFIG.name}`;
+
+  if (navigator.share) {
+    try { await navigator.share({ title: r.title, text }); } catch (e) { /* user cancelled */ }
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('Copied to clipboard');
+  } catch (e) {
+    showToast('Could not copy — try again');
+  }
+}
+
+function icsEscape(text) {
+  return String(text || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+}
+
+function icsDateTime(date) {
+  const p = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}${p(date.getMonth() + 1)}${p(date.getDate())}T${p(date.getHours())}${p(date.getMinutes())}00`;
+}
+
+function downloadICS(r, dayConf) {
+  if (!dayConf || !dayConf.date) { showToast('Date unavailable for this routine'); return; }
+
+  const [timePart, ampm] = r.time.trim().split(' ');
+  let [hour, minute] = timePart.split(':').map(Number);
+  if (ampm === 'pm' && hour !== 12) hour += 12;
+  if (ampm === 'am' && hour === 12) hour = 0;
+
+  const [y, mo, d] = dayConf.date.split('-').map(Number);
+  const start = new Date(y, mo - 1, d, hour, minute);
+  const end = new Date(start.getTime() + 15 * 60000); // short reminder block — routines run just a few minutes
+
+  const description = [r.dancers, r.formatTag, r.stage ? `Stage ${r.stage}` : '', 'Arrive a few minutes early — routines run quickly.']
+    .filter(Boolean).join('\n');
+
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//APDC Competitions//EN',
+    'BEGIN:VEVENT',
+    `UID:${r.entry || Math.random().toString(36).slice(2)}-${dayConf.date}@apdc-competitions`,
+    `DTSTART:${icsDateTime(start)}`,
+    `DTEND:${icsDateTime(end)}`,
+    `SUMMARY:${icsEscape(r.title + (r.entry ? ` (#${r.entry})` : '') + ' — ' + COMPETITION_CONFIG.name)}`,
+    `DESCRIPTION:${icsEscape(description)}`,
+    `LOCATION:${icsEscape(COMPETITION_CONFIG.location)}`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const filename = `${r.entry || 'routine'}-${r.title}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) + '.ics';
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 function buildSchedule() {
-  document.getElementById('header-title').textContent    = COMPETITION_CONFIG.name;
-  document.getElementById('header-subtitle').textContent = COMPETITION_CONFIG.subtitle;
+  document.getElementById('header-title').textContent = COMPETITION_CONFIG.name;
+  document.getElementById('header-subtitle').innerHTML =
+    `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(COMPETITION_CONFIG.location)}" target="_blank" rel="noopener noreferrer">${ICONS.pin}${COMPETITION_CONFIG.location}</a> &middot; ${COMPETITION_CONFIG.dates}`;
 
   const dayRow = document.getElementById('day-filter-row');
   COMPETITION_CONFIG.dayButtons.forEach(btn => {
@@ -110,7 +206,7 @@ function buildSchedule() {
 
     items.forEach(item => {
       if (item.type === 'routine') {
-        section.appendChild(renderRoutineCard(item, key));
+        section.appendChild(renderRoutineCard(item, key, dayConf));
       } else if (item.type === 'category') {
         const cat = document.createElement('div');
         cat.className = 'battle-category';

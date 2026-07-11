@@ -23,6 +23,24 @@ test.describe('homepage', () => {
     await assertNoEmoji(page);
     expect(errors).toEqual([]);
   });
+
+  test('location opens a maps search without navigating the parent card link', async ({ page }) => {
+    await page.goto('/index.html');
+    await page.waitForLoadState('networkidle');
+
+    const address = await page.locator('.map-link').getAttribute('data-address');
+
+    // Stub window.open to capture the intended URL without actually
+    // navigating anywhere — avoids depending on real network access to
+    // maps.google.com from the test environment.
+    await page.evaluate(() => { window.__openedUrl = null; window.open = (url) => { window.__openedUrl = url; return null; }; });
+    await page.locator('.map-link').click();
+    const openedUrl = await page.evaluate(() => window.__openedUrl);
+
+    expect(openedUrl).toContain('maps');
+    expect(decodeURIComponent(openedUrl)).toContain(address);
+    expect(page.url()).toContain('/index.html'); // clicking the map link didn't follow the card's own link
+  });
 });
 
 // One UA per real-world browser family the install flow branches on.

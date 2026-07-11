@@ -130,5 +130,54 @@ for (const { name, path } of PAGES) {
       await expect(page.locator('.pwa-close')).toHaveCount(0);
       await assertNoEmoji(page);
     });
+
+    test('location links to a maps search for the venue', async ({ page }) => {
+      await page.goto(path);
+      await page.waitForLoadState('networkidle');
+
+      const location = await page.evaluate(() => COMPETITION_CONFIG.location);
+      const href = await page.locator('#header-subtitle a').getAttribute('href');
+      expect(href).toContain('maps');
+      expect(decodeURIComponent(href)).toContain(location);
+    });
+
+    test('Share falls back to copying routine details to the clipboard', async ({ page, context }) => {
+      await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+      await page.goto(path);
+      await page.waitForLoadState('networkidle');
+
+      const firstRoutine = await page.evaluate(
+        () => Object.values(SCHEDULE).flat().find((i) => i.type === 'routine')
+      );
+
+      await page.locator('.routine-card .card-action-btn').first().click();
+      await expect(page.locator('#action-toast')).toContainText('Copied');
+
+      const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+      expect(clipboardText).toContain(firstRoutine.title);
+    });
+
+    test('Add to Calendar downloads a valid .ics for the routine', async ({ page }) => {
+      await page.goto(path);
+      await page.waitForLoadState('networkidle');
+
+      const firstRoutine = await page.evaluate(
+        () => Object.values(SCHEDULE).flat().find((i) => i.type === 'routine')
+      );
+
+      const [download] = await Promise.all([
+        page.waitForEvent('download'),
+        page.locator('.routine-card .card-action-btn').nth(1).click(),
+      ]);
+      const icsPath = await download.path();
+      const ics = require('fs').readFileSync(icsPath, 'utf-8');
+
+      expect(ics).toContain('BEGIN:VCALENDAR');
+      expect(ics).toContain('DTSTART:');
+      expect(ics).toContain(`SUMMARY:${firstRoutine.title}`);
+      // ICS text values escape commas — assert on the escaped form.
+      expect(ics).toContain('LOCATION:');
+      expect(ics).not.toMatch(/DESCRIPTION:.*\\\\n/); // no double-escaped newlines
+    });
   });
 }

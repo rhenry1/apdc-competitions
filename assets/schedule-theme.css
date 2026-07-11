@@ -87,6 +87,16 @@ header {
   color: #7a6fa0;
 }
 
+.eyebrow a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #a78bfa;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.eyebrow a:hover { color: #c4b5fd; text-decoration: underline; }
+
 h1 {
   font-family: 'Tenor Sans', serif;
   font-size: clamp(20px, 5vw, 30px);
@@ -540,6 +550,62 @@ body::after {
   font-size: 11px;
   color: #a89cc8;
   line-height: 1.4;
+}
+
+/* ── CARD ACTIONS (share / add to calendar) ── */
+.card-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.card-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: #7a6fa0;
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.card-action-btn:hover,
+.card-action-btn:focus-visible {
+  color: var(--accent-quinn);
+  border-color: var(--accent-quinn);
+  background: rgba(167,139,250,0.1);
+  outline: none;
+}
+
+/* ── TOAST (share/calendar feedback) ── */
+.action-toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  transform: translateX(-50%) translateY(16px);
+  background: #1a1440;
+  border: 1px solid rgba(167,139,250,0.35);
+  color: #e2d9f3;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  padding: 9px 18px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 1000;
+  white-space: nowrap;
+}
+.action-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 .card-right {
