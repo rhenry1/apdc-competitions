@@ -373,13 +373,6 @@ function applyFilters() {
   const hasDancers = activeDancers.length > 0;
   let visible = 0;
 
-  sections.forEach(sec => {
-    const secDay = sec.getAttribute('data-day') || '';
-    const show = activeDay === 'all' || secDay === activeDay;
-    sec.style.display = show ? '' : 'none';
-    sec.classList.toggle('hidden', !show);
-  });
-
   cards.forEach(card => {
     const sec      = card.closest('.day-section');
     const secDay   = sec ? (sec.getAttribute('data-day') || '') : '';
@@ -402,6 +395,17 @@ function applyFilters() {
     if (show) visible++;
   });
 
+  // Hide a day section entirely when the active day excludes it OR none of its
+  // routines survive the current filters — avoids empty sticky day headers.
+  sections.forEach(sec => {
+    const secDay = sec.getAttribute('data-day') || '';
+    const dayMatch = activeDay === 'all' || secDay === activeDay;
+    const hasVisibleCard = sec.querySelector('.routine-card:not(.hidden)') !== null;
+    const show = dayMatch && hasVisibleCard;
+    sec.style.display = show ? '' : 'none';
+    sec.classList.toggle('hidden', !show);
+  });
+
   metaRows.forEach(row => {
     const sec      = row.closest('.day-section');
     const secDay   = sec ? (sec.getAttribute('data-day') || '') : '';
@@ -412,6 +416,7 @@ function applyFilters() {
   renderCallout();
   noResults.style.display = visible === 0 ? 'block' : 'none';
   updateFilterBadge();
+  updateClearAll();
 }
 
 // ── Callout ──
@@ -617,14 +622,15 @@ function applyDensity(mode, { persist = true } = {}) {
   if (persist) localStorage.setItem(DENSITY_KEY, mode);
 }
 
-function initDensityToggle() {
+function initScheduleTools() {
   const container = document.getElementById('schedule-container');
-  if (!container || document.querySelector('.density-toggle')) return;
+  if (!container || document.querySelector('.schedule-tools')) return;
   const saved = localStorage.getItem(DENSITY_KEY) === 'compact' ? 'compact' : 'comfortable';
 
   const tools = document.createElement('div');
   tools.className = 'schedule-tools';
   tools.innerHTML =
+    '<button type="button" class="clear-all-global" id="clear-all-global">' + ICONS.close + 'Clear all filters</button>' +
     '<div class="density-toggle" role="group" aria-label="Schedule density">' +
     '<button type="button" data-density="comfortable" aria-pressed="true">Comfortable</button>' +
     '<button type="button" data-density="compact" aria-pressed="false">Compact</button>' +
@@ -634,7 +640,56 @@ function initDensityToggle() {
   tools.querySelectorAll('.density-toggle button').forEach(b => {
     b.addEventListener('click', () => applyDensity(b.dataset.density));
   });
+  document.getElementById('clear-all-global').addEventListener('click', clearAllFilters);
   applyDensity(saved, { persist: false });
+}
+
+// Wrap the filter bar + offset bar into one sticky toolbar unit, and keep
+// --toolbar-h in sync with its height so sticky day headers pin right below it
+// (the height changes when "More Filters" expands/collapses or on resize).
+function initToolbar() {
+  const filterBar = document.getElementById('filter-bar');
+  if (!filterBar || filterBar.closest('.schedule-toolbar')) return;
+  const offsetBar = document.getElementById('offset-bar');
+
+  const toolbar = document.createElement('div');
+  toolbar.className = 'schedule-toolbar';
+  filterBar.parentNode.insertBefore(toolbar, filterBar);
+  toolbar.appendChild(filterBar);
+  if (offsetBar) toolbar.appendChild(offsetBar);
+
+  const setH = () => document.documentElement.style.setProperty('--toolbar-h', toolbar.offsetHeight + 'px');
+  setH();
+  if (window.ResizeObserver) new ResizeObserver(setH).observe(toolbar);
+  else window.addEventListener('resize', setH);
+}
+
+// ── Global clear-all ──
+function hasActiveFilters() {
+  return activeDancers.length > 0 || activeStudios.length > 0 ||
+    !!activeLevel || !!activeFormat || activeDay !== 'all' || activeFilter !== 'all';
+}
+
+function updateClearAll() {
+  const btn = document.getElementById('clear-all-global');
+  if (btn) btn.classList.toggle('visible', hasActiveFilters());
+}
+
+function clearAllFilters() {
+  activeDancers = [];
+  activeStudios = [];
+  activeLevel = '';
+  activeFormat = '';
+  activeDay = 'all';
+  activeFilter = 'all';
+  if (dancerInput) dancerInput.value = '';
+  if (studioInput) studioInput.value = '';
+  renderDancerPills();
+  renderStudioPills();
+  setActiveInGroup(showBtns, document.querySelector('.show-btn[data-filter="all"]'));
+  setActiveInGroup(catBtns, catBtns[0] || null);
+  setActiveInGroup(document.querySelectorAll('.day-btn'), document.querySelector('.day-btn[data-day="all"]'));
+  applyFilters();
 }
 
 // Public runtime API — the normalized data model other features (favorites,
@@ -655,7 +710,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const savedOffset = parseInt(localStorage.getItem(OFFSET_KEY));
   applyOffset(Number.isFinite(savedOffset) ? savedOffset : 0, { persist: false });
 
-  initDensityToggle();
+  initToolbar();
+  initScheduleTools();
   applyFilters();
   APDCPwa.initServiceWorker('../service-worker.js');
 });

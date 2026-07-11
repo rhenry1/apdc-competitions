@@ -102,9 +102,14 @@ Foundation first (unblocks favorites, search, share-state):
   **Deferred:** sticky day headers → P1.3 (their sticky offset depends on the
   consolidated toolbar height). Desktop wide-card sparseness → left as-is per
   user (mobile-first is the priority; not a concern for them).
-- **P1.3 Sticky toolbar** — consolidate search + favorites toggle + filter button
-  (with active-filter count) + day selector + offset + clear-all into one compact
-  sticky bar.
+- **P1.3 Sticky toolbar** — ✅ DONE (branch `v2-p1.3-toolbar`). The big page
+  header now scrolls away; the engine wraps the filter bar + offset bar into one
+  `.schedule-toolbar` (sticky top:0) and keeps `--toolbar-h` in sync via a
+  ResizeObserver. Sticky day headers pin just below the toolbar. Added a global
+  "Clear all filters" (in the schedule-tools row, shows when any filter active,
+  resets show/type/studio/dancer/day — not the offset). Also hide any day section
+  whose routines are all filtered out, so no empty sticky headers appear. Tests:
+  `toolbar.spec.js`. **Favorites toggle** slot reserved for P1.6.
 - **P1.4 Unified search** — debounced, case-insensitive, punctuation-tolerant;
   matches dancer/routine/studio/number/style/type/division/stage/props; one-tap
   clear; composes with all filters.

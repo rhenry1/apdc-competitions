@@ -54,9 +54,19 @@ header {
   padding: 24px 16px 18px;
   border-bottom: 1px solid rgba(167,139,250,0.12);
   background: linear-gradient(180deg, #06031a 0%, #09061f 100%);
+}
+
+/* ── STICKY TOOLBAR ── wraps the filter bar + offset bar as one pinned unit.
+   The big page header scrolls away; the controls stay reachable while the
+   schedule scrolls. --toolbar-h (set live by the engine's ResizeObserver)
+   feeds the sticky day-header offset below. */
+.schedule-toolbar {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 90;
+  background: rgba(6,4,26,0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 1px 0 rgba(255,255,255,0.06);
 }
 
@@ -119,12 +129,6 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: rgba(6,4,26,0.97);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  position: sticky;
-  top: 0;
-  z-index: 90;
 }
 
 .filter-row {
@@ -429,8 +433,14 @@ body::after {
   align-items: baseline;
   gap: 10px;
   margin-bottom: 12px;
-  padding-bottom: 10px;
+  padding: var(--space-3) 0 10px;
   border-bottom: 1px solid rgba(167,139,250,0.12);
+  /* Sticks just below the sticky toolbar so the current day stays labeled
+     while scrolling. --toolbar-h is kept in sync by the engine. */
+  position: sticky;
+  top: calc(var(--toolbar-h, 0px) - 1px);
+  z-index: 40;
+  background: var(--color-bg);
 }
 
 .day-label {
@@ -645,10 +655,33 @@ body::after {
 .schedule-tools {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: var(--space-2);
   margin-bottom: var(--space-3);
 }
+
+.clear-all-global {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border-strong);
+  background: rgba(167,139,250,0.1);
+  color: var(--purple-light);
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.clear-all-global.visible { display: inline-flex; }
+.clear-all-global:hover { background: rgba(167,139,250,0.18); }
+.clear-all-global:focus-visible { outline: 2px solid rgba(196,181,253,0.7); outline-offset: 2px; }
+.clear-all-global .icon { width: 0.9em; height: 0.9em; }
 
 .density-toggle {
   display: inline-flex;
