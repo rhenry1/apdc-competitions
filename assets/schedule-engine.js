@@ -554,6 +554,7 @@ function renderDancerDropdown(q) {
 
 function addDancer(name) {
   // Pinning a dancer supersedes the transient free-text query.
+  clearTimeout(_searchDebounce);
   activeSearch = '';
   dancerInput.value = '';
   updateSearchClear();
@@ -651,12 +652,13 @@ function initActiveFilters() {
 // ── Unified search input wiring (debounced free-text + dancer suggestions) ──
 let _searchDebounce;
 function onSearchInput() {
-  const val = dancerInput.value;
   updateSearchClear();
-  renderDancerDropdown(val); // suggestions update immediately
+  renderDancerDropdown(dancerInput.value); // suggestions update immediately
   clearTimeout(_searchDebounce);
+  // Read the current value when the timer fires (not the value at input time),
+  // so a fast pin/clear that empties the box isn't overwritten by a stale query.
   _searchDebounce = setTimeout(() => {
-    activeSearch = val.trim();
+    activeSearch = dancerInput.value.trim();
     applyFilters();
   }, 120);
 }
