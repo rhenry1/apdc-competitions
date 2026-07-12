@@ -7,13 +7,17 @@ const { test, expect } = require('@playwright/test');
 // network → navigate.
 
 // Wait for the SW to activate and finish precaching (addAll resolves before
-// install completes, so poll for a known precache key).
+// install completes, so poll for a known precache key). Cache-name agnostic so
+// version bumps don't break the test.
 async function swReady(page) {
   await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
   await page.waitForFunction(async () => {
-    const cache = await caches.open('apdc-v3');
-    const hit = await cache.match('/regionals-spring-2027/index.html');
-    return !!hit;
+    const names = (await caches.keys()).filter(n => n.startsWith('apdc-'));
+    for (const name of names) {
+      const cache = await caches.open(name);
+      if (await cache.match('/regionals-spring-2027/index.html')) return true;
+    }
+    return false;
   }, null, { timeout: 15000 });
 }
 
