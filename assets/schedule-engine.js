@@ -23,6 +23,12 @@ function slugify(s) {
   return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
 
+// Normalize free-text for search: lowercase, punctuation → spaces, collapsed.
+// Makes matching case-insensitive and punctuation-tolerant ("Hip-Hop" ~ "hip hop").
+function normalizeSearch(s) {
+  return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
 // Human-readable venue label, e.g. "Long Branch, NJ" or "Venue · City, ST".
 // Accepts the new structured location object or a legacy plain string.
 function locationLabel(loc) {
@@ -105,6 +111,11 @@ function renderRoutineCard(r, dayKey, dayConf) {
   card.dataset.format  = r.type;
   card.dataset.studio  = r.studio;
   card.dataset.day     = dayKey;
+  // Combined, normalized text index backing the unified search.
+  card.dataset.search  = normalizeSearch([
+    r.routineNumber, r.routineName, r.dancersText, r.studio, r.style, r.type,
+    r.division, r.formatTag, r.stage ? 'stage ' + r.stage : '', r.props ? 'props prop' : ''
+  ].filter(Boolean).join(' '));
 
   const stageTag  = r.stage ? `<span class="tag stage-${r.stage}">Stage ${r.stage}</span>` : '';
   const styleTag  = r.style ? `<span class="tag ${styleClass}">${r.style}</span>` : '';
@@ -306,6 +317,7 @@ let activeDancers = [];
 let activeStudios = [];
 let activeLevel   = '';
 let activeFormat  = '';
+let activeSearch  = '';
 let offsetMinutes = 0;
 
 // ── Element refs ──
@@ -371,6 +383,7 @@ function applyFilters() {
   const sections = window._sections || document.querySelectorAll('.day-section');
   const metaRows = window._metaRows || document.querySelectorAll('.meta-row');
   const hasDancers = activeDancers.length > 0;
+  const searchTokens = activeSearch ? normalizeSearch(activeSearch).split(' ').filter(Boolean) : [];
   let visible = 0;
 
   cards.forEach(card => {
@@ -389,8 +402,10 @@ function applyFilters() {
     const formatMatch = !activeFormat || card.dataset.format === activeFormat;
     const studioMatch = activeStudios.length === 0 ||
       activeStudios.some(s => (card.dataset.studio || '').toLowerCase() === s.toLowerCase());
+    const searchText  = card.dataset.search || '';
+    const searchMatch = searchTokens.length === 0 || searchTokens.every(tok => searchText.includes(tok));
 
-    const show = dayMatch && showMatch && levelMatch && formatMatch && studioMatch;
+    const show = dayMatch && showMatch && levelMatch && formatMatch && studioMatch && searchMatch;
     card.classList.toggle('hidden', !show);
     if (show) visible++;
   });
@@ -445,20 +460,27 @@ function renderCallout() {
   callout.style.display = entries.length > 0 ? '' : 'none';
 }
 
-// ── Dancer search ──
+// ── Unified search ──
+// The main box is a free-text search across all routine fields. When the query
+// also matches dancer names, those surface as suggestions so a dancer can still
+// be "pinned" (pill + spotlight callout). Suggestions only show when there are
+// dancer matches — a non-dancer query (e.g. "jazz", "1042") just filters cards.
 function renderDancerDropdown(q) {
   const query = q.trim().toLowerCase();
   const avail = allDancers.filter(n => !activeDancers.includes(n));
-  const matches = query ? avail.filter(n => n.toLowerCase().includes(query)) : avail;
-  dancerDropdown.innerHTML = matches.length === 0
-    ? '<div class="dropdown-empty">No dancers found</div>'
-    : matches.map(n => {
-        const idx = query ? n.toLowerCase().indexOf(query) : -1;
-        const label = idx >= 0
-          ? n.slice(0,idx) + '<mark>' + n.slice(idx,idx+query.length) + '</mark>' + n.slice(idx+query.length)
-          : n;
-        return `<div class="dropdown-item" data-name="${n}">${label}</div>`;
-      }).join('');
+  const matches = query ? avail.filter(n => n.toLowerCase().includes(query)) : [];
+  if (matches.length === 0) {
+    dancerDropdown.innerHTML = '';
+    dancerDropdown.classList.remove('open');
+    return;
+  }
+  dancerDropdown.innerHTML = matches.map(n => {
+    const idx = n.toLowerCase().indexOf(query);
+    const label = idx >= 0
+      ? n.slice(0,idx) + '<mark>' + n.slice(idx,idx+query.length) + '</mark>' + n.slice(idx+query.length)
+      : n;
+    return `<div class="dropdown-item" data-name="${n}">${label}</div>`;
+  }).join('');
   dancerDropdown.classList.add('open');
   dancerDropdown.querySelectorAll('.dropdown-item').forEach(d => {
     d.addEventListener('mousedown', e => { e.preventDefault(); addDancer(d.dataset.name); });
@@ -467,11 +489,16 @@ function renderDancerDropdown(q) {
 }
 
 function addDancer(name) {
-  if (activeDancers.includes(name)) { dancerDropdown.classList.remove('open'); dancerInput.value = ''; dancerInput.blur(); return; }
+  // Pinning a dancer supersedes the transient free-text query.
+  activeSearch = '';
+  dancerInput.value = '';
+  updateSearchClear();
+  dancerInput.blur();
+  dancerDropdown.classList.remove('open');
+  if (activeDancers.includes(name)) return;
   activeDancers.push(name);
   setActiveInGroup(showBtns, null);
   activeFilter = 'all';
-  dancerInput.value = ''; dancerInput.blur(); dancerDropdown.classList.remove('open');
   renderDancerPills(); applyFilters();
 }
 
@@ -494,10 +521,46 @@ function renderDancerPills() {
   });
   pillRow.style.display = activeDancers.length > 0 ? '' : 'none';
   clearAllBtn.style.display = activeDancers.length > 1 ? '' : 'none';
-  dancerInput.placeholder = activeDancers.length > 0 ? 'Add dancer...' : 'Dancer...';
 }
 
-dancerInput.addEventListener('input', () => renderDancerDropdown(dancerInput.value));
+// ── Unified search input wiring (debounced free-text + dancer suggestions) ──
+let _searchDebounce;
+function onSearchInput() {
+  const val = dancerInput.value;
+  updateSearchClear();
+  renderDancerDropdown(val); // suggestions update immediately
+  clearTimeout(_searchDebounce);
+  _searchDebounce = setTimeout(() => {
+    activeSearch = val.trim();
+    applyFilters();
+  }, 120);
+}
+function updateSearchClear() {
+  const btn = document.getElementById('search-clear');
+  if (btn) btn.style.display = dancerInput.value ? 'flex' : 'none';
+}
+function initSearchClear() {
+  const wrap = document.getElementById('search-wrap');
+  if (!wrap || document.getElementById('search-clear')) return;
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.id = 'search-clear';
+  btn.className = 'search-clear';
+  btn.setAttribute('aria-label', 'Clear search');
+  btn.innerHTML = ICONS.close;
+  btn.style.display = 'none';
+  btn.addEventListener('click', () => {
+    dancerInput.value = '';
+    activeSearch = '';
+    updateSearchClear();
+    dancerDropdown.classList.remove('open');
+    applyFilters();
+    dancerInput.focus();
+  });
+  wrap.appendChild(btn);
+}
+
+dancerInput.addEventListener('input', onSearchInput);
 dancerInput.addEventListener('focus', () => renderDancerDropdown(dancerInput.value));
 dancerInput.addEventListener('blur',  () => setTimeout(() => dancerDropdown.classList.remove('open'), 200));
 clearAllBtn.addEventListener('click', () => {
@@ -667,7 +730,8 @@ function initToolbar() {
 // ── Global clear-all ──
 function hasActiveFilters() {
   return activeDancers.length > 0 || activeStudios.length > 0 ||
-    !!activeLevel || !!activeFormat || activeDay !== 'all' || activeFilter !== 'all';
+    !!activeLevel || !!activeFormat || activeDay !== 'all' || activeFilter !== 'all' ||
+    !!activeSearch;
 }
 
 function updateClearAll() {
@@ -682,8 +746,10 @@ function clearAllFilters() {
   activeFormat = '';
   activeDay = 'all';
   activeFilter = 'all';
+  activeSearch = '';
   if (dancerInput) dancerInput.value = '';
   if (studioInput) studioInput.value = '';
+  updateSearchClear();
   renderDancerPills();
   renderStudioPills();
   setActiveInGroup(showBtns, document.querySelector('.show-btn[data-filter="all"]'));
@@ -712,6 +778,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   initToolbar();
   initScheduleTools();
+  initSearchClear();
   applyFilters();
   APDCPwa.initServiceWorker('../service-worker.js');
 });
