@@ -4,6 +4,9 @@ const { defineConfig } = require('@playwright/test');
 module.exports = defineConfig({
   testDir: './tests',
   fullyParallel: true,
+  // Local: use all cores (this dev sandbox is CPU-throttled, so the default
+  // half-cores is slow). CI keeps its own default for runner stability.
+  workers: process.env.CI ? undefined : 4,
   reporter: process.env.CI ? 'list' : 'html',
   use: {
     baseURL: 'http://localhost:4173',

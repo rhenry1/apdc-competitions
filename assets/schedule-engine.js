@@ -545,12 +545,8 @@ function applyFilters() {
 
   renderCallout();
   const empty = visible === 0;
-  if (empty) {
-    noResults.textContent = activeFilter === 'favorites'
-      ? 'No favorites yet. Tap the star on any routine to add it to your favorites.'
-      : 'No routines match this filter.';
-  }
-  noResults.style.display = empty ? 'block' : 'none';
+  if (empty) renderEmptyState();
+  noResults.classList.toggle('is-visible', empty);
   updateFilterBadge();
   updateFavCount();
   updateClearAll();
@@ -800,6 +796,49 @@ studioInput.addEventListener('input', () => renderStudioDropdown(studioInput.val
 studioInput.addEventListener('focus', () => renderStudioDropdown(studioInput.value));
 studioInput.addEventListener('blur',  () => setTimeout(() => studioDropdown.classList.remove('open'), 200));
 studioClearBtn.addEventListener('click', () => { activeStudios = []; renderStudioPills(); applyFilters(); });
+
+// ── Empty state (no routines visible) ──
+function renderEmptyState() {
+  const favMode = activeFilter === 'favorites';
+  const actions = [];
+  if (favMode) {
+    actions.push({ label: 'Browse all routines', primary: true, fn: () => {
+      activeFilter = 'all';
+      setActiveInGroup(showBtns, document.querySelector('.show-btn[data-filter="all"]'));
+      applyFilters();
+    }});
+  } else if (hasActiveFilters()) {
+    actions.push({ label: 'Clear all filters', primary: true, fn: clearAllFilters });
+    if (activeDay !== 'all') {
+      actions.push({ label: 'Show all days', primary: false, fn: () => {
+        activeDay = 'all';
+        setActiveInGroup(document.querySelectorAll('.day-btn'), document.querySelector('.day-btn[data-day="all"]'));
+        applyFilters();
+      }});
+    }
+  }
+
+  const title = favMode ? 'No favorites yet' : 'No routines match';
+  const msg = favMode
+    ? 'Tap the star on any routine to save it here.'
+    : 'Try removing a filter or searching a different name.';
+
+  noResults.innerHTML =
+    `<div class="empty-icon">${favMode ? ICONS.star : ICONS.search}</div>` +
+    `<div class="empty-title">${title}</div>` +
+    `<div class="empty-msg">${msg}</div>` +
+    (actions.length ? '<div class="empty-actions"></div>' : '');
+
+  const box = noResults.querySelector('.empty-actions');
+  if (box) actions.forEach(a => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'empty-btn' + (a.primary ? ' primary' : '');
+    btn.textContent = a.label;
+    btn.addEventListener('click', a.fn);
+    box.appendChild(btn);
+  });
+}
 
 // ── Show / Type / Cat buttons ──
 showBtns.forEach(btn => {

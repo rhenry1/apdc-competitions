@@ -148,8 +148,12 @@ Foundation first (unblocks favorites, search, share-state):
   estimate only — shifts the displayed times… does not reflect official or live
   timing"); active status marked "· estimate"; persistence + "On Time" reset
   unchanged. Tests: `offset-disclaimer.spec.js`. **[ship-safe]**
-- **P1.8 Empty / error states** — polished states with next-actions (clear
-  filters, all days, disable favorites-only).
+- **P1.8 Empty / error states** — ✅ DONE (branch `v2-p1.8-empty-states`).
+  Structured empty state (icon + title + message + contextual action buttons):
+  no-match → "No routines match" + "Clear all filters" (+ "Show all days" when a
+  day is selected); favorites-only-empty → "No favorites yet" + "Browse all
+  routines". Class-toggle visibility so the flex layout applies. Tests:
+  `empty-states.spec.js`. (Offline/load-failure states belong to Phase 3.)
 - **P1.9 Accessibility pass** — semantic headings, focus states, aria-expanded/
   selected/dialog, screen-reader labels for icon buttons, keyboard nav.
 - **P1.10 Guardrail test** — banned live-timing phrase check (see constraint).
