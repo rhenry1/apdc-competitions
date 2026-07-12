@@ -110,9 +110,15 @@ Foundation first (unblocks favorites, search, share-state):
   resets show/type/studio/dancer/day — not the offset). Also hide any day section
   whose routines are all filtered out, so no empty sticky headers appear. Tests:
   `toolbar.spec.js`. **Favorites toggle** slot reserved for P1.6.
-- **P1.4 Unified search** — debounced, case-insensitive, punctuation-tolerant;
-  matches dancer/routine/studio/number/style/type/division/stage/props; one-tap
-  clear; composes with all filters.
+- **P1.4 Unified search** — ✅ DONE (branch `v2-p1.4-unified-search`). The main box
+  is now a debounced (120ms), case-insensitive, punctuation-tolerant free-text
+  search over a per-card `data-search` index (routineNumber/name/dancers/studio/
+  style/type/division/stage/props), token-ANDed and composed with every other
+  filter. Dancer-name matches still surface as suggestions so a dancer can be
+  pinned (pill + callout); pinning clears the query. One-tap clear (×) inside the
+  box; `activeSearch` resets via clear-all. Studio drawer input kept for exact
+  studio pills. Tests: `search.spec.js`. Note: some source routine titles contain
+  a ⭐ (U+2B50) — intentional program content, left as-is.
 - **P1.5 Filter drawer + active-filter chips** — mobile filter sheet with focus
   management; removable chips + Clear All; only show meaningful categories.
 - **P1.6 Favorites** — star action; localStorage keyed by `competitionId` +
