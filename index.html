@@ -357,6 +357,9 @@
   }
   .past-toggle[aria-expanded="true"] .chev { transform: rotate(180deg); }
   .past-rows[hidden] { display: none; }
+  /* Past rows are revealed on demand, not on load — no entrance fade (and a
+     display:none animate-in would otherwise sit at opacity:0 until expanded). */
+  .past-rows .comp-row { opacity: 1; animation: none; }
 </style>
 </head>
 <body style="background:#06041a;">
