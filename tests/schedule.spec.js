@@ -39,11 +39,12 @@ for (const { name, path } of PAGES) {
     });
 
     test('day filter narrows the schedule to that day only', async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' }); // drawer opens instantly
       await page.goto(path);
       await page.waitForLoadState('networkidle');
 
       const firstDayKey = await page.evaluate(() => COMPETITION_CONFIG.dayButtons[0].key);
-      await page.locator('#filter-toggle').click();
+      await page.locator('#filter-toggle').click(); // open drawer (day filters live inside)
       await page.click(`.day-btn[data-day="${firstDayKey}"]`);
 
       const days = await page
@@ -69,15 +70,17 @@ for (const { name, path } of PAGES) {
 
       await page.fill('#dancer-input', firstDancer);
       await page.locator('.dropdown-item').first().click();
-      await expect(page.locator('.dancer-pill')).toHaveCount(1);
+      // the pinned dancer now shows as a removable chip beneath the toolbar
+      const dancerChip = page.locator('#active-filters .filter-chip[data-chip^="dancer:"]');
+      await expect(dancerChip).toHaveCount(1);
       await expect(page.locator('#quinn-callout')).toBeVisible();
 
       const filteredCount = await page.locator('.routine-card:not(.hidden)').count();
       expect(filteredCount).toBeGreaterThan(0);
       expect(filteredCount).toBeLessThanOrEqual(totalCards);
 
-      await page.locator('.pill-clear').click();
-      await expect(page.locator('.dancer-pill')).toHaveCount(0);
+      await dancerChip.locator('.chip-remove').click();
+      await expect(dancerChip).toHaveCount(0);
       await expect(page.locator('.routine-card:not(.hidden)')).toHaveCount(totalCards);
     });
 
@@ -95,7 +98,9 @@ for (const { name, path } of PAGES) {
       await expect(page.locator('.offset-btn[data-delta="15"]')).toHaveAttribute('aria-pressed', 'true');
     });
 
-    test('More Filters toggle expands and shows an active-filter badge when collapsed', async ({ page }) => {
+    test('More Filters drawer shows an active-filter badge after a drawer filter is set', async ({ page }) => {
+      // reduced-motion collapses the drawer slide so interactions don't race the transition
+      await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.goto(path);
       await page.waitForLoadState('networkidle');
 
@@ -103,12 +108,13 @@ for (const { name, path } of PAGES) {
       await expect(toggle).toHaveAttribute('aria-expanded', 'false');
       await expect(page.locator('#filter-badge')).toBeHidden();
 
-      await toggle.click();
+      await toggle.click(); // opens the drawer
       await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+      await expect(page.locator('#filter-extra')).toHaveClass(/open/);
 
       const firstDayKey = await page.evaluate(() => COMPETITION_CONFIG.dayButtons[0].key);
       await page.click(`.day-btn[data-day="${firstDayKey}"]`);
-      await toggle.click(); // collapse again
+      await page.keyboard.press('Escape'); // close the drawer
 
       await expect(toggle).toHaveAttribute('aria-expanded', 'false');
       await expect(page.locator('#filter-badge')).toBeVisible();
@@ -135,10 +141,16 @@ for (const { name, path } of PAGES) {
       await page.goto(path);
       await page.waitForLoadState('networkidle');
 
-      const location = await page.evaluate(() => COMPETITION_CONFIG.location);
+      // location is a structured object now; the maps query is derived via
+      // window.APDC.mapsQuery() and the visible label via locationLabel().
+      const { query, label } = await page.evaluate(() => ({
+        query: window.APDC.mapsQuery(window.APDC.config().location),
+        label: window.APDC.locationLabel(window.APDC.config().location),
+      }));
       const href = await page.locator('#header-subtitle a').getAttribute('href');
       expect(href).toContain('maps');
-      expect(decodeURIComponent(href)).toContain(location);
+      expect(decodeURIComponent(href)).toContain(query);
+      await expect(page.locator('#header-subtitle a')).toContainText(label);
     });
 
     test('Share falls back to copying routine details to the clipboard', async ({ page, context }) => {
