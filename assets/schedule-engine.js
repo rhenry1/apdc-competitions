@@ -317,7 +317,7 @@ function buildSchedule() {
     section.innerHTML = `
       <div class="day-header">
         <div class="day-label">${ICONS.sparkle}${dayConf.label || ''}</div>
-        <div class="day-title">${dayConf.title || key}</div>
+        <h2 class="day-title">${dayConf.title || key}</h2>
         <div class="day-count">${dayConf.count || ''}</div>
       </div>
     `;
@@ -551,6 +551,35 @@ function applyFilters() {
   updateFavCount();
   updateClearAll();
   renderActiveFilters();
+  announceResults(visible);
+}
+
+// Screen-reader live announcement of how many routines are shown after a change.
+function announceResults(count) {
+  const sr = document.getElementById('sr-status');
+  if (!sr) return;
+  sr.textContent = count === 0
+    ? 'No routines match the current filters.'
+    : count + (count === 1 ? ' routine' : ' routines') + ' shown.';
+}
+
+// Inject a skip link and a screen-reader live region (keeps page markup DRY).
+function initA11y() {
+  if (!document.querySelector('.skip-link')) {
+    const skip = document.createElement('a');
+    skip.className = 'skip-link';
+    skip.href = '#main-content';
+    skip.textContent = 'Skip to schedule';
+    document.body.insertBefore(skip, document.body.firstChild);
+  }
+  if (!document.getElementById('sr-status')) {
+    const sr = document.createElement('div');
+    sr.id = 'sr-status';
+    sr.className = 'sr-only';
+    sr.setAttribute('role', 'status');
+    sr.setAttribute('aria-live', 'polite');
+    document.body.appendChild(sr);
+  }
 }
 
 // ── Callout ──
@@ -998,6 +1027,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const savedOffset = parseInt(localStorage.getItem(OFFSET_KEY));
   applyOffset(Number.isFinite(savedOffset) ? savedOffset : 0, { persist: false });
 
+  initA11y();
   initToolbar();
   initScheduleTools();
   initSearchClear();
