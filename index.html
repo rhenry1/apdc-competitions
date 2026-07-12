@@ -264,6 +264,99 @@
     font-size: 8px;
     color: rgba(255,255,255,0.55);
   }
+
+  /* ── NEXT-COMPETITION HERO ── */
+  .next-hero {
+    display: block; text-decoration: none; color: inherit;
+    position: relative; overflow: hidden;
+    margin: 8px 0 4px;
+    padding: 26px 24px 24px;
+    border-radius: 20px;
+    border: 1px solid rgba(196,181,253,0.14);
+    background:
+      linear-gradient(155deg, rgba(124,58,237,0.16) 0%, rgba(76,29,149,0.05) 55%, rgba(255,255,255,0.02) 100%);
+    box-shadow: 0 18px 48px -28px rgba(124,58,237,0.7);
+    -webkit-tap-highlight-color: transparent;
+    opacity: 0; animation: fadeUp 0.7s ease forwards 0.45s;
+  }
+  .next-hero::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(180deg, #a5b4fc 0%, #818cf8 100%);
+  }
+  .next-hero.accent-nationals::before {
+    background: linear-gradient(180deg, #fde68a 0%, #c084fc 100%);
+  }
+  .next-hero:active { transform: translateY(1px); }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(196,181,253,0.7); margin-bottom: 14px;
+  }
+  .hero-eyebrow .hero-live-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #4ade80;
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  .hero-type {
+    font-family: 'Inter', sans-serif; font-size: 8px; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(196,181,253,0.5); margin-bottom: 6px;
+  }
+  .next-hero.accent-nationals .hero-type { color: rgba(253,230,138,0.75); }
+  .hero-name {
+    font-family: 'Tenor Sans', serif; font-weight: 400;
+    font-size: clamp(24px, 6vw, 34px); letter-spacing: 0.01em;
+    line-height: 1.12; color: #fff; margin-bottom: 12px;
+  }
+  .hero-meta {
+    display: flex; flex-wrap: wrap; gap: 4px 16px;
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 300;
+    color: rgba(255,255,255,0.5); margin-bottom: 20px;
+  }
+  .hero-meta .map-link { color: rgba(255,255,255,0.5); }
+
+  .hero-foot {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+  }
+  .hero-countdown { display: flex; align-items: baseline; gap: 8px; }
+  .hero-days {
+    font-family: 'Tenor Sans', serif; font-size: 40px; line-height: 0.9;
+    color: #e0d4ff;
+  }
+  .hero-days-label {
+    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300;
+    letter-spacing: 0.06em; text-transform: uppercase; color: rgba(196,181,253,0.55);
+  }
+  .hero-weekend {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+    letter-spacing: 0.02em; color: #d8b4fe;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.03em; color: rgba(255,255,255,0.55);
+  }
+  .next-hero:hover .hero-cta { color: #fff; }
+  .hero-cta .arrow { font-size: 18px; }
+
+  /* ── COLLAPSIBLE PAST SEASON ── */
+  .past-toggle {
+    font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(196,181,253,0.5); background: none; border: none;
+    padding: 4px 2px; cursor: pointer; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: color 0.15s;
+  }
+  .past-toggle:hover, .past-toggle:focus-visible { color: #c4b5fd; }
+  .past-toggle .chev {
+    display: inline-block; transition: transform 0.2s ease;
+    font-size: 12px; line-height: 1;
+  }
+  .past-toggle[aria-expanded="true"] .chev { transform: rotate(180deg); }
+  .past-rows[hidden] { display: none; }
 </style>
 </head>
 <body style="background:#06041a;">
@@ -297,110 +390,188 @@
 
   </div>
 
-  <!-- ── 2026–2027 (upcoming season, shown first) ── -->
-  <div class="season-block">
-    <div class="season-label">
-      <span class="season-year">2026 – 2027 Season</span>
-      <div class="season-rule"></div>
-    </div>
+  <!-- Seasons + next-competition hero are rendered from assets/competitions.js -->
+  <div id="seasons"></div>
 
-    <div class="comp-row regional-row soon">
-      <div class="comp-inner">
-        <div class="comp-index">01</div>
-        <div class="comp-body">
-          <div class="comp-type">Regional</div>
-          <div class="comp-name">Regional Competition 1</div>
-          <div class="comp-details"><span>Spring 2027</span></div>
+  <noscript>
+    <div class="season-block">
+      <div class="season-label"><span class="season-year">Competitions</span><div class="season-rule"></div></div>
+      <a class="comp-row regional-row" href="regionals-spring-2027/">
+        <div class="comp-inner"><div class="comp-index">01</div>
+          <div class="comp-body"><div class="comp-type">Regionals</div>
+            <div class="comp-name">Turn It Up Regionals — Fall 2026</div>
+            <div class="comp-details"><span>October 11–12, 2026 · Cherry Hill, NJ</span></div>
+          </div><div class="comp-right"><div class="arrow">&rsaquo;</div></div>
         </div>
-        <div class="comp-right"><div class="soon-label">Soon</div></div>
-      </div>
-    </div>
-
-    <div class="comp-row regional-row soon">
-      <div class="comp-inner">
-        <div class="comp-index">02</div>
-        <div class="comp-body">
-          <div class="comp-type">Regional</div>
-          <div class="comp-name">Regional Competition 2</div>
-          <div class="comp-details"><span>Spring 2027</span></div>
+      </a>
+      <a class="comp-row nationals-row" href="nationals-2026/">
+        <div class="comp-inner"><div class="comp-index">00</div>
+          <div class="comp-body"><div class="comp-type">Nationals</div>
+            <div class="comp-name">Turn It Up Nationals 2026</div>
+            <div class="comp-details"><span>June 28 – July 3 · Long Branch, NJ</span></div>
+          </div><div class="comp-right"><div class="arrow">&rsaquo;</div></div>
         </div>
-        <div class="comp-right"><div class="soon-label">Soon</div></div>
-      </div>
+      </a>
     </div>
-
-    <div class="comp-row regional-row soon">
-      <div class="comp-inner">
-        <div class="comp-index">03</div>
-        <div class="comp-body">
-          <div class="comp-type">Regional</div>
-          <div class="comp-name">Regional Competition 3</div>
-          <div class="comp-details"><span>Spring 2027</span></div>
-        </div>
-        <div class="comp-right"><div class="soon-label">Soon</div></div>
-      </div>
-    </div>
-
-    <div class="comp-row nationals-row soon">
-      <div class="comp-inner">
-        <div class="comp-index">04</div>
-        <div class="comp-body">
-          <div class="comp-type">Nationals</div>
-          <div class="comp-name">Nationals 2027</div>
-          <div class="comp-details"><span>Summer 2027</span></div>
-        </div>
-        <div class="comp-right"><div class="soon-label">Soon</div></div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="season-gap"></div>
-
-  <!-- ── 2025–2026 (past season) ── -->
-  <div class="season-block">
-    <div class="season-label">
-      <span class="season-year">2025 – 2026 Season · Past</span>
-      <div class="season-rule"></div>
-    </div>
-
-    <a class="comp-row nationals-row completed" href="nationals-2026/">
-      <div class="comp-inner">
-        <div class="comp-index">00</div>
-        <div class="comp-body">
-          <div class="comp-type">Nationals</div>
-          <div class="comp-name">Turn It Up Nationals 2026</div>
-          <div class="comp-details">
-            <button type="button" class="map-link" data-address="Long Branch, NJ"></button>
-            <span>June 28 – July 3</span>
-          </div>
-          <div class="completed-badge" style="margin-top:12px;">
-            <span class="completed-check" id="completed-check"></span> Completed
-          </div>
-        </div>
-        <div class="comp-right">
-          <div class="arrow">›</div>
-        </div>
-      </div>
-    </a>
-  </div>
+  </noscript>
 
   <footer>rhenry1.github.io / apdc-competitions</footer>
 </div>
 
 <script src="assets/icons.js"></script>
+<script src="assets/competitions.js"></script>
 <script src="assets/pwa.js"></script>
 <script>
-  document.getElementById('completed-check').innerHTML = ICONS.check;
+  // ── Data-driven dashboard: next-competition hero + season lists ──
+  // Tests may pin "today" via window.__APDC_NOW so the countdown is deterministic.
+  function apdcNow() {
+    return window.__APDC_NOW ? new Date(window.__APDC_NOW) : new Date();
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  }
+  function accentClass(c) { return c.accent === 'nationals' ? 'accent-nationals' : 'accent-regional'; }
+  function rowAccent(c) { return c.accent === 'nationals' ? 'nationals-row' : 'regional-row'; }
+  function addr(c) { return [c.city, c.state].filter(Boolean).join(', '); }
 
-  document.querySelectorAll('.map-link').forEach(btn => {
-    const address = btn.dataset.address;
-    btn.innerHTML = ICONS.pin + address;
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(address), '_blank', 'noopener');
+  function heroHtml(c, now) {
+    const ph = APDCComps.phase(c, now);
+    let foot;
+    if (ph === 'during') {
+      foot =
+        '<div class="hero-weekend"><span class="hero-live-dot"></span>Competition Weekend</div>' +
+        '<span class="hero-cta">View schedule <span class="arrow">&rsaquo;</span></span>';
+    } else {
+      const d = APDCComps.daysUntil(c, now);
+      const label = d === 1 ? 'day to go' : 'days to go';
+      foot =
+        '<div class="hero-countdown"><span class="hero-days">' + d + '</span>' +
+        '<span class="hero-days-label">' + label + '</span></div>' +
+        '<span class="hero-cta">View schedule <span class="arrow">&rsaquo;</span></span>';
+    }
+    const eyebrow = ph === 'during'
+      ? '<span class="hero-eyebrow"><span class="hero-live-dot"></span>Happening this weekend</span>'
+      : '<span class="hero-eyebrow">Next Competition</span>';
+    const a = addr(c);
+    return (
+      '<a class="next-hero ' + accentClass(c) + '" href="' + esc(c.url) + '" aria-labelledby="next-hero-title">' +
+        eyebrow +
+        '<div class="hero-type">' + esc(c.type) + '</div>' +
+        '<h2 class="hero-name" id="next-hero-title">' + esc(c.name) + '</h2>' +
+        '<div class="hero-meta"><span>' + esc(c.dates) + '</span>' +
+          (a ? '<button type="button" class="map-link" data-address="' + esc(a) + '"></button>' : '') +
+        '</div>' +
+        '<div class="hero-foot">' + foot + '</div>' +
+      '</a>'
+    );
+  }
+
+  function seasonLabelHtml(label) {
+    return '<div class="season-label"><span class="season-year">' + esc(label) + '</span>' +
+           '<div class="season-rule"></div></div>';
+  }
+
+  function rowHtml(c, index, opts) {
+    opts = opts || {};
+    const a = addr(c);
+    const details = opts.completed
+      ? '<button type="button" class="map-link" data-address="' + esc(a) + '"></button>' +
+        '<span>' + esc(c.dates) + '</span>'
+      : '<span>' + esc(c.dates) + (a ? ' · ' + esc(a) : '') + '</span>';
+    const badge = opts.completed
+      ? '<div class="completed-badge" style="margin-top:12px;">' +
+        '<span class="completed-check"></span> Completed</div>'
+      : '';
+    const right = '<div class="comp-right"><div class="arrow">&rsaquo;</div></div>';
+    return (
+      '<a class="comp-row ' + rowAccent(c) + (opts.completed ? ' completed' : '') + '" href="' + esc(c.url) + '">' +
+        '<div class="comp-inner"><div class="comp-index">' + index + '</div>' +
+          '<div class="comp-body"><div class="comp-type">' + esc(c.type) + '</div>' +
+            '<div class="comp-name">' + esc(c.name) + '</div>' +
+            '<div class="comp-details">' + details + '</div>' + badge +
+          '</div>' + right +
+        '</div>' +
+      '</a>'
+    );
+  }
+
+  function groupBySeason(list) {
+    const groups = [];
+    list.forEach(c => {
+      let g = groups.find(x => x.label === c.seasonLabel);
+      if (!g) { g = { label: c.seasonLabel, comps: [] }; groups.push(g); }
+      g.comps.push(c);
     });
-  });
+    return groups;
+  }
+
+  function renderDashboard() {
+    const now = apdcNow();
+    const heroComp = APDCComps.next(now);
+    let html = '';
+    let idx = 0;
+
+    // Upcoming (and in-progress) seasons — the global "next" comp is the hero.
+    groupBySeason(APDCComps.upcoming(now)).forEach(g => {
+      html += '<div class="season-block">' + seasonLabelHtml(g.label);
+      g.comps.forEach(c => {
+        if (c === heroComp) html += heroHtml(c, now);
+        else html += rowHtml(c, String(++idx).padStart(2, '0'));
+      });
+      html += '</div>';
+    });
+
+    // Past seasons — collapsible, de-emphasized.
+    const pastGroups = groupBySeason(APDCComps.past(now));
+    pastGroups.forEach(g => {
+      const rows = g.comps.map(c => rowHtml(c, '00', { completed: true })).join('');
+      html +=
+        '<div class="season-block past-block">' +
+          '<div class="season-label">' +
+            '<span class="season-year">' + esc(g.label) + ' · Past</span>' +
+            '<button type="button" class="past-toggle" aria-expanded="false" aria-controls="past-rows">' +
+              '<span class="past-toggle-text">Show</span><span class="chev">&#8964;</span>' +
+            '</button>' +
+            '<div class="season-rule"></div>' +
+          '</div>' +
+          '<div class="past-rows" id="past-rows" hidden>' + rows + '</div>' +
+        '</div>';
+    });
+
+    document.getElementById('seasons').innerHTML = html;
+
+    // Icons + collapse wiring for the freshly rendered nodes.
+    const firstCheck = document.querySelector('.completed-check');
+    if (firstCheck) firstCheck.id = 'completed-check';
+    document.querySelectorAll('.completed-check').forEach(el => { el.innerHTML = ICONS.check; });
+    const toggle = document.querySelector('.past-toggle');
+    if (toggle) {
+      const rows = document.getElementById('past-rows');
+      const txt = toggle.querySelector('.past-toggle-text');
+      toggle.addEventListener('click', () => {
+        const open = rows.hasAttribute('hidden');
+        if (open) { rows.removeAttribute('hidden'); toggle.setAttribute('aria-expanded', 'true'); txt.textContent = 'Hide'; }
+        else { rows.setAttribute('hidden', ''); toggle.setAttribute('aria-expanded', 'false'); txt.textContent = 'Show'; }
+      });
+    }
+    wireMapLinks();
+  }
+
+  function wireMapLinks() {
+    document.querySelectorAll('.map-link').forEach(btn => {
+      if (btn.dataset.wired) return;
+      btn.dataset.wired = '1';
+      const address = btn.dataset.address;
+      btn.innerHTML = ICONS.pin + address;
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(address), '_blank', 'noopener');
+      });
+    });
+  }
+
+  renderDashboard();
 
   window.addEventListener('DOMContentLoaded', () => {
     const btnWrap  = document.getElementById('install-btn-wrap');
