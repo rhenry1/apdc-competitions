@@ -291,10 +291,21 @@ merge. Landed as one CI-gated PR:
 
 ## Phase 3 — PWA & offline polish
 
-- **P3.1 Full offline shell** — cache engine JS/CSS (`schedule-engine.js`,
-  `schedule-theme.css`, `tokens.css`, `competitions.js`) + competition pages +
-  schedule data + repo-hosted resources (never external livestream video).
-  Fixes gap #1 (the last must-fix from discovery).
+- **P3.1 Full offline shell** — ✅ DONE (branch `v2-p3.1-offline`). Root cause
+  found: the SW hardcoded `/apdc-competitions`, so `cache.addAll` 404'd on any
+  other origin root and **install silently failed everywhere but production** —
+  offline was also untestable. The base is now derived from
+  `self.registration.scope`. Precache covers the full shell: hub + both
+  competition pages (schedule data is embedded in them) + `tokens.css`,
+  `schedule-theme.css`, `schedule-engine.js`, `competitions.js`, icons/pwa
+  assets, manifest, favicons. Fetch handler now handles only **same-origin
+  GETs** (fonts + external livestream go straight to network, non-GETs are
+  uncacheable), caches only `response.ok`, and for navigations falls back with
+  `ignoreSearch` so deep links (`?routine=…`, `?day=…`) open offline, then to
+  the hub. Cache bumped to `apdc-v3`. Network-first stays (fresh when online).
+  Tests: `offline.spec.js` — real SW install → precache → `setOffline(true)` →
+  a page never visited online renders its schedule; deep link restores its
+  filter offline. Fixes gap #1.
 - **P3.2 Offline indicator** — subtle banner; keep serving cached schedule.
   (Pairs with the V2.5 skeleton: offline with a cache hit should render the
   schedule, not the skeleton.)
