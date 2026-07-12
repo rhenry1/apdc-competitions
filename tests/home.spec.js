@@ -28,13 +28,14 @@ test.describe('homepage', () => {
     await page.goto('/index.html');
     await page.waitForLoadState('networkidle');
 
-    const address = await page.locator('.map-link').getAttribute('data-address');
+    const mapLink = page.locator('.map-link').first();
+    const address = await mapLink.getAttribute('data-address');
 
     // Stub window.open to capture the intended URL without actually
     // navigating anywhere — avoids depending on real network access to
     // maps.google.com from the test environment.
     await page.evaluate(() => { window.__openedUrl = null; window.open = (url) => { window.__openedUrl = url; return null; }; });
-    await page.locator('.map-link').click();
+    await mapLink.click();
     const openedUrl = await page.evaluate(() => window.__openedUrl);
 
     expect(openedUrl).toContain('maps');

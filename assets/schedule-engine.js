@@ -163,7 +163,7 @@ function renderRoutineCard(r, dayKey, dayConf) {
 
   const [shareBtn, calendarBtn] = card.querySelectorAll('.card-action-btn');
   shareBtn.addEventListener('click', (e) => { e.stopPropagation(); shareRoutine(r, dayConf); });
-  calendarBtn.addEventListener('click', (e) => { e.stopPropagation(); downloadICS(r, dayConf); });
+  calendarBtn.addEventListener('click', (e) => { e.stopPropagation(); downloadICS(r); });
   card.querySelector('.card-fav').addEventListener('click', (e) => { e.stopPropagation(); toggleFavorite(r.id, card); });
 
   return card;
@@ -196,6 +196,30 @@ function updateFavCount() {
   badge.style.display = n > 0 ? '' : 'none';
 }
 
+// In the Favorites view (and only when there are favorites), offer a one-tap
+// export of every favorited routine as a single calendar file.
+function updateFavExportBar() {
+  const show = activeFilter === 'favorites' && favoriteCount() > 0;
+  let bar = document.getElementById('fav-export-bar');
+  if (!show) { if (bar) bar.remove(); return; }
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'fav-export-bar';
+    bar.className = 'fav-export-bar';
+    const af = document.getElementById('active-filters');
+    if (af && af.parentNode) af.parentNode.insertBefore(bar, af.nextSibling);
+    else {
+      const main = document.querySelector('main') || document.body;
+      main.insertBefore(bar, main.firstChild);
+    }
+  }
+  const n = favoriteCount();
+  bar.innerHTML =
+    `<span class="fav-export-count">${n} favorite${n === 1 ? '' : 's'}</span>` +
+    `<button type="button" class="fav-export-btn">${ICONS.calendar}<span>Add all to calendar</span></button>`;
+  bar.querySelector('.fav-export-btn').addEventListener('click', exportFavoritesICS);
+}
+
 // ── Share + Add to Calendar ──
 function showToast(message) {
   let toast = document.getElementById('action-toast');
@@ -213,18 +237,20 @@ function showToast(message) {
 }
 
 async function shareRoutine(r, dayConf) {
+  const url = buildRoutineShareURL(r.id);
   const text = `${r.routineName} — ${dayConf.title || ''} at ${r.scheduledTime}` +
     (r.stage ? ` (Stage ${r.stage})` : '') +
     (r.dancersText ? `\n${r.dancersText}` : '') +
     `\n${COMPETITION_CONFIG.name}`;
 
   if (navigator.share) {
-    try { await navigator.share({ title: r.routineName, text }); } catch (e) { /* user cancelled */ }
+    try { await navigator.share({ title: r.routineName, text, url }); } catch (e) { /* user cancelled */ }
     return;
   }
   try {
-    await navigator.clipboard.writeText(text);
-    showToast('Copied to clipboard');
+    // Clipboard fallback carries the deep link so the recipient lands on the card.
+    await navigator.clipboard.writeText(text + '\n' + url);
+    showToast('Link copied to clipboard');
   } catch (e) {
     showToast('Could not copy — try again');
   }
@@ -239,42 +265,53 @@ function icsDateTime(date) {
   return `${date.getFullYear()}${p(date.getMonth() + 1)}${p(date.getDate())}T${p(date.getHours())}${p(date.getMinutes())}00`;
 }
 
-function downloadICS(r, dayConf) {
-  const scheduledDate = r.scheduledDate || (dayConf && dayConf.date);
-  if (!scheduledDate) { showToast('Date unavailable for this routine'); return; }
+function icsSlug(s, max) {
+  return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, max || 60);
+}
 
+// A routine's start/end as Date objects (15-min reminder block), or null if the
+// date is unknown.
+function routineStartEnd(r) {
+  const scheduledDate = r.scheduledDate;
+  if (!scheduledDate) return null;
   const [timePart, ampm] = r.scheduledTime.trim().split(' ');
   let [hour, minute] = timePart.split(':').map(Number);
   if (ampm === 'pm' && hour !== 12) hour += 12;
   if (ampm === 'am' && hour === 12) hour = 0;
-
   const [y, mo, d] = scheduledDate.split('-').map(Number);
   const start = new Date(y, mo - 1, d, hour, minute);
-  const end = new Date(start.getTime() + 15 * 60000); // short reminder block — routines run just a few minutes
+  return { start, end: new Date(start.getTime() + 15 * 60000) };
+}
 
+// One VEVENT (array of lines) for a routine, or null if it has no date.
+function buildVEvent(r) {
+  const se = routineStartEnd(r);
+  if (!se) return null;
   const description = [r.dancersText, r.formatTag, r.stage ? `Stage ${r.stage}` : '',
     'Scheduled time — competition times may change. Arrive a few minutes early.']
     .filter(Boolean).join('\n');
-
-  const ics = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//APDC Competitions//EN',
+  return [
     'BEGIN:VEVENT',
     `UID:${r.id}@apdc-competitions`,
-    `DTSTART:${icsDateTime(start)}`,
-    `DTEND:${icsDateTime(end)}`,
+    `DTSTART:${icsDateTime(se.start)}`,
+    `DTEND:${icsDateTime(se.end)}`,
     `SUMMARY:${icsEscape(r.routineName + (r.routineNumber ? ` (#${r.routineNumber})` : '') + ' — ' + COMPETITION_CONFIG.name)}`,
     `DESCRIPTION:${icsEscape(description)}`,
     `LOCATION:${icsEscape(locationLabel(COMPETITION_CONFIG.location))}`,
     'END:VEVENT',
-    'END:VCALENDAR'
-  ].join('\r\n');
+  ];
+}
 
+function wrapICS(eventLineArrays) {
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//APDC Competitions//EN']
+    .concat(...eventLineArrays)
+    .concat(['END:VCALENDAR'])
+    .join('\r\n');
+}
+
+function triggerICSDownload(ics, filename) {
   const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
   const url = URL.createObjectURL(blob);
-  const filename = `${r.routineNumber || 'routine'}-${r.routineName}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) + '.ics';
-
   const a = document.createElement('a');
   a.href = url;
   a.download = filename;
@@ -282,6 +319,39 @@ function downloadICS(r, dayConf) {
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function downloadICS(r) {
+  const ev = buildVEvent(r);
+  if (!ev) { showToast('Date unavailable for this routine'); return; }
+  triggerICSDownload(wrapICS([ev]), `${r.routineNumber || 'routine'}-${icsSlug(r.routineName)}.ics`);
+}
+
+// Export every favorited routine as a single multi-event calendar file.
+function exportFavoritesICS() {
+  const events = allRoutines.filter(r => favorites.has(r.id)).map(buildVEvent).filter(Boolean);
+  if (!events.length) { showToast('No favorites to export yet'); return; }
+  triggerICSDownload(wrapICS(events), `${icsSlug(COMPETITION_CONFIG.name)}-favorites.ics`);
+  showToast(`Exported ${events.length} favorite${events.length === 1 ? '' : 's'} to calendar`);
+}
+
+// A quiet "Schedule updated <date>" line in the header, shown only when the
+// config carries a real lastUpdated date. It reflects when the published
+// schedule data was last edited — not any live/day-of timing.
+function renderLastUpdated() {
+  const lu = COMPETITION_CONFIG.lastUpdated;
+  const host = document.querySelector('.header-inner');
+  let el = document.getElementById('last-updated');
+  if (!lu) { if (el) el.remove(); return; }
+  const d = new Date(lu + 'T00:00:00');
+  const fmt = isNaN(d) ? lu : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  if (!el && host) {
+    el = document.createElement('p');
+    el.id = 'last-updated';
+    el.className = 'last-updated';
+    host.appendChild(el);
+  }
+  if (el) el.textContent = 'Schedule updated ' + fmt;
 }
 
 function buildSchedule() {
@@ -292,6 +362,7 @@ function buildSchedule() {
     ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery(COMPETITION_CONFIG.location))}" target="_blank" rel="noopener noreferrer">${ICONS.pin}${locLabel}</a> &middot; `
     : '';
   document.getElementById('header-subtitle').innerHTML = locHtml + (COMPETITION_CONFIG.dates || '');
+  renderLastUpdated();
 
   const dayRow = document.getElementById('day-filter-row');
   COMPETITION_CONFIG.dayButtons.forEach(btn => {
@@ -317,7 +388,7 @@ function buildSchedule() {
     section.innerHTML = `
       <div class="day-header">
         <div class="day-label">${ICONS.sparkle}${dayConf.label || ''}</div>
-        <div class="day-title">${dayConf.title || key}</div>
+        <h2 class="day-title">${dayConf.title || key}</h2>
         <div class="day-count">${dayConf.count || ''}</div>
       </div>
     `;
@@ -545,16 +616,43 @@ function applyFilters() {
 
   renderCallout();
   const empty = visible === 0;
-  if (empty) {
-    noResults.textContent = activeFilter === 'favorites'
-      ? 'No favorites yet. Tap the star on any routine to add it to your favorites.'
-      : 'No routines match this filter.';
-  }
-  noResults.style.display = empty ? 'block' : 'none';
+  if (empty) renderEmptyState();
+  noResults.classList.toggle('is-visible', empty);
   updateFilterBadge();
   updateFavCount();
+  updateFavExportBar();
   updateClearAll();
   renderActiveFilters();
+  announceResults(visible);
+  syncURL();
+}
+
+// Screen-reader live announcement of how many routines are shown after a change.
+function announceResults(count) {
+  const sr = document.getElementById('sr-status');
+  if (!sr) return;
+  sr.textContent = count === 0
+    ? 'No routines match the current filters.'
+    : count + (count === 1 ? ' routine' : ' routines') + ' shown.';
+}
+
+// Inject a skip link and a screen-reader live region (keeps page markup DRY).
+function initA11y() {
+  if (!document.querySelector('.skip-link')) {
+    const skip = document.createElement('a');
+    skip.className = 'skip-link';
+    skip.href = '#main-content';
+    skip.textContent = 'Skip to schedule';
+    document.body.insertBefore(skip, document.body.firstChild);
+  }
+  if (!document.getElementById('sr-status')) {
+    const sr = document.createElement('div');
+    sr.id = 'sr-status';
+    sr.className = 'sr-only';
+    sr.setAttribute('role', 'status');
+    sr.setAttribute('aria-live', 'polite');
+    document.body.appendChild(sr);
+  }
 }
 
 // ── Callout ──
@@ -801,6 +899,49 @@ studioInput.addEventListener('focus', () => renderStudioDropdown(studioInput.val
 studioInput.addEventListener('blur',  () => setTimeout(() => studioDropdown.classList.remove('open'), 200));
 studioClearBtn.addEventListener('click', () => { activeStudios = []; renderStudioPills(); applyFilters(); });
 
+// ── Empty state (no routines visible) ──
+function renderEmptyState() {
+  const favMode = activeFilter === 'favorites';
+  const actions = [];
+  if (favMode) {
+    actions.push({ label: 'Browse all routines', primary: true, fn: () => {
+      activeFilter = 'all';
+      setActiveInGroup(showBtns, document.querySelector('.show-btn[data-filter="all"]'));
+      applyFilters();
+    }});
+  } else if (hasActiveFilters()) {
+    actions.push({ label: 'Clear all filters', primary: true, fn: clearAllFilters });
+    if (activeDay !== 'all') {
+      actions.push({ label: 'Show all days', primary: false, fn: () => {
+        activeDay = 'all';
+        setActiveInGroup(document.querySelectorAll('.day-btn'), document.querySelector('.day-btn[data-day="all"]'));
+        applyFilters();
+      }});
+    }
+  }
+
+  const title = favMode ? 'No favorites yet' : 'No routines match';
+  const msg = favMode
+    ? 'Tap the star on any routine to save it here.'
+    : 'Try removing a filter or searching a different name.';
+
+  noResults.innerHTML =
+    `<div class="empty-icon">${favMode ? ICONS.star : ICONS.search}</div>` +
+    `<div class="empty-title">${title}</div>` +
+    `<div class="empty-msg">${msg}</div>` +
+    (actions.length ? '<div class="empty-actions"></div>' : '');
+
+  const box = noResults.querySelector('.empty-actions');
+  if (box) actions.forEach(a => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'empty-btn' + (a.primary ? ' primary' : '');
+    btn.textContent = a.label;
+    btn.addEventListener('click', a.fn);
+    box.appendChild(btn);
+  });
+}
+
 // ── Show / Type / Cat buttons ──
 showBtns.forEach(btn => {
   btn.addEventListener('click', () => {
@@ -952,6 +1093,92 @@ window.APDC = {
   locationLabel, mapsQuery, normalizeRoutine
 };
 
+// ── Deep links (shareable filter + routine state in the URL) ──
+// Non-sensitive view state (day, pinned dancers/studios, search text, the Props
+// category) is mirrored into the query string so a link reproduces the view.
+// Favorites are private/local-only and are never encoded. A single-routine link
+// (?routine=<id>) opens cleanly and scrolls/highlights that card.
+let _restoringURL = false;
+let _pendingRoutineFocus = null;
+
+function currentStateQuery() {
+  const p = new URLSearchParams();
+  if (activeDay && activeDay !== 'all') p.set('day', activeDay);
+  activeDancers.forEach(n => p.append('dancer', n));
+  activeStudios.forEach(s => p.append('studio', s));
+  if (activeSearch) p.set('q', activeSearch);
+  if (activeFilter === 'props') p.set('cat', 'props');
+  return p;
+}
+
+function syncURL() {
+  if (_restoringURL || typeof history === 'undefined' || !history.replaceState) return;
+  const qs = currentStateQuery().toString();
+  history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
+}
+
+function buildRoutineShareURL(id) {
+  return location.origin + location.pathname + '?routine=' + encodeURIComponent(id);
+}
+
+function restoreFromURL() {
+  const p = new URLSearchParams(location.search);
+  if (![...p.keys()].length) return;
+  _restoringURL = true;
+
+  // A single-routine deep link is handled after the first render (focus only),
+  // deliberately ignoring any filter params so the card is always reachable.
+  const routine = p.get('routine');
+  if (routine) { _pendingRoutineFocus = routine; _restoringURL = false; return; }
+
+  const day = p.get('day');
+  if (day && day !== 'all') {
+    const btn = document.querySelector('.day-btn[data-day="' + (window.CSS && CSS.escape ? CSS.escape(day) : day) + '"]');
+    if (btn) { setActiveInGroup(document.querySelectorAll('.day-btn'), btn); activeDay = day; }
+  }
+  if (p.get('cat') === 'props') {
+    const btn = document.querySelector('.show-btn[data-filter="props"]');
+    if (btn) { setActiveInGroup(showBtns, btn); activeFilter = 'props'; }
+  }
+  const validDancers = new Set(allDancers);
+  p.getAll('dancer').forEach(n => { if (validDancers.has(n) && !activeDancers.includes(n)) activeDancers.push(n); });
+  const validStudios = new Set(allStudios);
+  p.getAll('studio').forEach(s => { if (validStudios.has(s) && !activeStudios.includes(s)) activeStudios.push(s); });
+  const q = p.get('q');
+  if (q) { activeSearch = q; if (dancerInput) { dancerInput.value = q; updateSearchClear(); } }
+
+  // Pinned dancers supersede the category selector (mirrors addDancer()).
+  if (activeDancers.length && activeFilter !== 'props') activeFilter = 'all';
+  _restoringURL = false;
+}
+
+function focusPendingRoutine() {
+  if (!_pendingRoutineFocus) return;
+  const id = _pendingRoutineFocus; _pendingRoutineFocus = null;
+  const card = document.querySelector('.routine-card[data-routine-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+  if (!card) return;
+  card.classList.remove('hidden');
+  const sec = card.closest('.day-section');
+  if (sec) { sec.style.display = ''; sec.classList.remove('hidden'); }
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  card.classList.add('deep-target');
+  // Keep the spotlight until the user does anything (scroll/tap/key), rather
+  // than on a fixed timer — so a slow load never clears it before it's seen.
+  // Arm the dismissers slightly late so the initial programmatic scroll doesn't
+  // immediately clear it.
+  const clear = () => {
+    card.classList.remove('deep-target');
+    window.removeEventListener('scroll', clear);
+    window.removeEventListener('pointerdown', clear);
+    window.removeEventListener('keydown', clear);
+  };
+  setTimeout(() => {
+    window.addEventListener('scroll', clear, { once: true, passive: true });
+    window.addEventListener('pointerdown', clear, { once: true });
+    window.addEventListener('keydown', clear, { once: true });
+  }, 900);
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   buildSchedule();
   document.querySelectorAll('.day-section').forEach(s => { s.style.display = ''; s.classList.remove('hidden'); });
@@ -959,11 +1186,14 @@ window.addEventListener('DOMContentLoaded', () => {
   const savedOffset = parseInt(localStorage.getItem(OFFSET_KEY));
   applyOffset(Number.isFinite(savedOffset) ? savedOffset : 0, { persist: false });
 
+  initA11y();
   initToolbar();
   initScheduleTools();
   initSearchClear();
   initActiveFilters();
   initFilterDrawer();
+  restoreFromURL();
   applyFilters();
+  focusPendingRoutine();
   APDCPwa.initServiceWorker('../service-worker.js');
 });

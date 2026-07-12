@@ -148,29 +148,95 @@ Foundation first (unblocks favorites, search, share-state):
   estimate only — shifts the displayed times… does not reflect official or live
   timing"); active status marked "· estimate"; persistence + "On Time" reset
   unchanged. Tests: `offset-disclaimer.spec.js`. **[ship-safe]**
-- **P1.8 Empty / error states** — polished states with next-actions (clear
-  filters, all days, disable favorites-only).
-- **P1.9 Accessibility pass** — semantic headings, focus states, aria-expanded/
-  selected/dialog, screen-reader labels for icon buttons, keyboard nav.
-- **P1.10 Guardrail test** — banned live-timing phrase check (see constraint).
+- **P1.8 Empty / error states** — ✅ DONE (branch `v2-p1.8-empty-states`).
+  Structured empty state (icon + title + message + contextual action buttons):
+  no-match → "No routines match" + "Clear all filters" (+ "Show all days" when a
+  day is selected); favorites-only-empty → "No favorites yet" + "Browse all
+  routines". Class-toggle visibility so the flex layout applies. Tests:
+  `empty-states.spec.js`. (Offline/load-failure states belong to Phase 3.)
+- **P1.9 Accessibility pass** — ✅ DONE (branch `v2-p1.9-a11y`). Day titles
+  promoted from `<div>` to `<h2.day-title>` so each page is a single `<h1>` +
+  section `<h2>`s. Skip link injected as the first focusable element (targets
+  `#main-content`). Icon-free labelling: `aria-label` on the search + studio
+  inputs; `role="group"` + `aria-label` on the type row (`#cat-row`), day row
+  (`#day-filter-row`), and offset buttons. Result count announced through a
+  polite `#sr-status` aria-live region on every filter apply. `.sr-only` +
+  `.skip-link` styles added. Tests: `a11y.spec.js` (5 × 2 pages). (Drawer
+  focus-trap/dialog semantics stay in `filter-drawer.spec.js`; aria-pressed in
+  the filter specs.)
+- **P1.10 Guardrail test** — ✅ DONE (branch `v2-p1.10-guardrail`). Enforces the
+  non-negotiable no-live-timing constraint. `no-live-timing.spec.js` scans both
+  the **rendered** pages (root + both competition pages) and the **source**
+  (`schedule-engine.js` + page HTML) for banned affirmative claims: "now/
+  currently performing", "up next / next up", "running ahead/behind", "ahead/
+  behind/on schedule", "routines remaining/left", "live countdown", per-routine
+  "countdown to…", "actual/official start time", "live start/timing/schedule/
+  update", and backstage-arrival phrasing. The approved offset disclaimer
+  ("does not reflect official or live timing") is stripped before matching so it
+  never trips the check, and date-based countdowns stay allowed. **Completes
+  Phase 1.**
 
 ## Phase 2 — Competition dashboard & resources
 
-- **P2.1 Landing dashboard** — next-competition hero card with date-based
-  countdown + "Competition Weekend" label when today ∈ date range; upcoming cards
-  with published/disabled states; collapsible past-season section.
-- **P2.2 Competition overview page** — data-driven fields (venue, address, website,
-  livestream, hotel, parking, arrival, awards, notes, docs, last-updated); no
-  empty placeholder rows.
-- **P2.3 Resources section** — data-driven resource cards; external links labeled.
-- **P2.4 Sharing + deep links** — encode non-sensitive filter/day/dancer state in
-  URL query params; restore on load; native share sheet + copy-link fallback;
-  add meta description + OG/Twitter tags + share image.
-- **P2.5 Calendar export expansion** — whole competition range, all favorites,
-  awards sessions; events carry change-disclaimer.
-- **P2.6 Last-updated messaging.**
-- **P2.7 Bottom navigation / IA** — Home / Schedule / Favorites / More; hide
-  destinations with no content; safe-area aware.
+- **P2.1 Landing dashboard** — ✅ DONE (branch `v2-p2.1-dashboard`). New
+  `assets/competitions.js` is the single source of truth (public fields mirror
+  each page's `COMPETITION_CONFIG`); phase (before/during/past) is derived from
+  today's date, not a static flag. The homepage now renders from it: a
+  **next-competition hero** with a date-based day countdown ("N days to go"),
+  swapping to a **"Competition Weekend"** label while today ∈ the date range;
+  the featured comp is not duplicated as a row; a **collapsible past-season**
+  section (collapsed by default, `aria-expanded` toggle). Replaces the stale
+  hardcoded rows (which had fabricated "Regional 1/2/3" placeholders and didn't
+  even link the real upcoming event). `<noscript>` fallback lists both comps.
+  "today" is overridable via `window.__APDC_NOW` for deterministic tests. Tests:
+  `dashboard.spec.js`; `home.spec.js` updated. Countdown is date-based only —
+  passes the P1.10 guardrail.
+- **P2.2 Competition overview page** — ⏸ DEFERRED (pending data). The
+  publicly-known fields are already surfaced on the schedule page — location
+  (with maps link) + date range in the header subtitle, livestream + password in
+  the livestream bar, and now last-updated (P2.6). The remaining overview fields
+  (venue name, hotel, parking, arrival, awards, notes, docs) are empty in both
+  configs, so a dedicated overview would be mostly empty rows — which the spec
+  forbids. Revisit once real venue/logistics data exists; the manifest
+  (`competitions.js`) is ready to carry it.
+- **P2.3 Resources section** — ⏸ DEFERRED (pending data). `resources: []` is
+  empty for both competitions and there are no real resource links to show yet.
+  Building an empty-only renderer now would add untestable, invisible UI.
+  Revisit when resource URLs exist.
+- **P2.4 Sharing + deep links** — ✅ DONE (branch `v2-p2.4-sharing`). Non-sensitive
+  view state (day, pinned dancers/studios, search text, the Props category) is
+  mirrored into the URL via `history.replaceState` on every `applyFilters` and
+  restored on load (`restoreFromURL` before the first render). Favorites stay
+  private/local — never encoded. A `?routine=<id>` deep link opens cleanly
+  (ignores filters so the card is always reachable), scrolls to it, and
+  spotlights it (`.deep-target`, cleared on first user interaction). Per-card
+  Share now carries that deep link (native share `url` + clipboard fallback
+  "Link copied"). Added meta description + canonical + OpenGraph/Twitter tags
+  and a generated branded 1200×630 `og-image.png` on all three pages. Tests:
+  `deep-links.spec.js`, `meta.spec.js`. (Ordered ahead of P2.2/P2.3 because it
+  ships with existing data and matches the earlier "share routine cards"
+  request; overview/resources fields are still mostly empty.)
+- **P2.5 Calendar export expansion** — ✅ DONE (branch `v2-p2.5-calendar`). The
+  ICS builder was refactored into `buildVEvent`/`wrapICS`/`triggerICSDownload`
+  so a single file can hold many events. In the Favorites view (and only when
+  favorites exist) a `#fav-export-bar` offers **"Add all to calendar"**, which
+  downloads every favorited routine as one multi-event `.ics` (`…-favorites.ics`).
+  Each event keeps the "competition times may change" disclaimer — no live/
+  official timing. Per-card export unchanged. Tests: `calendar-export.spec.js`.
+  (Whole-day / awards-session export can follow if requested; favorites cover
+  the common "my dancer's routines" case.)
+- **P2.6 Last-updated messaging** — ✅ DONE (branch `v2-p2.6-lastupdated`). Both
+  configs carry a real `lastUpdated` date; `renderLastUpdated()` shows a quiet
+  "Schedule updated <Mon D, YYYY>" line in the header, only when the date is
+  present. Reflects when the published data was edited — not day-of timing
+  (passes the P1.10 guardrail). Tests: `last-updated.spec.js`.
+- **P2.7 Bottom navigation / IA** — ⏸ DEFERRED (redundant for now). The app is
+  effectively two screens (home + a competition schedule); on the schedule page
+  the sticky toolbar already exposes All / Props / Favorites + search, and the
+  header has a Home ("All Competitions") back-link. A persistent bottom nav would
+  duplicate those and add layout/safe-area risk right before the `main` merge.
+  Revisit if the IA grows to more real destinations (e.g. a populated overview or
+  resources page from P2.2/P2.3).
 
 ## Phase 3 — PWA & offline polish
 
