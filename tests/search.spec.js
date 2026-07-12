@@ -41,6 +41,7 @@ for (const { name, path } of PAGES) {
     });
 
     test('search composes with the day filter', async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' }); // day filters live in the drawer
       await page.goto(path);
       await page.waitForLoadState('networkidle');
 
@@ -77,7 +78,7 @@ for (const { name, path } of PAGES) {
       await page.locator('.dropdown-item').first().click();
       await page.waitForTimeout(150);
 
-      await expect(page.locator('.dancer-pill')).toHaveCount(1);
+      await expect(page.locator('#active-filters .filter-chip[data-chip^="dancer:"]')).toHaveCount(1);
       await expect(page.locator('#dancer-input')).toHaveValue('');
       await expect(page.locator('#quinn-callout')).toBeVisible();
     });

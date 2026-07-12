@@ -119,8 +119,18 @@ Foundation first (unblocks favorites, search, share-state):
   box; `activeSearch` resets via clear-all. Studio drawer input kept for exact
   studio pills. Tests: `search.spec.js`. Note: some source routine titles contain
   a ⭐ (U+2B50) — intentional program content, left as-is.
-- **P1.5 Filter drawer + active-filter chips** — mobile filter sheet with focus
-  management; removable chips + Clear All; only show meaningful categories.
+- **P1.5 Filter drawer + active-filter chips** — ✅ DONE (branch
+  `v2-p1.5-filter-drawer`). The More Filters accordion became an accessible
+  bottom-sheet **drawer**: the engine relocates `#filter-extra` to `<body>`
+  (so `position:fixed` isn't captured by the toolbar's `backdrop-filter`),
+  adds a header + close button + backdrop, `role=dialog`/`aria-modal`, focus
+  move-in + trap, Escape + backdrop close, and focus return to the trigger.
+  Studio/Type/Day live inside it; the sticky toolbar stays compact. Added a
+  unified **active-filter chips** row beneath the toolbar (`#active-filters`)
+  with removable chips for dancers, studios, search, props, type, and day —
+  replacing the old in-toolbar dancer pill-row and in-drawer studio pills, so
+  each filter shows in exactly one place. Tests: `filter-drawer.spec.js`;
+  updated dancer-pill/badge/day tests to the chip + drawer model.
 - **P1.6 Favorites** — star action; localStorage keyed by `competitionId` +
   routine `id` (safe across identical names in different competitions);
   favorites-only view; guided empty state. Privacy: never leaves the device.
