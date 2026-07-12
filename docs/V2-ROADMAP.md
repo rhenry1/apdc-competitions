@@ -131,9 +131,18 @@ Foundation first (unblocks favorites, search, share-state):
   replacing the old in-toolbar dancer pill-row and in-drawer studio pills, so
   each filter shows in exactly one place. Tests: `filter-drawer.spec.js`;
   updated dancer-pill/badge/day tests to the chip + drawer model.
-- **P1.6 Favorites** — star action; localStorage keyed by `competitionId` +
-  routine `id` (safe across identical names in different competitions);
-  favorites-only view; guided empty state. Privacy: never leaves the device.
+- **P1.6 Favorites** — ✅ DONE (branch `v2-p1.6-favorites`). Per-routine star
+  button on every card (visible in comfortable + compact). Favorites are a flat
+  Set of routine ids in `localStorage['apdc-favorites']`; ids are
+  competition-namespaced (P1.0) so identical routine numbers across events never
+  collide — verified by a cross-competition test. Added a "Favorites" show-btn
+  (with a live count badge) for the favorites-only view, a removable Favorites
+  chip, and a guided empty state ("tap the star…"). Persists across reload/PWA
+  relaunch; never leaves the device. `window.APDC.favorites()/isFavorite()`
+  exposed. Tests: `favorites.spec.js`.
+  Note: favoriting **dancers** (spec's optional item) is deferred — the existing
+  dancer-pin + spotlight callout already covers "follow a dancer"; per-routine
+  stars are the more flexible primitive.
 - **P1.7 Manual-offset disclaimer** — add the required helper text; label it a
   personal estimate; keep persistence + "On Time" reset. **[ship-safe]**
 - **P1.8 Empty / error states** — polished states with next-actions (clear

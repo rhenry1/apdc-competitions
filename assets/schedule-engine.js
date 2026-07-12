@@ -14,6 +14,23 @@ const STYLE_CLASS = {
 
 const OFFSET_KEY = 'apdc-schedule-offset';
 const DENSITY_KEY = 'apdc-schedule-density';
+const FAVORITES_KEY = 'apdc-favorites';
+
+// Favorited routine ids. Ids are competition-namespaced (see normalizeRoutine),
+// so a single flat set is safe across competitions — identical routine numbers
+// in different events never collide. Persisted locally; never leaves the device.
+let favorites = loadFavorites();
+
+function loadFavorites() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+    return new Set(Array.isArray(raw) ? raw : []);
+  } catch (e) { return new Set(); }
+}
+function saveFavorites() {
+  try { localStorage.setItem(FAVORITES_KEY, JSON.stringify([...favorites])); } catch (e) { /* storage full/blocked */ }
+}
+function isFavorite(id) { return favorites.has(id); }
 
 let allRoutines = [];
 let allDancers = [];
@@ -124,6 +141,9 @@ function renderRoutineCard(r, dayKey, dayConf) {
   const apdcBadge = r.isApdc ? '<span class="apdc-badge">APDC</span>' : '';
   const entryNum  = r.routineNumber ? `<div class="entry-num">#${r.routineNumber}</div>` : '';
 
+  const faved = isFavorite(r.id);
+  if (faved) card.classList.add('favorited');
+
   card.innerHTML = `
     <div class="card-time" data-orig-time="${r.scheduledTime}">${r.scheduledTime}</div>
     <div class="card-main">
@@ -135,14 +155,45 @@ function renderRoutineCard(r, dayKey, dayConf) {
         <button class="card-action-btn" type="button" title="Add to calendar" aria-label="Add ${r.routineName} to calendar">${ICONS.calendar}</button>
       </div>
     </div>
-    <div class="card-right"><span class="age-badge">${r.ageLabel}</span></div>
+    <div class="card-right">
+      <button class="card-fav${faved ? ' is-fav' : ''}" type="button" aria-pressed="${faved}" title="Favorite" aria-label="Favorite ${r.routineName}">${ICONS.star}</button>
+      <span class="age-badge">${r.ageLabel}</span>
+    </div>
   `;
 
   const [shareBtn, calendarBtn] = card.querySelectorAll('.card-action-btn');
   shareBtn.addEventListener('click', (e) => { e.stopPropagation(); shareRoutine(r, dayConf); });
   calendarBtn.addEventListener('click', (e) => { e.stopPropagation(); downloadICS(r, dayConf); });
+  card.querySelector('.card-fav').addEventListener('click', (e) => { e.stopPropagation(); toggleFavorite(r.id, card); });
 
   return card;
+}
+
+function toggleFavorite(id, card) {
+  const nowFav = !favorites.has(id);
+  if (nowFav) favorites.add(id); else favorites.delete(id);
+  saveFavorites();
+  if (card) {
+    card.classList.toggle('favorited', nowFav);
+    const btn = card.querySelector('.card-fav');
+    if (btn) { btn.classList.toggle('is-fav', nowFav); btn.setAttribute('aria-pressed', String(nowFav)); }
+  }
+  updateFavCount();
+  // In favorites-only view, unstarring should drop the card from the list.
+  if (activeFilter === 'favorites') applyFilters();
+}
+
+function favoriteCount() {
+  // count only favorites belonging to this competition's rendered routines
+  return allRoutines.filter(r => favorites.has(r.id)).length;
+}
+
+function updateFavCount() {
+  const badge = document.getElementById('fav-count');
+  if (!badge) return;
+  const n = favoriteCount();
+  badge.textContent = String(n);
+  badge.style.display = n > 0 ? '' : 'none';
 }
 
 // ── Share + Add to Calendar ──
@@ -457,9 +508,10 @@ function applyFilters() {
     const isProps  = card.dataset.props === 'true';
 
     let showMatch = false;
-    if (hasDancers)                    showMatch = activeDancers.some(n => dancers.toLowerCase().includes(n.toLowerCase()));
-    else if (activeFilter === 'all')   showMatch = true;
-    else if (activeFilter === 'props') showMatch = isProps;
+    if (hasDancers)                        showMatch = activeDancers.some(n => dancers.toLowerCase().includes(n.toLowerCase()));
+    else if (activeFilter === 'all')       showMatch = true;
+    else if (activeFilter === 'props')     showMatch = isProps;
+    else if (activeFilter === 'favorites') showMatch = favorites.has(card.dataset.routineId);
 
     const levelMatch  = !activeLevel  || card.dataset.level  === activeLevel;
     const formatMatch = !activeFormat || card.dataset.format === activeFormat;
@@ -492,8 +544,15 @@ function applyFilters() {
   });
 
   renderCallout();
-  noResults.style.display = visible === 0 ? 'block' : 'none';
+  const empty = visible === 0;
+  if (empty) {
+    noResults.textContent = activeFilter === 'favorites'
+      ? 'No favorites yet. Tap the star on any routine to add it to your favorites.'
+      : 'No routines match this filter.';
+  }
+  noResults.style.display = empty ? 'block' : 'none';
   updateFilterBadge();
+  updateFavCount();
   updateClearAll();
   renderActiveFilters();
 }
@@ -612,8 +671,8 @@ function renderActiveFilters() {
       dancerInput.value = ''; activeSearch = ''; updateSearchClear(); applyFilters();
     });
   }
-  if (activeFilter === 'props') {
-    addChip('show', 'Props', () => {
+  if (activeFilter === 'props' || activeFilter === 'favorites') {
+    addChip('show', activeFilter === 'props' ? 'Props' : 'Favorites', () => {
       activeFilter = 'all';
       setActiveInGroup(showBtns, document.querySelector('.show-btn[data-filter="all"]'));
       applyFilters();
@@ -888,6 +947,8 @@ window.APDC = {
   routines: () => allRoutines.slice(),
   dancers: () => allDancers.slice(),
   studios: () => allStudios.slice(),
+  favorites: () => [...favorites],
+  isFavorite,
   locationLabel, mapsQuery, normalizeRoutine
 };
 
