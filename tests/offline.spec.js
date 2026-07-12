@@ -7,13 +7,17 @@ const { test, expect } = require('@playwright/test');
 // network → navigate.
 
 // Wait for the SW to activate and finish precaching (addAll resolves before
-// install completes, so poll for a known precache key).
+// install completes, so poll for a known precache key). Cache-name agnostic so
+// version bumps don't break the test.
 async function swReady(page) {
   await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
   await page.waitForFunction(async () => {
-    const cache = await caches.open('apdc-v3');
-    const hit = await cache.match('/regionals-spring-2027/index.html');
-    return !!hit;
+    const names = (await caches.keys()).filter(n => n.startsWith('apdc-'));
+    for (const name of names) {
+      const cache = await caches.open(name);
+      if (await cache.match('/regionals-spring-2027/index.html')) return true;
+    }
+    return false;
   }, null, { timeout: 15000 });
 }
 
@@ -52,6 +56,34 @@ test.describe('offline shell', () => {
     await page.waitForSelector('.routine-card:not(.hidden)', { timeout: 15000 });
     expect(await page.locator('.routine-card:not(.hidden)').count()).toBeGreaterThan(0);
     await expect(page.locator('.filter-chip[data-chip="day"]')).toBeVisible();
+    await context.setOffline(false);
+  });
+
+  // P3.2 — a subtle pill tells the user they're offline (the cached schedule
+  // keeps being served either way); it disappears when connectivity returns.
+  test('offline indicator appears while offline and hides when back online', async ({ page, context }) => {
+    await page.goto('/nationals-2026/index.html');
+    await page.waitForLoadState('networkidle');
+    await expect(page.locator('#offline-indicator')).toBeHidden();
+
+    await context.setOffline(true);
+    await expect(page.locator('#offline-indicator')).toBeVisible();
+    await expect(page.locator('#offline-indicator')).toContainText(/offline/i);
+    await expect(page.locator('#offline-indicator')).toHaveAttribute('role', 'status');
+
+    await context.setOffline(false);
+    await expect(page.locator('#offline-indicator')).toBeHidden();
+  });
+
+  test('offline indicator is present on an offline page load (hub)', async ({ page, context }) => {
+    await page.goto('/index.html');
+    await page.waitForLoadState('networkidle');
+    await swReady(page);
+
+    await context.setOffline(true);
+    await page.goto('/index.html');
+    await page.waitForLoadState('domcontentloaded');
+    await expect(page.locator('#offline-indicator')).toBeVisible();
     await context.setOffline(false);
   });
 });

@@ -306,17 +306,42 @@ merge. Landed as one CI-gated PR:
   Tests: `offline.spec.js` — real SW install → precache → `setOffline(true)` →
   a page never visited online renders its schedule; deep link restores its
   filter offline. Fixes gap #1.
-- **P3.2 Offline indicator** — subtle banner; keep serving cached schedule.
-  (Pairs with the V2.5 skeleton: offline with a cache hit should render the
-  schedule, not the skeleton.)
-- **P3.3 Update-available flow** — "Schedule update available" toast; user-chosen
-  refresh; no abrupt reload mid-view; stale-cache cleanup. (The `lastUpdated`
-  field from P2.6 is the natural signal to surface.)
-- **P3.4 Install-state detection + dismissal persistence** — largely covered:
-  V1 added dismissal persistence and V2.5's chip hides when standalone or when
-  the browser has no install path. Remaining: verify the install-banner logic
-  still coheres with the new chip, then close.
-- **P3.5 Manifest fixes** — split maskable/any icons, add `id`, screenshots. Fixes gap #2.
+- **P3.2 Offline indicator** — ✅ DONE (branch `v2-p3.2-offline-indicator`).
+  Shared `initOfflineIndicator()` in `pwa.js` (all three pages): a subtle
+  bottom-center pill — "Offline — showing saved schedule" — with `role=status`,
+  safe-area aware, shown on the `offline` event or an offline page load, hidden
+  on `online` (fade + `visibility` flip so it's truly gone for AT/tests). The
+  cached schedule keeps being served either way; the pill only explains why
+  content may not be the latest. Tests added to `offline.spec.js`.
+- **P3.3 Update-available flow** — ✅ DONE (branch `v2-p3.3-update-flow`). The
+  SW no longer calls `skipWaiting()` on install: an updated worker parks in the
+  waiting state, `pwa.js` detects it (`updatefound`/`reg.waiting`) and shows a
+  **"Schedule update available — Refresh"** toast. Refresh posts
+  `SKIP_WAITING`; the page reloads **only** on a user-initiated
+  `controllerchange` (first-install `clients.claim()` never reloads). Old
+  caches were already cleaned on activate. First installs still activate
+  immediately (no predecessor to wait behind). Content freshness while online
+  is unaffected (network-first). Tests: `sw-update.spec.js` — first install
+  never reloads; a simulated update (same scope, new script URL) shows the
+  toast, and Refresh swaps the controller with exactly one reload. (No
+  `lastUpdated` comparison needed — the waiting-worker state *is* the update
+  signal.)
+- **P3.4 Install-state detection + dismissal persistence** — ✅ VERIFIED &
+  CLOSED (branch `v2-p3.5-manifest`). Confirmed the pieces cohere: the banner
+  respects `apdc-install-dismissed` and standalone mode; the header chip hides
+  when standalone or when the browser has no install path, and *deliberately*
+  survives banner dismissal (quiet affordance vs. one-time nag). Stacking is
+  sane (banner z-999 < offline pill z-3000 < update toast z-3001). Locked in by
+  a test in `manifest.spec.js`.
+- **P3.5 Manifest fixes** — ✅ DONE (branch `v2-p3.5-manifest`). Added
+  `"id": "/apdc-competitions/"`. Split the `"any maskable"` combo (which crops
+  on launchers) into separate entries: the original art as `purpose: "any"`,
+  plus generated `icon-maskable-{192,512}.png` (logo at 78% on the brand
+  background, inside the maskable safe zone) as `purpose: "maskable"`. Added
+  two `narrow` `screenshots` with labels (hub + schedule, 390×844). Maskable
+  icons joined the SW precache; cache bumped to `apdc-v4` (exercises the P3.3
+  update flow on deploy); `offline.spec.js` made cache-name agnostic. Fixes
+  gap #2. **Completes Phase 3.**
 
 ## Phase 4 — Optional
 

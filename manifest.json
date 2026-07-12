@@ -1,7 +1,8 @@
 {
+  "id": "/apdc-competitions/",
   "name": "APDC Competitions",
   "short_name": "APDC",
-  "description": "Amanda Page Dance Company \u2014 Competition Schedule Portal",
+  "description": "Amanda Page Dance Company — Competition Schedule Portal",
   "start_url": "/apdc-competitions/",
   "scope": "/apdc-competitions/",
   "display": "standalone",
@@ -13,13 +14,41 @@
       "src": "/apdc-competitions/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/apdc-competitions/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/apdc-competitions/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/apdc-competitions/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/apdc-competitions/screenshot-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Competition hub with the next-competition countdown"
+    },
+    {
+      "src": "/apdc-competitions/screenshot-schedule.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Searchable routine schedule with favorites"
     }
   ]
 }

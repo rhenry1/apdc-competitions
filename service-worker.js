@@ -4,7 +4,7 @@
 // data is embedded in them), and every shared asset — so the whole site works
 // offline after the first visit. Runtime strategy stays network-first: always
 // fresh when online, cache fallback when offline.
-const CACHE = 'apdc-v3';
+const CACHE = 'apdc-v4';
 
 // Derive the base path from the registration scope instead of hardcoding it,
 // so the same worker functions on GitHub Pages (/apdc-competitions) and on any
@@ -24,6 +24,8 @@ const ASSETS = [
   BASE + '/favicon.ico',
   BASE + '/icon-192.png',
   BASE + '/icon-512.png',
+  BASE + '/icon-maskable-192.png',
+  BASE + '/icon-maskable-512.png',
   BASE + '/assets/tokens.css',
   BASE + '/assets/schedule-theme.css',
   BASE + '/assets/schedule-engine.js',
@@ -37,7 +39,14 @@ self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE).then(cache => cache.addAll(ASSETS))
   );
-  self.skipWaiting();
+  // No skipWaiting() here: an updated worker waits until the user opts in via
+  // the "Schedule update available" toast (SKIP_WAITING message below), so an
+  // update never yanks the page out from under someone mid-view. A first
+  // install has no predecessor and activates immediately regardless.
+});
+
+self.addEventListener('message', e => {
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('activate', e => {
