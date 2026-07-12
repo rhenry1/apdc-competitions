@@ -154,8 +154,16 @@ Foundation first (unblocks favorites, search, share-state):
   day is selected); favorites-only-empty → "No favorites yet" + "Browse all
   routines". Class-toggle visibility so the flex layout applies. Tests:
   `empty-states.spec.js`. (Offline/load-failure states belong to Phase 3.)
-- **P1.9 Accessibility pass** — semantic headings, focus states, aria-expanded/
-  selected/dialog, screen-reader labels for icon buttons, keyboard nav.
+- **P1.9 Accessibility pass** — ✅ DONE (branch `v2-p1.9-a11y`). Day titles
+  promoted from `<div>` to `<h2.day-title>` so each page is a single `<h1>` +
+  section `<h2>`s. Skip link injected as the first focusable element (targets
+  `#main-content`). Icon-free labelling: `aria-label` on the search + studio
+  inputs; `role="group"` + `aria-label` on the type row (`#cat-row`), day row
+  (`#day-filter-row`), and offset buttons. Result count announced through a
+  polite `#sr-status` aria-live region on every filter apply. `.sr-only` +
+  `.skip-link` styles added. Tests: `a11y.spec.js` (5 × 2 pages). (Drawer
+  focus-trap/dialog semantics stay in `filter-drawer.spec.js`; aria-pressed in
+  the filter specs.)
 - **P1.10 Guardrail test** — banned live-timing phrase check (see constraint).
 
 ## Phase 2 — Competition dashboard & resources
