@@ -166,8 +166,24 @@ h1 {
 }
 .btn:hover { border-color: var(--accent-quinn); color: var(--accent-quinn); }
 
-.show-btn.active                      { background: rgba(139,92,246,0.15); border-color: var(--stage1); color: var(--stage1); }
-.show-btn[data-filter="props"].active { background: var(--accent-props-dim); border-color: var(--accent-props); color: var(--accent-props); }
+.show-btn.active                          { background: rgba(139,92,246,0.15); border-color: var(--stage1); color: var(--stage1); }
+.show-btn[data-filter="props"].active     { background: var(--accent-props-dim); border-color: var(--accent-props); color: var(--accent-props); }
+.show-btn[data-filter="favorites"].active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+.fav-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
+  margin-left: 5px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #1a0f3a;
+  font-size: 9px;
+  font-weight: 700;
+}
 
 .day-btn.active { background: rgba(167,139,250,0.15); border-color: var(--accent-quinn); color: var(--accent-quinn); }
 .cat-btn.active { background: rgba(167,139,250,0.15); border-color: var(--accent-quinn); color: var(--accent-quinn); }
@@ -748,10 +764,35 @@ body::after {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 3px;
-  padding-top: 2px;
+  gap: 4px;
+  padding-top: 0;
   white-space: nowrap;
 }
+
+/* Favorite (star) toggle — available in both comfortable and compact views */
+.card-fav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: -6px -6px 0 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-subtle);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s, transform 0.1s;
+}
+.card-fav:hover { color: var(--accent); }
+.card-fav:active { transform: scale(0.86); }
+.card-fav.is-fav { color: var(--accent); }
+.card-fav.is-fav .icon { fill: var(--accent); }
+.card-fav:focus-visible { outline: 2px solid rgba(196,181,253,0.7); outline-offset: 1px; border-radius: 50%; }
+.card-fav .icon { width: 19px; height: 19px; }
+
+.routine-card.favorited { border-color: rgba(253,230,138,0.4); }
 
 .entry-num {
   font-family: 'DM Mono', monospace;
