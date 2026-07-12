@@ -178,9 +178,19 @@ Foundation first (unblocks favorites, search, share-state):
 
 ## Phase 2 — Competition dashboard & resources
 
-- **P2.1 Landing dashboard** — next-competition hero card with date-based
-  countdown + "Competition Weekend" label when today ∈ date range; upcoming cards
-  with published/disabled states; collapsible past-season section.
+- **P2.1 Landing dashboard** — ✅ DONE (branch `v2-p2.1-dashboard`). New
+  `assets/competitions.js` is the single source of truth (public fields mirror
+  each page's `COMPETITION_CONFIG`); phase (before/during/past) is derived from
+  today's date, not a static flag. The homepage now renders from it: a
+  **next-competition hero** with a date-based day countdown ("N days to go"),
+  swapping to a **"Competition Weekend"** label while today ∈ the date range;
+  the featured comp is not duplicated as a row; a **collapsible past-season**
+  section (collapsed by default, `aria-expanded` toggle). Replaces the stale
+  hardcoded rows (which had fabricated "Regional 1/2/3" placeholders and didn't
+  even link the real upcoming event). `<noscript>` fallback lists both comps.
+  "today" is overridable via `window.__APDC_NOW` for deterministic tests. Tests:
+  `dashboard.spec.js`; `home.spec.js` updated. Countdown is date-based only —
+  passes the P1.10 guardrail.
 - **P2.2 Competition overview page** — data-driven fields (venue, address, website,
   livestream, hotel, parking, arrival, awards, notes, docs, last-updated); no
   empty placeholder rows.
