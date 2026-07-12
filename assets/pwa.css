@@ -110,6 +110,47 @@
 }
 .banner-close:hover { color: rgba(255,255,255,0.5); }
 
+/* ── OFFLINE INDICATOR (bottom-center pill, shown while offline) ── */
+.offline-indicator {
+  position: fixed;
+  left: 50%;
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  transform: translate(-50%, 16px);
+  z-index: 3000;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 15px;
+  border-radius: 999px;
+  border: 1px solid rgba(196,181,253,0.25);
+  background: rgba(20,10,46,0.96);
+  box-shadow: 0 8px 28px -10px rgba(0,0,0,0.7);
+  color: #c4b5fd;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  /* visibility flips after the fade-out completes */
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+}
+.offline-indicator.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s;
+}
+.offline-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fbbf24;
+  flex-shrink: 0;
+}
+
 /* ── iOS / browser INSTALL INSTRUCTIONS (rendered inside the install sheet) ── */
 .ios-instructions {
   display: none;

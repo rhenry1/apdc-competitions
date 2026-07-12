@@ -54,4 +54,32 @@ test.describe('offline shell', () => {
     await expect(page.locator('.filter-chip[data-chip="day"]')).toBeVisible();
     await context.setOffline(false);
   });
+
+  // P3.2 — a subtle pill tells the user they're offline (the cached schedule
+  // keeps being served either way); it disappears when connectivity returns.
+  test('offline indicator appears while offline and hides when back online', async ({ page, context }) => {
+    await page.goto('/nationals-2026/index.html');
+    await page.waitForLoadState('networkidle');
+    await expect(page.locator('#offline-indicator')).toBeHidden();
+
+    await context.setOffline(true);
+    await expect(page.locator('#offline-indicator')).toBeVisible();
+    await expect(page.locator('#offline-indicator')).toContainText(/offline/i);
+    await expect(page.locator('#offline-indicator')).toHaveAttribute('role', 'status');
+
+    await context.setOffline(false);
+    await expect(page.locator('#offline-indicator')).toBeHidden();
+  });
+
+  test('offline indicator is present on an offline page load (hub)', async ({ page, context }) => {
+    await page.goto('/index.html');
+    await page.waitForLoadState('networkidle');
+    await swReady(page);
+
+    await context.setOffline(true);
+    await page.goto('/index.html');
+    await page.waitForLoadState('domcontentloaded');
+    await expect(page.locator('#offline-indicator')).toBeVisible();
+    await context.setOffline(false);
+  });
 });

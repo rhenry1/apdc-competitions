@@ -120,6 +120,31 @@
     );
   }
 
+  // Subtle "you're offline" pill (bottom-center, safe-area aware). The cached
+  // schedule keeps being served either way — this only tells the user why the
+  // content might not be the latest. Injected lazily on first need.
+  function initOfflineIndicator() {
+    let el = null;
+    function ensure() {
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'offline-indicator';
+        el.className = 'offline-indicator';
+        el.setAttribute('role', 'status');
+        el.innerHTML = '<span class="offline-dot"></span>Offline — showing saved schedule';
+        document.body.appendChild(el);
+      }
+      return el;
+    }
+    function update() {
+      if (navigator.onLine === false) ensure().classList.add('visible');
+      else if (el) el.classList.remove('visible');
+    }
+    window.addEventListener('online', update);
+    window.addEventListener('offline', update);
+    update();
+  }
+
   window.APDCPwa = {
     isIOS, isAndroid, isFirefox, isSamsung, isSafari, isStandalone,
     isDismissed, markDismissed, installInstructions, initServiceWorker,
@@ -129,5 +154,6 @@
 
   window.addEventListener('DOMContentLoaded', () => {
     initBanner();
+    initOfflineIndicator();
   });
 })();
