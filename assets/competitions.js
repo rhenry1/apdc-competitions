@@ -49,6 +49,13 @@
     },
   ];
 
+  // Test/preview hook: inject extra competitions (e.g. an announced-but-undated
+  // future event) to exercise the season-hero path without shipping speculative
+  // data in the real manifest. Mirrors the window.__APDC_NOW date hook.
+  if (global.__APDC_EXTRA_COMPS && global.__APDC_EXTRA_COMPS.length) {
+    COMPETITIONS = COMPETITIONS.concat(global.__APDC_EXTRA_COMPS);
+  }
+
   // Parse a YYYY-MM-DD string as a local-midnight Date (avoids the UTC shift
   // `new Date('2026-10-11')` would introduce).
   function parseDay(s) {
@@ -60,6 +67,10 @@
     return new Date(d.getFullYear(), d.getMonth(), d.getDate());
   }
 
+  // A competition has exact dates only when it declares a startDate. Entries
+  // without one are "announced but undated" — the schedule/dates are still TBA.
+  function hasDates(comp) { return !!(comp && comp.startDate); }
+
   // Whole days from `now` until a competition's start. 0 on the start day,
   // negative once it has begun. Uses calendar days, not elapsed hours.
   function daysUntil(comp, now) {
@@ -67,34 +78,41 @@
     return Math.round((startOfDay(parseDay(comp.startDate)) - startOfDay(now || new Date())) / MS);
   }
 
-  // 'before' | 'during' | 'past' relative to the inclusive date range.
+  // Sort key: dated competitions order by their start; undated ones sort to the
+  // end (they're announced for "later this season", after anything with a date).
+  function sortKey(comp) {
+    return hasDates(comp) ? parseDay(comp.startDate).getTime() : Number.MAX_SAFE_INTEGER;
+  }
+
+  // 'before' | 'during' | 'past' for dated events; 'announced' for undated ones
+  // (which are never "past" on their own — they simply await a date).
   function phase(comp, now) {
+    if (!hasDates(comp)) return 'announced';
     var today = startOfDay(now || new Date());
     var start = startOfDay(parseDay(comp.startDate));
-    var end = startOfDay(parseDay(comp.endDate));
+    var end = startOfDay(parseDay(comp.endDate || comp.startDate));
     if (today < start) return 'before';
     if (today > end) return 'past';
     return 'during';
   }
 
-  // The soonest competition that hasn't finished yet (currently running counts).
+  // The soonest competition that hasn't finished yet — a dated one if any is
+  // still upcoming/running, otherwise the first announced-but-undated one.
   function next(now) {
-    var live = COMPETITIONS
-      .filter(function (c) { return phase(c, now) !== 'past'; })
-      .sort(function (a, b) { return parseDay(a.startDate) - parseDay(b.startDate); });
+    var live = upcoming(now);
     return live.length ? live[0] : null;
   }
 
   function upcoming(now) {
     return COMPETITIONS
       .filter(function (c) { return phase(c, now) !== 'past'; })
-      .sort(function (a, b) { return parseDay(a.startDate) - parseDay(b.startDate); });
+      .sort(function (a, b) { return sortKey(a) - sortKey(b); });
   }
 
   function past(now) {
     return COMPETITIONS
       .filter(function (c) { return phase(c, now) === 'past'; })
-      .sort(function (a, b) { return parseDay(b.startDate) - parseDay(a.startDate); });
+      .sort(function (a, b) { return sortKey(b) - sortKey(a); });
   }
 
   global.APDCComps = {
@@ -103,6 +121,7 @@
     upcoming: upcoming,
     past: past,
     phase: phase,
+    hasDates: hasDates,
     daysUntil: daysUntil,
     parseDay: parseDay,
   };

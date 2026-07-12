@@ -56,4 +56,49 @@ test.describe('landing dashboard', () => {
     // The upcoming comp appears once (as the hero), not also as a .comp-row.
     await expect(page.locator('.comp-row:not(.completed) .comp-name')).toHaveCount(0);
   });
+
+  test('past rows carry no bogus "00" sequence number', async ({ page }) => {
+    await gotoAt(page, '2026-09-01T12:00:00');
+    await page.click('.past-toggle');
+    const idx = (await page.locator('.past-rows .comp-index').first().innerText()).trim();
+    expect(idx).toBe('');
+  });
+});
+
+// R2 — the hero adapts to the data: an announced-but-undated competition shows
+// an elegant season hero ("coming soon"); it flips to the day-countdown card
+// automatically once a startDate exists. Uses window.__APDC_EXTRA_COMPS to
+// inject an undated event without shipping speculative data in the manifest.
+test.describe('season hero (undated competition)', () => {
+  const UNDATED = [{
+    id: 'nationals-2027', name: 'Turn It Up Nationals 2027', type: 'Nationals',
+    season: '2026-2027', seasonLabel: '2026 – 2027 Season', status: 'announced',
+    city: '', state: '', url: '', accent: 'nationals', published: false,
+  }];
+  async function gotoWithUndated(page, iso) {
+    await page.addInitScript((d) => { window.__APDC_NOW = d.now; window.__APDC_EXTRA_COMPS = d.extra; },
+      { now: iso, extra: UNDATED });
+    await page.goto('/index.html');
+    await page.waitForLoadState('networkidle');
+  }
+
+  test('shows a season hero with "coming soon" and no countdown when the next comp is undated', async ({ page }) => {
+    // After the dated Regionals has passed, the undated Nationals 2027 is next.
+    await gotoWithUndated(page, '2026-11-01T12:00:00');
+    const hero = page.locator('.next-hero.season-hero');
+    await expect(hero).toHaveCount(1);
+    await expect(hero.locator('.hero-name')).toContainText(/Nationals 2027/);
+    await expect(hero.locator('.hero-soon')).toContainText(/coming soon/i);
+    await expect(hero.locator('.hero-days')).toHaveCount(0); // no fake countdown
+  });
+
+  test('a dated competition still wins the hero; the undated one is a "Schedule coming soon" row', async ({ page }) => {
+    await gotoWithUndated(page, '2026-09-01T12:00:00');
+    // Dated Regionals keeps the countdown hero (auto-switch by data).
+    await expect(page.locator('.next-hero:not(.season-hero) .hero-days')).toHaveText('40');
+    // The undated one appears as a soon row.
+    const soonRow = page.locator('.comp-row.soon');
+    await expect(soonRow).toHaveCount(1);
+    await expect(soonRow.locator('.soon-text')).toHaveText(/schedule coming soon/i);
+  });
 });
