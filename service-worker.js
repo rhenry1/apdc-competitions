@@ -4,7 +4,7 @@
 // data is embedded in them), and every shared asset — so the whole site works
 // offline after the first visit. Runtime strategy stays network-first: always
 // fresh when online, cache fallback when offline.
-const CACHE = 'apdc-v3';
+const CACHE = 'apdc-v4';
 
 // Derive the base path from the registration scope instead of hardcoding it,
 // so the same worker functions on GitHub Pages (/apdc-competitions) and on any
@@ -24,6 +24,8 @@ const ASSETS = [
   BASE + '/favicon.ico',
   BASE + '/icon-192.png',
   BASE + '/icon-512.png',
+  BASE + '/icon-maskable-192.png',
+  BASE + '/icon-maskable-512.png',
   BASE + '/assets/tokens.css',
   BASE + '/assets/schedule-theme.css',
   BASE + '/assets/schedule-engine.js',

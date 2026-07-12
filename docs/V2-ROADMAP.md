@@ -326,11 +326,22 @@ merge. Landed as one CI-gated PR:
   toast, and Refresh swaps the controller with exactly one reload. (No
   `lastUpdated` comparison needed — the waiting-worker state *is* the update
   signal.)
-- **P3.4 Install-state detection + dismissal persistence** — largely covered:
-  V1 added dismissal persistence and V2.5's chip hides when standalone or when
-  the browser has no install path. Remaining: verify the install-banner logic
-  still coheres with the new chip, then close.
-- **P3.5 Manifest fixes** — split maskable/any icons, add `id`, screenshots. Fixes gap #2.
+- **P3.4 Install-state detection + dismissal persistence** — ✅ VERIFIED &
+  CLOSED (branch `v2-p3.5-manifest`). Confirmed the pieces cohere: the banner
+  respects `apdc-install-dismissed` and standalone mode; the header chip hides
+  when standalone or when the browser has no install path, and *deliberately*
+  survives banner dismissal (quiet affordance vs. one-time nag). Stacking is
+  sane (banner z-999 < offline pill z-3000 < update toast z-3001). Locked in by
+  a test in `manifest.spec.js`.
+- **P3.5 Manifest fixes** — ✅ DONE (branch `v2-p3.5-manifest`). Added
+  `"id": "/apdc-competitions/"`. Split the `"any maskable"` combo (which crops
+  on launchers) into separate entries: the original art as `purpose: "any"`,
+  plus generated `icon-maskable-{192,512}.png` (logo at 78% on the brand
+  background, inside the maskable safe zone) as `purpose: "maskable"`. Added
+  two `narrow` `screenshots` with labels (hub + schedule, 390×844). Maskable
+  icons joined the SW precache; cache bumped to `apdc-v4` (exercises the P3.3
+  update flow on deploy); `offline.spec.js` made cache-name agnostic. Fixes
+  gap #2. **Completes Phase 3.**
 
 ## Phase 4 — Optional
 
