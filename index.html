@@ -58,8 +58,8 @@
 
   /* ── HEADER ── */
   .header {
-    padding-top: max(64px, env(safe-area-inset-top));
-    padding-bottom: 60px;
+    padding-top: max(56px, env(safe-area-inset-top));
+    padding-bottom: 36px;
   }
 
   .overline {
@@ -355,6 +355,23 @@
   .next-hero:hover .hero-cta { color: #fff; }
   .hero-cta .arrow { font-size: 18px; }
 
+  /* Season hero (announced competition, dates TBA) — flips to the countdown
+     card automatically once a startDate exists. */
+  .next-hero.season-hero::before {
+    background: linear-gradient(180deg, rgba(196,181,253,0.5) 0%, rgba(129,140,248,0.4) 100%);
+  }
+  .hero-soon {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+    letter-spacing: 0.02em; color: #c4b5fd;
+  }
+  .hero-soon svg { width: 16px; height: 16px; opacity: 0.8; }
+  .soon-text {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(196,181,253,0.5);
+  }
+
   /* ── COLLAPSIBLE PAST SEASON ── */
   .past-toggle {
     font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
@@ -374,6 +391,69 @@
   /* Past rows are revealed on demand, not on load — no entrance fade (and a
      display:none animate-in would otherwise sit at opacity:0 until expanded). */
   .past-rows .comp-row { opacity: 1; animation: none; }
+
+  /* ── COMPACT INSTALL CHIP (replaces the old full-width install block) ── */
+  .install-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 20px;
+    padding: 8px 14px;
+    border: 1px solid rgba(196,181,253,0.22);
+    border-radius: 999px;
+    background: rgba(196,181,253,0.04);
+    color: rgba(196,181,253,0.75);
+    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .install-chip[hidden] { display: none; }
+  .install-chip:hover, .install-chip:focus-visible {
+    border-color: rgba(196,181,253,0.45); color: #e0d4ff; background: rgba(196,181,253,0.08);
+  }
+  .install-chip svg { width: 14px; height: 14px; }
+
+  /* ── INSTALL BOTTOM SHEET ── */
+  .install-scrim {
+    position: fixed; inset: 0; z-index: 2500;
+    background: rgba(6,4,26,0.62); backdrop-filter: blur(2px);
+    opacity: 0; transition: opacity 0.25s ease;
+  }
+  .install-scrim.open { opacity: 1; }
+  .install-sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 2600;
+    max-width: 560px; margin: 0 auto;
+    background: linear-gradient(180deg, #140a2e 0%, #0c0720 100%);
+    border-top-left-radius: 24px; border-top-right-radius: 24px;
+    border: 1px solid rgba(196,181,253,0.14); border-bottom: none;
+    box-shadow: 0 -20px 60px -20px rgba(0,0,0,0.7);
+    padding: 14px 24px calc(28px + env(safe-area-inset-bottom));
+    transform: translateY(100%); transition: transform 0.32s cubic-bezier(0.32,0.72,0,1);
+  }
+  .install-sheet.open { transform: translateY(0); }
+  .install-scrim[hidden], .install-sheet[hidden] { display: none; }
+  .sheet-grip {
+    width: 36px; height: 4px; border-radius: 2px;
+    background: rgba(196,181,253,0.25); margin: 2px auto 18px;
+  }
+  .install-sheet-close {
+    position: absolute; top: 16px; right: 16px;
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(196,181,253,0.16); background: rgba(255,255,255,0.03);
+    color: rgba(224,212,255,0.7); cursor: pointer; -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, color 0.15s;
+  }
+  .install-sheet-close:hover, .install-sheet-close:focus-visible { background: rgba(255,255,255,0.08); color: #fff; }
+  .install-sheet-close svg { width: 16px; height: 16px; }
+  .install-sheet-title {
+    font-family: 'Tenor Sans', serif; font-weight: 400;
+    font-size: 21px; letter-spacing: 0.01em; color: #fff; margin-bottom: 6px;
+    padding-right: 40px;
+  }
+  .install-sheet-sub {
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 300;
+    color: rgba(196,181,253,0.55); margin-bottom: 22px; line-height: 1.5;
+  }
 </style>
 </head>
 <body style="background:#06041a;">
@@ -387,23 +467,10 @@
     <div class="studio-name">Amanda Page Dance Company</div>
     <div class="header-title">Competition Schedule</div>
 
-  <div class="install-btn-wrap" id="install-btn-wrap">
-    <button class="install-btn" id="install-btn-main">Add to Home Screen</button>
-    <div class="ios-instructions" id="ios-instructions">
-      <div class="ios-step">
-        <div class="ios-step-num">1</div>
-        <div>Tap the <strong>share icon</strong> <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7 12 3 16 7"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg> at the bottom of Safari</div>
-      </div>
-      <div class="ios-step">
-        <div class="ios-step-num">2</div>
-        <div>Scroll down and tap <strong>Add to Home Screen</strong></div>
-      </div>
-      <div class="ios-step">
-        <div class="ios-step-num">3</div>
-        <div>Tap <strong>Add</strong> — the APDC app will appear on your home screen</div>
-      </div>
-    </div>
-  </div>
+    <button class="install-chip" id="install-chip" hidden aria-haspopup="dialog">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v11"/><path d="M8 12l4 4 4-4"/><path d="M5 19h14"/></svg>
+      Install app
+    </button>
 
   </div>
 
@@ -451,36 +518,48 @@
   function rowAccent(c) { return c.accent === 'nationals' ? 'nationals-row' : 'regional-row'; }
   function addr(c) { return [c.city, c.state].filter(Boolean).join(', '); }
 
+  // The hero adapts to the data: a competition with exact dates gets a live
+  // day-countdown (or "Competition Weekend" while in range); one that's
+  // announced but undated gets an elegant season hero that flips to the
+  // countdown automatically the moment a startDate is filled in.
   function heroHtml(c, now) {
-    const ph = APDCComps.phase(c, now);
-    let foot;
-    if (ph === 'during') {
+    const dated = APDCComps.hasDates(c);
+    const a = addr(c);
+    const metaBits = [];
+    if (dated && c.dates) metaBits.push('<span>' + esc(c.dates) + '</span>');
+    if (a) metaBits.push('<button type="button" class="map-link" data-address="' + esc(a) + '"></button>');
+    const meta = metaBits.length ? '<div class="hero-meta">' + metaBits.join('') + '</div>' : '';
+
+    let eyebrow, foot;
+    if (!dated) {
+      eyebrow = '<span class="hero-eyebrow">Upcoming Season</span>';
+      foot =
+        '<div class="hero-soon">' + ICONS.calendar + '<span>Full schedule coming soon</span></div>' +
+        (c.url ? '<span class="hero-cta">Details <span class="arrow">&rsaquo;</span></span>' : '');
+    } else if (APDCComps.phase(c, now) === 'during') {
+      eyebrow = '<span class="hero-eyebrow"><span class="hero-live-dot"></span>Happening this weekend</span>';
       foot =
         '<div class="hero-weekend"><span class="hero-live-dot"></span>Competition Weekend</div>' +
         '<span class="hero-cta">View schedule <span class="arrow">&rsaquo;</span></span>';
     } else {
       const d = APDCComps.daysUntil(c, now);
-      const label = d === 1 ? 'day to go' : 'days to go';
+      eyebrow = '<span class="hero-eyebrow">Next Competition</span>';
       foot =
         '<div class="hero-countdown"><span class="hero-days">' + d + '</span>' +
-        '<span class="hero-days-label">' + label + '</span></div>' +
+        '<span class="hero-days-label">' + (d === 1 ? 'day to go' : 'days to go') + '</span></div>' +
         '<span class="hero-cta">View schedule <span class="arrow">&rsaquo;</span></span>';
     }
-    const eyebrow = ph === 'during'
-      ? '<span class="hero-eyebrow"><span class="hero-live-dot"></span>Happening this weekend</span>'
-      : '<span class="hero-eyebrow">Next Competition</span>';
-    const a = addr(c);
-    return (
-      '<a class="next-hero ' + accentClass(c) + '" href="' + esc(c.url) + '" aria-labelledby="next-hero-title">' +
-        eyebrow +
-        '<div class="hero-type">' + esc(c.type) + '</div>' +
-        '<h2 class="hero-name" id="next-hero-title">' + esc(c.name) + '</h2>' +
-        '<div class="hero-meta"><span>' + esc(c.dates) + '</span>' +
-          (a ? '<button type="button" class="map-link" data-address="' + esc(a) + '"></button>' : '') +
-        '</div>' +
-        '<div class="hero-foot">' + foot + '</div>' +
-      '</a>'
-    );
+
+    const inner =
+      eyebrow +
+      '<div class="hero-type">' + esc(c.type) + '</div>' +
+      '<h2 class="hero-name" id="next-hero-title">' + esc(c.name) + '</h2>' +
+      meta +
+      '<div class="hero-foot">' + foot + '</div>';
+    const cls = 'next-hero ' + accentClass(c) + (dated ? '' : ' season-hero');
+    return c.url
+      ? '<a class="' + cls + '" href="' + esc(c.url) + '" aria-labelledby="next-hero-title">' + inner + '</a>'
+      : '<div class="' + cls + '" aria-labelledby="next-hero-title">' + inner + '</div>';
   }
 
   function seasonLabelHtml(label) {
@@ -490,26 +569,36 @@
 
   function rowHtml(c, index, opts) {
     opts = opts || {};
+    const dated = APDCComps.hasDates(c);
     const a = addr(c);
-    const details = opts.completed
-      ? '<button type="button" class="map-link" data-address="' + esc(a) + '"></button>' +
-        '<span>' + esc(c.dates) + '</span>'
-      : '<span>' + esc(c.dates) + (a ? ' · ' + esc(a) : '') + '</span>';
+    let details, right;
+    if (opts.completed) {
+      details = '<button type="button" class="map-link" data-address="' + esc(a) + '"></button>' +
+        '<span>' + esc(c.dates) + '</span>';
+      right = '<div class="comp-right"><div class="arrow">&rsaquo;</div></div>';
+    } else if (!dated) {
+      details = '<span class="soon-text">Schedule coming soon.</span>';
+      right = c.url ? '<div class="comp-right"><div class="arrow">&rsaquo;</div></div>' : '<div class="comp-right"></div>';
+    } else {
+      details = '<span>' + esc(c.dates) + (a ? ' · ' + esc(a) : '') + '</span>';
+      right = '<div class="comp-right"><div class="arrow">&rsaquo;</div></div>';
+    }
     const badge = opts.completed
       ? '<div class="completed-badge" style="margin-top:12px;">' +
         '<span class="completed-check"></span> Completed</div>'
       : '';
-    const right = '<div class="comp-right"><div class="arrow">&rsaquo;</div></div>';
-    return (
-      '<a class="comp-row ' + rowAccent(c) + (opts.completed ? ' completed' : '') + '" href="' + esc(c.url) + '">' +
-        '<div class="comp-inner"><div class="comp-index">' + index + '</div>' +
-          '<div class="comp-body"><div class="comp-type">' + esc(c.type) + '</div>' +
-            '<div class="comp-name">' + esc(c.name) + '</div>' +
-            '<div class="comp-details">' + details + '</div>' + badge +
-          '</div>' + right +
-        '</div>' +
-      '</a>'
-    );
+    const cls = 'comp-row ' + rowAccent(c) +
+      (opts.completed ? ' completed' : '') + (!dated && !opts.completed ? ' soon' : '');
+    const body =
+      '<div class="comp-inner"><div class="comp-index">' + (index ? esc(index) : '') + '</div>' +
+        '<div class="comp-body"><div class="comp-type">' + esc(c.type) + '</div>' +
+          '<div class="comp-name">' + esc(c.name) + '</div>' +
+          '<div class="comp-details">' + details + '</div>' + badge +
+        '</div>' + right +
+      '</div>';
+    return c.url
+      ? '<a class="' + cls + '" href="' + esc(c.url) + '">' + body + '</a>'
+      : '<div class="' + cls + '">' + body + '</div>';
   }
 
   function groupBySeason(list) {
@@ -541,7 +630,7 @@
     // Past seasons — collapsible, de-emphasized.
     const pastGroups = groupBySeason(APDCComps.past(now));
     pastGroups.forEach(g => {
-      const rows = g.comps.map(c => rowHtml(c, '00', { completed: true })).join('');
+      const rows = g.comps.map(c => rowHtml(c, '', { completed: true })).join('');
       html +=
         '<div class="season-block past-block">' +
           '<div class="season-label">' +
@@ -591,45 +680,91 @@
   renderDashboard();
 
   window.addEventListener('DOMContentLoaded', () => {
-    const btnWrap  = document.getElementById('install-btn-wrap');
-    const btnMain  = document.getElementById('install-btn-main');
+    const chip     = document.getElementById('install-chip');
+    const scrim    = document.getElementById('install-scrim');
+    const sheet    = document.getElementById('install-sheet');
+    const closeBtn = document.getElementById('install-sheet-close');
     const iosPanel = document.getElementById('ios-instructions');
+    closeBtn.innerHTML = ICONS.close;
 
-    if (APDCPwa.isStandalone()) { btnWrap.style.display = 'none'; return; }
+    APDCPwa.initServiceWorker('service-worker.js');
 
+    // No install affordance when already installed or the browser offers none.
+    if (APDCPwa.isStandalone()) { chip.hidden = true; return; }
     const info = APDCPwa.installInstructions();
-    if (!info) { btnWrap.style.display = 'none'; return; } // no install path on this browser
+    if (!info) { chip.hidden = true; return; }
 
-    // The default 3-step panel markup matches Safari's real flow exactly;
-    // every other browser gets a single tailored instruction instead.
+    // Safari's real flow is the built-in 3-step panel; every other browser gets
+    // a single tailored instruction inside the same sheet.
     if (!(APDCPwa.isIOS() && APDCPwa.isSafari())) {
       iosPanel.innerHTML = '<div class="ios-step"><div>' + info.html + '</div></div>';
     }
+    chip.hidden = false;
 
-    btnMain.addEventListener('click', async () => {
+    let lastFocus = null;
+    function openSheet() {
+      lastFocus = document.activeElement;
+      scrim.hidden = false; sheet.hidden = false;
+      requestAnimationFrame(() => { scrim.classList.add('open'); sheet.classList.add('open'); });
+      closeBtn.focus();
+      document.addEventListener('keydown', onKey);
+    }
+    function closeSheet() {
+      scrim.classList.remove('open'); sheet.classList.remove('open');
+      document.removeEventListener('keydown', onKey);
+      setTimeout(() => { scrim.hidden = true; sheet.hidden = true; }, 320);
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+    function onKey(e) {
+      if (e.key === 'Escape') closeSheet();
+      if (e.key === 'Tab') { // simple focus containment
+        const f = sheet.querySelectorAll('button, a[href]');
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+
+    chip.addEventListener('click', async () => {
+      // Chromium/Android/desktop offer a native prompt — use it directly.
       const deferredPrompt = APDCPwa.getDeferredPrompt();
       if (deferredPrompt) {
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         APDCPwa.clearDeferredPrompt();
-        if (outcome === 'accepted') { btnWrap.style.display = 'none'; APDCPwa.markDismissed(); }
+        if (outcome === 'accepted') { chip.hidden = true; APDCPwa.markDismissed(); }
         return;
       }
-      const open = !iosPanel.classList.contains('visible');
-      if (open) {
-        iosPanel.style.display = 'block';
-        requestAnimationFrame(() => iosPanel.classList.add('visible'));
-        btnMain.textContent = 'Dismiss';
-      } else {
-        iosPanel.classList.remove('visible');
-        setTimeout(() => { iosPanel.style.display = 'none'; }, 300);
-        btnMain.textContent = 'Add to Home Screen';
-      }
+      openSheet();
     });
-
-    APDCPwa.initServiceWorker('service-worker.js');
+    closeBtn.addEventListener('click', closeSheet);
+    scrim.addEventListener('click', closeSheet);
   });
 </script>
+
+<!-- ── INSTALL BOTTOM SHEET (opened from the header install chip) ── -->
+<div class="install-scrim" id="install-scrim" hidden></div>
+<aside class="install-sheet" id="install-sheet" role="dialog" aria-modal="true" aria-labelledby="install-sheet-title" hidden>
+  <div class="sheet-grip"></div>
+  <button class="install-sheet-close" id="install-sheet-close" aria-label="Close"></button>
+  <h2 class="install-sheet-title" id="install-sheet-title">Add APDC to your Home Screen</h2>
+  <p class="install-sheet-sub">One-tap access to the schedule — even offline.</p>
+  <div class="ios-instructions visible" id="ios-instructions" style="display:block;opacity:1;transform:none;margin-top:0;">
+    <div class="ios-step">
+      <div class="ios-step-num">1</div>
+      <div>Tap the <strong>share icon</strong> <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7 12 3 16 7"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg> at the bottom of Safari</div>
+    </div>
+    <div class="ios-step">
+      <div class="ios-step-num">2</div>
+      <div>Scroll down and tap <strong>Add to Home Screen</strong></div>
+    </div>
+    <div class="ios-step">
+      <div class="ios-step-num">3</div>
+      <div>Tap <strong>Add</strong> — the APDC app will appear on your home screen</div>
+    </div>
+  </div>
+</aside>
 
 <!-- ── INSTALL BANNER ── -->
 <div class="install-banner hidden" id="install-banner">

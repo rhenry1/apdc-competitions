@@ -109,14 +109,18 @@ for (const { name, ua, visible, snippet } of INSTALL_CASES) {
     await page.goto('/index.html');
     await page.waitForLoadState('networkidle');
 
-    const wrapVisible = await page
-      .locator('#install-btn-wrap')
-      .evaluate((el) => el.style.display !== 'none');
-    expect(wrapVisible, `install button visibility for ${name}`).toBe(visible);
+    // The install affordance is now a compact header chip that opens a
+    // dismissible bottom sheet holding the browser-tailored instructions.
+    const chipVisible = await page.locator('#install-chip').isVisible();
+    expect(chipVisible, `install chip visibility for ${name}`).toBe(visible);
 
     if (visible) {
-      await page.click('#install-btn-main');
+      await page.click('#install-chip');
+      await expect(page.locator('#install-sheet')).toBeVisible();
       await expect(page.locator('#ios-instructions')).toContainText(new RegExp(snippet, 'i'));
+      // The sheet is dismissible.
+      await page.click('#install-sheet-close');
+      await expect(page.locator('#install-sheet')).toBeHidden();
     }
     await context.close();
   });

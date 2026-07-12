@@ -150,9 +150,20 @@ h1 {
   font-weight: 400;
   letter-spacing: 0.04em;
   color: #e0d4ff;
-  margin-bottom: 12px;
+  margin-bottom: 7px;
   line-height: 1.2;
 }
+
+/* Where & when, on its own line below the competition name. */
+.header-sub {
+  display: block;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-size: 12px;
+  color: rgba(224,212,255,0.6);
+  margin-bottom: 4px;
+}
+.header-sub a { text-transform: none; letter-spacing: 0.01em; }
 
 .last-updated {
   font-family: 'DM Mono', 'SF Mono', monospace;
@@ -1158,6 +1169,31 @@ body.compact .card-dancers { font-size: 11px; }
 }
 .no-results.is-visible { display: flex; }
 
+/* ── LOADING SKELETON (shown until the schedule data is rendered) ── */
+.schedule-skeleton { display: flex; flex-direction: column; gap: 12px; padding-top: 4px; }
+.schedule-skeleton[hidden] { display: none; }
+.skel-day {
+  height: 20px; width: 42%; margin: 18px 0 6px; border-radius: 6px;
+}
+.skel-card {
+  height: 84px; border-radius: var(--radius-lg, 16px);
+  border: 1px solid rgba(167,139,250,0.10);
+}
+.skel-day, .skel-card {
+  position: relative; overflow: hidden;
+  background: rgba(255,255,255,0.03);
+}
+.skel-day::after, .skel-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(196,181,253,0.10) 50%, transparent 80%);
+  transform: translateX(-100%);
+  animation: skelShimmer 1.4s ease-in-out infinite;
+}
+@keyframes skelShimmer { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .skel-day::after, .skel-card::after { animation: none; }
+}
+
 .empty-icon {
   display: inline-flex;
   align-items: center;
@@ -1235,41 +1271,45 @@ body.compact .card-dancers { font-size: 11px; }
 .back-link:hover .back-arrow { transform: translateX(-3px); }
 
 /* ── LIVE STREAM BUTTON ── */
-.livestream-bar {
-  margin: 0 0 4px;
-  padding: 0 4px;
+/* ── LIVESTREAM RESOURCE CARD (watch link + password, one card) ── */
+.livestream-bar { margin: 0 0 6px; }
+.livestream-card {
+  padding: 16px 16px 14px;
+  border-radius: var(--radius-lg, 16px);
+  border: 1px solid rgba(244,114,182,0.28);
+  background: linear-gradient(150deg, rgba(244,114,182,0.10) 0%, rgba(124,58,237,0.09) 60%, rgba(255,255,255,0.02) 100%);
+}
+.resource-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase; color: #f9a8d4;
+  margin-bottom: 10px;
+}
+.resource-title {
+  font-family: 'Tenor Sans', serif; font-size: 17px; letter-spacing: 0.01em;
+  color: #fbcfe8; margin-bottom: 4px;
+}
+.resource-sub {
+  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 300;
+  color: rgba(249,168,212,0.6); line-height: 1.5; margin-bottom: 14px;
 }
 .livestream-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  width: 100%;
-  padding: 13px 18px;
-  border-radius: 12px;
-  border: 1px solid rgba(244,114,182,0.35);
-  background: linear-gradient(135deg, rgba(244,114,182,0.14) 0%, rgba(124,58,237,0.12) 100%);
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  width: 100%; padding: 12px 18px; border-radius: 12px;
+  border: 1px solid rgba(244,114,182,0.4);
+  background: rgba(244,114,182,0.14);
   color: #f9a8d4;
-  font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s;
-  -webkit-tap-highlight-color: transparent;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;
+  cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent;
 }
+.livestream-btn svg { width: 16px; height: 16px; }
 .livestream-btn:hover {
-  background: linear-gradient(135deg, rgba(244,114,182,0.22) 0%, rgba(124,58,237,0.18) 100%);
-  border-color: rgba(244,114,182,0.55);
-  color: #fbcfe8;
+  background: rgba(244,114,182,0.22); border-color: rgba(244,114,182,0.6); color: #fbcfe8;
 }
 .livestream-btn:active { transform: scale(0.99); }
 .livestream-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: #f43f5e;
+  width: 8px; height: 8px; border-radius: 50%; background: #f43f5e;
   box-shadow: 0 0 0 0 rgba(244,63,94,0.5);
   animation: livePulse 1.8s ease-in-out infinite;
 }
@@ -1278,37 +1318,26 @@ body.compact .card-dancers { font-size: 11px; }
   70%  { box-shadow: 0 0 0 7px rgba(244,63,94,0);   }
   100% { box-shadow: 0 0 0 0   rgba(244,63,94,0);   }
 }
+@media (prefers-reduced-motion: reduce) { .livestream-dot { animation: none; } }
 
 .livestream-password {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 8px;
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  color: rgba(249,168,212,0.6);
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid rgba(244,114,182,0.14);
+  font-family: 'Inter', sans-serif; font-size: 11px; color: rgba(249,168,212,0.6);
 }
+.pw-label { text-transform: uppercase; letter-spacing: 0.12em; font-size: 9px; }
 .livestream-password code {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  font-weight: 500;
-  color: #f9a8d4;
-  background: rgba(244,114,182,0.1);
-  border: 1px solid rgba(244,114,182,0.25);
-  border-radius: 6px;
-  padding: 2px 8px;
-  letter-spacing: 0.03em;
+  font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500;
+  color: #f9a8d4; background: rgba(244,114,182,0.1);
+  border: 1px solid rgba(244,114,182,0.25); border-radius: 6px;
+  padding: 3px 9px; letter-spacing: 0.03em;
 }
 .pw-copy-btn {
-  background: none;
-  border: none;
-  color: rgba(249,168,212,0.5);
-  font-size: 11px;
-  cursor: pointer;
-  padding: 2px 4px;
-  -webkit-tap-highlight-color: transparent;
-  transition: color 0.15s;
+  margin-left: auto; background: none; border: none;
+  color: rgba(249,168,212,0.6); font-size: 11px; font-weight: 500;
+  cursor: pointer; padding: 6px 8px; min-height: var(--tap-min, 44px);
+  -webkit-tap-highlight-color: transparent; transition: color 0.15s;
 }
 .pw-copy-btn:hover { color: #f9a8d4; }
 .pw-copy-btn.copied { color: #4ade80; }

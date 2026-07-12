@@ -36,9 +36,10 @@
     <a class="back-link" href="../"><span class="back-arrow">‹</span> All Competitions</a>
     <div class="header-brand">
       <span class="brand-logo">APDC</span>
-      <span class="eyebrow" id="header-subtitle"></span>
+      <span class="eyebrow" id="header-eyebrow">Nationals</span>
     </div>
-    <h1 id="header-title">Dance Nationals Schedule</h1>
+    <h1 id="header-title">Competition Schedule</h1>
+    <div class="eyebrow header-sub" id="header-subtitle"></div>
   </div>
 </header>
 
@@ -122,13 +123,19 @@
 </div>
 
 <div class="livestream-bar">
-  <a class="livestream-btn" id="livestream-btn" href="https://turnitupdance.com/live-stream/" target="_blank" rel="noopener noreferrer">
-    <span class="livestream-dot"></span>
-    Watch Live Stream
-  </a>
-  <div class="livestream-password">
-    Stream password: <code id="stream-pw">APDC2026</code>
-    <button class="pw-copy-btn" id="pw-copy-btn">Copy</button>
+  <div class="livestream-card">
+    <div class="resource-badge"><span class="livestream-dot"></span> Livestream</div>
+    <div class="resource-title">Watch the competition stream</div>
+    <div class="resource-sub">Can't be there in person? Follow along from the official stage stream.</div>
+    <a class="livestream-btn" id="livestream-btn" href="https://turnitupdance.com/live-stream/" target="_blank" rel="noopener noreferrer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5v14l11-7z"/></svg>
+      Watch stream
+    </a>
+    <div class="livestream-password">
+      <span class="pw-label">Password</span>
+      <code id="stream-pw">APDC2026</code>
+      <button class="pw-copy-btn" id="pw-copy-btn">Copy</button>
+    </div>
   </div>
 </div>
 
@@ -139,7 +146,14 @@
     <div class="quinn-schedule" id="callout-schedule"></div>
   </div>
   <!-- Schedule rendered by assets/schedule-engine.js -->
-  <div id="schedule-container"></div>
+  <div id="schedule-container">
+    <div class="schedule-skeleton" id="schedule-skeleton" aria-hidden="true">
+      <div class="skel-day"></div>
+      <div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div>
+      <div class="skel-day"></div>
+      <div class="skel-card"></div><div class="skel-card"></div>
+    </div>
+  </div>
   <div class="no-results" id="no-results">No routines match this filter.</div>
 </main>
 

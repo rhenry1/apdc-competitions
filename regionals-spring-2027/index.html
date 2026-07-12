@@ -36,9 +36,10 @@
     <a class="back-link" href="../"><span class="back-arrow">‹</span> All Competitions</a>
     <div class="header-brand">
       <span class="brand-logo">APDC</span>
-      <span class="eyebrow" id="header-subtitle"></span>
+      <span class="eyebrow" id="header-eyebrow">Regionals</span>
     </div>
-    <h1 id="header-title">Dance Competition Schedule</h1>
+    <h1 id="header-title">Competition Schedule</h1>
+    <div class="eyebrow header-sub" id="header-subtitle"></div>
   </div>
 </header>
 
@@ -128,7 +129,14 @@
     <div class="quinn-schedule" id="callout-schedule"></div>
   </div>
   <!-- Schedule rendered by assets/schedule-engine.js -->
-  <div id="schedule-container"></div>
+  <div id="schedule-container">
+    <div class="schedule-skeleton" id="schedule-skeleton" aria-hidden="true">
+      <div class="skel-day"></div>
+      <div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div>
+      <div class="skel-day"></div>
+      <div class="skel-card"></div><div class="skel-card"></div>
+    </div>
+  </div>
   <div class="no-results" id="no-results">No routines match this filter.</div>
 </main>
 

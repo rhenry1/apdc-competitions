@@ -13,6 +13,7 @@ const STYLE_CLASS = {
 };
 
 const OFFSET_KEY = 'apdc-schedule-offset';
+const OFFSET_NOTE_KEY = 'apdc-offset-note-seen'; // first-use disclaimer toast flag
 const DENSITY_KEY = 'apdc-schedule-density';
 const FAVORITES_KEY = 'apdc-favorites';
 
@@ -356,7 +357,13 @@ function renderLastUpdated() {
 
 function buildSchedule() {
   allRoutines = [];
+  // Header hierarchy: type/season eyebrow → competition name → where & when.
   document.getElementById('header-title').textContent = COMPETITION_CONFIG.name;
+  const eyebrowEl = document.getElementById('header-eyebrow');
+  if (eyebrowEl) {
+    const season = COMPETITION_CONFIG.season ? COMPETITION_CONFIG.season.replace('-', '–') + ' Season' : '';
+    eyebrowEl.textContent = [COMPETITION_CONFIG.type, season].filter(Boolean).join(' · ');
+  }
   const locLabel = locationLabel(COMPETITION_CONFIG.location);
   const locHtml = locLabel
     ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery(COMPETITION_CONFIG.location))}" target="_blank" rel="noopener noreferrer">${ICONS.pin}${locLabel}</a> &middot; `
@@ -430,9 +437,11 @@ function buildSchedule() {
 
   buildDancerList();
   buildStudioList();
+  scheduleReady = true; // data is rendered — the empty state may now be shown
 }
 
 // ── State ──
+let scheduleReady = false; // gate the no-results state on data being loaded
 let activeFilter  = 'all';
 let activeDay     = 'all';
 let activeDancers = [];
@@ -615,7 +624,9 @@ function applyFilters() {
   });
 
   renderCallout();
-  const empty = visible === 0;
+  // Only surface the empty state once the schedule data has actually loaded —
+  // never flash "no routines" while the skeleton is still up.
+  const empty = visible === 0 && scheduleReady;
   if (empty) renderEmptyState();
   noResults.classList.toggle('is-visible', empty);
   updateFilterBadge();
@@ -991,7 +1002,15 @@ function applyOffset(delta, { persist = true } = {}) {
   });
   offsetStatus.textContent = delta === 0 ? '' : (delta < 0 ? '' : '+') + delta + ' min · estimate';
   offsetStatus.style.display = delta === 0 ? 'none' : '';
-  if (persist) localStorage.setItem(OFFSET_KEY, String(delta));
+  if (persist) {
+    localStorage.setItem(OFFSET_KEY, String(delta));
+    // Reinforce the disclaimer the first time someone actually adjusts the
+    // offset (the always-on note stays for everyone).
+    if (delta !== 0 && !localStorage.getItem(OFFSET_NOTE_KEY)) {
+      showToast('Personal estimate only — shifts the times you see, not the official schedule');
+      localStorage.setItem(OFFSET_NOTE_KEY, '1');
+    }
+  }
 }
 offsetBtns.forEach(btn => btn.addEventListener('click', () => applyOffset(parseInt(btn.dataset.delta))));
 
