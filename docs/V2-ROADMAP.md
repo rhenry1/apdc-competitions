@@ -4,12 +4,24 @@ Plan of record for the V2 enhancement effort. This is multi-session work; do not
 attempt it in one pass. Each phase lands as one or more small PRs into the `v2`
 branch, which merges to `main` (the GitHub Pages source) at agreed milestones.
 
+## Status (2026-07-12)
+
+- **Phases 1 & 2: SHIPPED.** Merged `v2` → `main` (PR #24); the live site now
+  serves V2. P2.2 / P2.3 / P2.7 deferred pending real data (see entries).
+- **V2.5 refinement pass: SHIPPED** directly to `main` (PR #25) — see the
+  "V2.5 refinement" section below.
+- **Next up: Phase 3** (PWA/offline). Phase 4 remains optional.
+- Test suite: **144 Playwright tests in 20 files**, green; CI gates every PR.
+
 ## Branch / hosting strategy
 
 - **Same repo, long-lived `v2` branch.** Not a separate repo — that would force
   re-creating Pages config, the `/apdc-competitions/` base path, relative asset
   paths, the 404 redirect, and CI, and would fragment history.
-- The live site keeps serving V1 from `main` until `v2` is merged.
+- ~~The live site keeps serving V1 from `main` until `v2` is merged.~~ Done:
+  `main` serves V2 as of 2026-07-12. `v2` is kept in sync with `main`; future
+  phases can PR into `v2` and promote at milestones as before, or PR straight to
+  `main` for small, ship-safe items (the V2.5 pass did the latter).
 - Each work item = a short-lived `v2-<phase>-<slug>` branch → PR into `v2`.
 - Items marked **[ship-safe]** preserve all existing behavior and could be
   cherry-merged to `main` early if we want to release progressively.
@@ -32,8 +44,9 @@ offset must be labeled a personal estimate that adjusts *displayed* times only.
 
 Current state: static GitHub Pages site, `/apdc-competitions/` base path, no
 backend. Shared engine in `assets/`; per-competition data embedded in each
-`<competition>/index.html` as `COMPETITION_CONFIG` + `SCHEDULE`; 14 Playwright
-cases (33 runtime variants) currently green.
+`<competition>/index.html` as `COMPETITION_CONFIG` + `SCHEDULE`; the homepage
+renders from the `assets/competitions.js` manifest. Playwright suite has grown
+from 14 cases at V1 to 144 tests across 20 files.
 
 Must not break:
 - Landing hub (`index.html`) with upcoming + past-season sections.
@@ -42,7 +55,8 @@ Must not break:
 - Filters: dancer, studio, routine-type, day; clear actions; props filter.
 - Manual schedule offset (persisted per `apdc-schedule-offset`).
 - Livestream link + password + copy action (nationals page).
-- Add-to-Home-Screen flow, `manifest.json`, `service-worker.js`, icons.
+- Add-to-Home-Screen flow (now the V2.5 install chip + bottom sheet),
+  `manifest.json`, `service-worker.js`, icons.
 - Per-card Share + Add-to-Calendar (.ics) + venue maps link (shipped in V1).
 - Static hosting; no backend; no paid services.
 
@@ -50,15 +64,26 @@ Must not break:
 
 1. **Offline is broken on schedule subpages** — `service-worker.js` caches only
    the hub shell + `assets/{icons,pwa}.{js,css}`; it does *not* cache
-   `schedule-engine.js`, `schedule-theme.css`, or the competition pages. → Phase 3.
+   `schedule-engine.js`, `schedule-theme.css`, `tokens.css`, `competitions.js`,
+   or the competition pages. → Phase 3. **STILL OPEN — the main reason to do
+   Phase 3.** (V2.5's loading skeleton masks the blank flash but does not make
+   subpages work offline.)
 2. **Manifest maskable anti-pattern** — both icons are `"purpose": "any maskable"`;
    maskable needs a safe zone or it crops. Also no `id` / `screenshots`. → Phase 3.
-3. **No `prefers-reduced-motion` handling** despite 4 keyframe animations. → Phase 1.
-4. **No meta description / Open Graph tags** — shared links preview as bare URLs. → Phase 2 (sharing).
-5. **Routine identity is array-position-based** — favorites + share-state need
-   stable IDs first. → Foundation (Phase 1).
+   **STILL OPEN.**
+3. ~~No `prefers-reduced-motion` handling~~ — ✅ fixed in P1.1.
+4. ~~No meta description / Open Graph tags~~ — ✅ fixed in P2.4.
+5. ~~Routine identity is array-position-based~~ — ✅ fixed in P1.0 (day-scoped ids).
 6. **`regionals-spring-2027` is placeholder data** (19 TBD routines) — needs real
-   data before public launch; fine while marked "Soon".
+   data before public launch. **STILL OPEN** — this is a *data* task, not a code
+   task: paste the real schedule into that page's `SCHEDULE` and update
+   `COMPETITION_CONFIG`/`competitions.js` when the competition publishes it.
+7. *(new, from V2.5)* **Future-season entries need real names** — the season hero
+   for "announced but undated" competitions is built and tested (undated entries
+   in `competitions.js` render "Full schedule coming soon" and auto-flip to the
+   countdown card once `startDate` is set), but no real future competition is in
+   the manifest yet. When APDC announces one, add it to `competitions.js` with no
+   `startDate`.
 
 ---
 
@@ -238,14 +263,48 @@ Foundation first (unblocks favorites, search, share-state):
   Revisit if the IA grows to more real destinations (e.g. a populated overview or
   resources page from P2.2/P2.3).
 
+## V2.5 refinement pass — ✅ SHIPPED (branch `v2.5-refinement`, PR #25 → `main`)
+
+A 15-point polish pass on the deployed portal, requested after the Phase 2
+merge. Landed as one CI-gated PR:
+
+- **Install UX** — the homepage's prominent "Add to Home Screen" block became a
+  compact header **"Install app" chip** opening a **dismissible, focus-trapped
+  bottom sheet** (Escape/close/scrim; Chromium still gets the native prompt).
+  Dead install-button CSS removed from `pwa.css`.
+- **Season hero** — `competitions.js` now supports **announced-but-undated**
+  competitions (`phase() === 'announced'`, sorted after dated ones). The
+  homepage renders them as an elegant "Full schedule coming soon" hero (or a
+  "Schedule coming soon." row when a dated comp holds the hero) and **auto-flips
+  to the day-countdown card once `startDate` is filled in**. Test hook:
+  `window.__APDC_EXTRA_COMPS`. Removed the bogus "00" index on past rows.
+- **Loading states** — shimmer **skeleton** inside `#schedule-container` until
+  the engine renders; the no-results empty state is **gated on `scheduleReady`**
+  so it can never flash before data loads.
+- **Schedule chrome** — header hierarchy is now type/season eyebrow →
+  competition name (`h1`, from data) → where/when line → last-updated;
+  livestream link + password consolidated into **one resource card**; a one-time
+  **"personal estimate" toast** on first offset use (always-on P1.7 note kept).
+- **Verified** — no horizontal overflow at 390/430/768/1024/1440; design tokens/
+  dark system intact; suite green. Tests: `loading-states.spec.js`,
+  `schedule-chrome.spec.js`; `dashboard`/`home` specs extended.
+
 ## Phase 3 — PWA & offline polish
 
-- **P3.1 Full offline shell** — cache engine JS/CSS + competition pages + schedule
-  data + repo-hosted resources (never external livestream video). Fixes gap #1.
+- **P3.1 Full offline shell** — cache engine JS/CSS (`schedule-engine.js`,
+  `schedule-theme.css`, `tokens.css`, `competitions.js`) + competition pages +
+  schedule data + repo-hosted resources (never external livestream video).
+  Fixes gap #1 (the last must-fix from discovery).
 - **P3.2 Offline indicator** — subtle banner; keep serving cached schedule.
+  (Pairs with the V2.5 skeleton: offline with a cache hit should render the
+  schedule, not the skeleton.)
 - **P3.3 Update-available flow** — "Schedule update available" toast; user-chosen
-  refresh; no abrupt reload mid-view; stale-cache cleanup.
-- **P3.4 Install-state detection + dismissal persistence** (partly done in V1).
+  refresh; no abrupt reload mid-view; stale-cache cleanup. (The `lastUpdated`
+  field from P2.6 is the natural signal to surface.)
+- **P3.4 Install-state detection + dismissal persistence** — largely covered:
+  V1 added dismissal persistence and V2.5's chip hides when standalone or when
+  the browser has no install path. Remaining: verify the install-banner logic
+  still coheres with the new chip, then close.
 - **P3.5 Manifest fixes** — split maskable/any icons, add `id`, screenshots. Fixes gap #2.
 
 ## Phase 4 — Optional
