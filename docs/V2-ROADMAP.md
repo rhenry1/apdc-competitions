@@ -164,7 +164,17 @@ Foundation first (unblocks favorites, search, share-state):
   `.skip-link` styles added. Tests: `a11y.spec.js` (5 × 2 pages). (Drawer
   focus-trap/dialog semantics stay in `filter-drawer.spec.js`; aria-pressed in
   the filter specs.)
-- **P1.10 Guardrail test** — banned live-timing phrase check (see constraint).
+- **P1.10 Guardrail test** — ✅ DONE (branch `v2-p1.10-guardrail`). Enforces the
+  non-negotiable no-live-timing constraint. `no-live-timing.spec.js` scans both
+  the **rendered** pages (root + both competition pages) and the **source**
+  (`schedule-engine.js` + page HTML) for banned affirmative claims: "now/
+  currently performing", "up next / next up", "running ahead/behind", "ahead/
+  behind/on schedule", "routines remaining/left", "live countdown", per-routine
+  "countdown to…", "actual/official start time", "live start/timing/schedule/
+  update", and backstage-arrival phrasing. The approved offset disclaimer
+  ("does not reflect official or live timing") is stripped before matching so it
+  never trips the check, and date-based countdowns stay allowed. **Completes
+  Phase 1.**
 
 ## Phase 2 — Competition dashboard & resources
 
