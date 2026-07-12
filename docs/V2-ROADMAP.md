@@ -195,9 +195,19 @@ Foundation first (unblocks favorites, search, share-state):
   livestream, hotel, parking, arrival, awards, notes, docs, last-updated); no
   empty placeholder rows.
 - **P2.3 Resources section** — data-driven resource cards; external links labeled.
-- **P2.4 Sharing + deep links** — encode non-sensitive filter/day/dancer state in
-  URL query params; restore on load; native share sheet + copy-link fallback;
-  add meta description + OG/Twitter tags + share image.
+- **P2.4 Sharing + deep links** — ✅ DONE (branch `v2-p2.4-sharing`). Non-sensitive
+  view state (day, pinned dancers/studios, search text, the Props category) is
+  mirrored into the URL via `history.replaceState` on every `applyFilters` and
+  restored on load (`restoreFromURL` before the first render). Favorites stay
+  private/local — never encoded. A `?routine=<id>` deep link opens cleanly
+  (ignores filters so the card is always reachable), scrolls to it, and
+  spotlights it (`.deep-target`, cleared on first user interaction). Per-card
+  Share now carries that deep link (native share `url` + clipboard fallback
+  "Link copied"). Added meta description + canonical + OpenGraph/Twitter tags
+  and a generated branded 1200×630 `og-image.png` on all three pages. Tests:
+  `deep-links.spec.js`, `meta.spec.js`. (Ordered ahead of P2.2/P2.3 because it
+  ships with existing data and matches the earlier "share routine cards"
+  request; overview/resources fields are still mostly empty.)
 - **P2.5 Calendar export expansion** — whole competition range, all favorites,
   awards sessions; events carry change-disclaimer.
 - **P2.6 Last-updated messaging.**

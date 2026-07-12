@@ -163,7 +163,7 @@ for (const { name, path } of PAGES) {
       );
 
       await page.locator('.routine-card .card-action-btn').first().click();
-      await expect(page.locator('#action-toast')).toContainText('Copied');
+      await expect(page.locator('#action-toast')).toContainText(/copied/i);
 
       const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
       expect(clipboardText).toContain(firstRoutine.title);
