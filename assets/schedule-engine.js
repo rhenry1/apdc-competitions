@@ -361,12 +361,75 @@ function updateFilterBadge() {
   badge.style.display = count > 0 ? '' : 'none';
 }
 
-if (filterToggle && filterExtra) {
-  filterToggle.addEventListener('click', () => {
-    const expanded = filterExtra.classList.toggle('expanded');
-    filterToggle.classList.toggle('open', expanded);
-    filterToggle.setAttribute('aria-expanded', String(expanded));
-  });
+// ── Filter drawer (accessible bottom sheet) ──
+let filterBackdrop = null;
+let _drawerKeydown = null;
+
+function focusablesIn(el) {
+  return [...el.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+    .filter(n => !n.disabled && n.offsetParent !== null);
+}
+
+function openFilterDrawer() {
+  if (!filterExtra) return;
+  filterBackdrop.classList.add('open');
+  filterExtra.classList.add('open');
+  filterExtra.setAttribute('aria-hidden', 'false');
+  filterToggle.classList.add('open');
+  filterToggle.setAttribute('aria-expanded', 'true');
+
+  const focusables = focusablesIn(filterExtra);
+  if (focusables.length) focusables[0].focus();
+
+  _drawerKeydown = (e) => {
+    if (e.key === 'Escape') { closeFilterDrawer(); return; }
+    if (e.key !== 'Tab') return;
+    const f = focusablesIn(filterExtra);
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  };
+  document.addEventListener('keydown', _drawerKeydown);
+}
+
+function closeFilterDrawer() {
+  if (!filterExtra) return;
+  filterBackdrop.classList.remove('open');
+  filterExtra.classList.remove('open');
+  filterExtra.setAttribute('aria-hidden', 'true');
+  filterToggle.classList.remove('open');
+  filterToggle.setAttribute('aria-expanded', 'false');
+  if (_drawerKeydown) { document.removeEventListener('keydown', _drawerKeydown); _drawerKeydown = null; }
+  filterToggle.focus();
+}
+
+function initFilterDrawer() {
+  if (!filterToggle || !filterExtra) return;
+
+  // Relocate the drawer to <body> so position:fixed is viewport-relative
+  // (the sticky toolbar uses backdrop-filter, which would otherwise contain it).
+  document.body.appendChild(filterExtra);
+  filterExtra.setAttribute('role', 'dialog');
+  filterExtra.setAttribute('aria-modal', 'true');
+  filterExtra.setAttribute('aria-label', 'Filters');
+  filterExtra.setAttribute('aria-hidden', 'true');
+
+  const header = document.createElement('div');
+  header.className = 'filter-drawer-header';
+  header.innerHTML =
+    '<span class="filter-drawer-title">Filters</span>' +
+    '<button type="button" class="filter-drawer-close" aria-label="Close filters">' + ICONS.close + '</button>';
+  filterExtra.insertBefore(header, filterExtra.firstChild);
+
+  filterBackdrop = document.createElement('div');
+  filterBackdrop.className = 'filter-backdrop';
+  document.body.appendChild(filterBackdrop);
+
+  filterToggle.setAttribute('aria-haspopup', 'dialog');
+  filterToggle.addEventListener('click', openFilterDrawer);
+  filterBackdrop.addEventListener('click', closeFilterDrawer);
+  header.querySelector('.filter-drawer-close').addEventListener('click', closeFilterDrawer);
 }
 
 function setActiveInGroup(nodeList, activeEl) {
@@ -432,6 +495,7 @@ function applyFilters() {
   noResults.style.display = visible === 0 ? 'block' : 'none';
   updateFilterBadge();
   updateClearAll();
+  renderActiveFilters();
 }
 
 // ── Callout ──
@@ -490,6 +554,7 @@ function renderDancerDropdown(q) {
 
 function addDancer(name) {
   // Pinning a dancer supersedes the transient free-text query.
+  clearTimeout(_searchDebounce);
   activeSearch = '';
   dancerInput.value = '';
   updateSearchClear();
@@ -511,27 +576,89 @@ function removeDancer(name) {
   renderDancerPills(); applyFilters();
 }
 
+// Active filters are now shown as unified chips beneath the toolbar
+// (renderActiveFilters). The old in-toolbar dancer pill-row is retired.
 function renderDancerPills() {
-  pillWrap.innerHTML = '';
-  activeDancers.forEach(name => {
-    const pill = document.createElement('div'); pill.className = 'dancer-pill';
-    pill.innerHTML = `<span>${ICONS.sparkle}${name}</span><button class="pill-clear" aria-label="Remove ${name}">${ICONS.close}</button>`;
-    pill.querySelector('.pill-clear').addEventListener('click', () => removeDancer(name));
-    pillWrap.appendChild(pill);
-  });
-  pillRow.style.display = activeDancers.length > 0 ? '' : 'none';
-  clearAllBtn.style.display = activeDancers.length > 1 ? '' : 'none';
+  if (pillRow) pillRow.style.display = 'none';
+}
+
+// ── Active-filter chips (unified, removable, beneath the toolbar) ──
+const FORMAT_LABEL = { solo: 'Solo', group: 'Groups', production: 'Production' };
+function titleCase(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+function dayButtonLabel(dayKey) {
+  const btn = COMPETITION_CONFIG.dayButtons.find(b => b.key === dayKey);
+  return btn ? btn.label : dayKey;
+}
+
+function renderActiveFilters() {
+  const wrap = document.getElementById('active-filters');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+
+  const addChip = (key, label, onRemove) => {
+    const chip = document.createElement('div');
+    chip.className = 'filter-chip';
+    chip.dataset.chip = key;
+    chip.innerHTML = `<span>${label}</span>` +
+      `<button class="chip-remove" type="button" aria-label="Remove ${label} filter">${ICONS.close}</button>`;
+    chip.querySelector('.chip-remove').addEventListener('click', onRemove);
+    wrap.appendChild(chip);
+  };
+
+  activeDancers.forEach(name => addChip('dancer:' + name, name, () => removeDancer(name)));
+  activeStudios.forEach(name => addChip('studio:' + name, name, () => removeStudio(name)));
+  if (activeSearch) {
+    addChip('search', 'Search: “' + activeSearch + '”', () => {
+      dancerInput.value = ''; activeSearch = ''; updateSearchClear(); applyFilters();
+    });
+  }
+  if (activeFilter === 'props') {
+    addChip('show', 'Props', () => {
+      activeFilter = 'all';
+      setActiveInGroup(showBtns, document.querySelector('.show-btn[data-filter="all"]'));
+      applyFilters();
+    });
+  }
+  if (activeLevel) addChip('level', titleCase(activeLevel), resetCategory);
+  if (activeFormat) addChip('format', FORMAT_LABEL[activeFormat] || titleCase(activeFormat), resetCategory);
+  if (activeDay !== 'all') {
+    addChip('day', dayButtonLabel(activeDay), () => {
+      activeDay = 'all';
+      setActiveInGroup(document.querySelectorAll('.day-btn'), document.querySelector('.day-btn[data-day="all"]'));
+      applyFilters();
+    });
+  }
+
+  wrap.classList.toggle('visible', wrap.children.length > 0);
+}
+
+function resetCategory() {
+  activeLevel = '';
+  activeFormat = '';
+  setActiveInGroup(catBtns, catBtns[0] || null);
+  applyFilters();
+}
+
+function initActiveFilters() {
+  const main = document.getElementById('main-content');
+  if (!main || document.getElementById('active-filters')) return;
+  const wrap = document.createElement('div');
+  wrap.id = 'active-filters';
+  wrap.className = 'active-filters';
+  wrap.setAttribute('aria-label', 'Active filters');
+  main.insertBefore(wrap, main.firstChild);
 }
 
 // ── Unified search input wiring (debounced free-text + dancer suggestions) ──
 let _searchDebounce;
 function onSearchInput() {
-  const val = dancerInput.value;
   updateSearchClear();
-  renderDancerDropdown(val); // suggestions update immediately
+  renderDancerDropdown(dancerInput.value); // suggestions update immediately
   clearTimeout(_searchDebounce);
+  // Read the current value when the timer fires (not the value at input time),
+  // so a fast pin/clear that empties the box isn't overwritten by a stale query.
   _searchDebounce = setTimeout(() => {
-    activeSearch = val.trim();
+    activeSearch = dancerInput.value.trim();
     applyFilters();
   }, 120);
 }
@@ -602,17 +729,12 @@ function removeStudio(name) {
   renderStudioPills(); applyFilters();
 }
 
+// Selected studios appear in the unified active-filter chips row; inside the
+// drawer we only keep the "Clear" affordance and the input placeholder.
 function renderStudioPills() {
-  studioPillWrap.innerHTML = '';
-  activeStudios.forEach(name => {
-    const pill = document.createElement('div'); pill.className = 'dancer-pill';
-    pill.style.cssText = 'background:rgba(233,196,106,0.15);border-color:rgba(233,196,106,0.4);color:#fde68a;';
-    pill.innerHTML = `<span>${ICONS.building}${name}</span><button class="pill-clear" style="color:#fde68a" aria-label="Remove ${name}">${ICONS.close}</button>`;
-    pill.querySelector('.pill-clear').addEventListener('click', () => removeStudio(name));
-    studioPillWrap.appendChild(pill);
-  });
-  studioClearBtn.style.display = activeStudios.length > 1 ? '' : 'none';
-  studioInput.placeholder = activeStudios.length > 0 ? 'Add studio...' : 'Studio...';
+  if (studioPillWrap) studioPillWrap.innerHTML = '';
+  if (studioClearBtn) studioClearBtn.style.display = activeStudios.length > 1 ? '' : 'none';
+  if (studioInput) studioInput.placeholder = activeStudios.length > 0 ? 'Add studio…' : 'Studio…';
 }
 
 studioInput.addEventListener('input', () => renderStudioDropdown(studioInput.value));
@@ -779,6 +901,8 @@ window.addEventListener('DOMContentLoaded', () => {
   initToolbar();
   initScheduleTools();
   initSearchClear();
+  initActiveFilters();
+  initFilterDrawer();
   applyFilters();
   APDCPwa.initServiceWorker('../service-worker.js');
 });

@@ -248,20 +248,115 @@ h1 {
   flex-shrink: 0;
 }
 
+/* ── FILTER DRAWER (bottom sheet) ──
+   The engine relocates .filter-extra to <body> and this styles it as a
+   modal bottom sheet with a backdrop + focus management. */
 .filter-extra {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.25s ease;
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(101%);
+  transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
 }
-.filter-extra.expanded { grid-template-rows: 1fr; }
+.filter-extra.open { transform: translateY(0); }
+
+.filter-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.filter-drawer-title {
+  font-family: 'Tenor Sans', serif;
+  font-size: 18px;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+.filter-drawer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: rgba(255,255,255,0.04);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s, background 0.15s;
+}
+.filter-drawer-close:hover { color: var(--color-text); background: rgba(255,255,255,0.1); }
+.filter-drawer-close:focus-visible { outline: 2px solid rgba(196,181,253,0.7); outline-offset: 2px; }
 
 .filter-extra-inner {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  overflow: hidden;
-  min-height: 0;
+  gap: var(--space-4);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--space-4) var(--space-4) calc(var(--space-6) + env(safe-area-inset-bottom));
 }
+
+.filter-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+  background: rgba(0,0,0,0.55);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.28s ease, visibility 0.28s;
+}
+.filter-backdrop.open { opacity: 1; visibility: visible; }
+
+/* ── ACTIVE-FILTER CHIPS (beneath the toolbar) ── */
+.active-filters {
+  display: none;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+.active-filters.visible { display: flex; }
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px 5px 12px;
+  border-radius: var(--radius-pill);
+  background: rgba(167,139,250,0.14);
+  border: 1px solid var(--color-border-strong);
+  color: var(--purple-light);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.filter-chip .chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.75;
+  -webkit-tap-highlight-color: transparent;
+}
+.filter-chip .chip-remove:hover { opacity: 1; }
+.filter-chip .chip-remove .icon { width: 12px; height: 12px; }
 
 /* ── DANCER SEARCH ── */
 .search-wrap {
