@@ -979,6 +979,18 @@ body.compact .card-dancers { font-size: 11px; }
   flex-shrink: 0;
 }
 
+/* Manual-offset disclaimer — makes clear this is a personal estimate, not
+   official/live timing (the portal has no verified live feed). */
+.offset-note {
+  flex-basis: 100%;
+  margin: 3px 0 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--color-text-subtle);
+}
+
 .time-adjusted {
   font-family: 'DM Mono', monospace;
   font-size: 11px;

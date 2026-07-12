@@ -848,7 +848,7 @@ function applyOffset(delta, { persist = true } = {}) {
       el.className = 'card-time card-time--shifted';
     }
   });
-  offsetStatus.textContent = delta === 0 ? '' : 'Running ' + (delta < 0 ? '' : '+') + delta + ' min';
+  offsetStatus.textContent = delta === 0 ? '' : (delta < 0 ? '' : '+') + delta + ' min · estimate';
   offsetStatus.style.display = delta === 0 ? 'none' : '';
   if (persist) localStorage.setItem(OFFSET_KEY, String(delta));
 }
