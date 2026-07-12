@@ -377,6 +377,46 @@ h1 {
 }
 .active-filters.visible { display: flex; }
 
+/* Favorites-view export bar */
+.fav-export-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  padding: 10px 14px;
+  border: 1px solid var(--card-quinn-border, rgba(216,180,254,0.3));
+  border-radius: var(--radius-md);
+  background: var(--accent-quinn-dim);
+}
+.fav-export-count {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+.fav-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--tap-min);
+  padding: 8px 14px;
+  border: 1px solid var(--accent-quinn);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--accent-quinn);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, color 0.15s;
+}
+.fav-export-btn:hover, .fav-export-btn:focus-visible {
+  background: var(--accent-quinn);
+  color: #1a0b2e;
+}
+.fav-export-btn .icon { width: 16px; height: 16px; }
+
 .filter-chip {
   display: inline-flex;
   align-items: center;
