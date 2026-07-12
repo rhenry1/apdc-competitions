@@ -335,6 +335,25 @@ function exportFavoritesICS() {
   showToast(`Exported ${events.length} favorite${events.length === 1 ? '' : 's'} to calendar`);
 }
 
+// A quiet "Schedule updated <date>" line in the header, shown only when the
+// config carries a real lastUpdated date. It reflects when the published
+// schedule data was last edited — not any live/day-of timing.
+function renderLastUpdated() {
+  const lu = COMPETITION_CONFIG.lastUpdated;
+  const host = document.querySelector('.header-inner');
+  let el = document.getElementById('last-updated');
+  if (!lu) { if (el) el.remove(); return; }
+  const d = new Date(lu + 'T00:00:00');
+  const fmt = isNaN(d) ? lu : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  if (!el && host) {
+    el = document.createElement('p');
+    el.id = 'last-updated';
+    el.className = 'last-updated';
+    host.appendChild(el);
+  }
+  if (el) el.textContent = 'Schedule updated ' + fmt;
+}
+
 function buildSchedule() {
   allRoutines = [];
   document.getElementById('header-title').textContent = COMPETITION_CONFIG.name;
@@ -343,6 +362,7 @@ function buildSchedule() {
     ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery(COMPETITION_CONFIG.location))}" target="_blank" rel="noopener noreferrer">${ICONS.pin}${locLabel}</a> &middot; `
     : '';
   document.getElementById('header-subtitle').innerHTML = locHtml + (COMPETITION_CONFIG.dates || '');
+  renderLastUpdated();
 
   const dayRow = document.getElementById('day-filter-row');
   COMPETITION_CONFIG.dayButtons.forEach(btn => {
