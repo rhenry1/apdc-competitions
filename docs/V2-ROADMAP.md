@@ -208,8 +208,15 @@ Foundation first (unblocks favorites, search, share-state):
   `deep-links.spec.js`, `meta.spec.js`. (Ordered ahead of P2.2/P2.3 because it
   ships with existing data and matches the earlier "share routine cards"
   request; overview/resources fields are still mostly empty.)
-- **P2.5 Calendar export expansion** — whole competition range, all favorites,
-  awards sessions; events carry change-disclaimer.
+- **P2.5 Calendar export expansion** — ✅ DONE (branch `v2-p2.5-calendar`). The
+  ICS builder was refactored into `buildVEvent`/`wrapICS`/`triggerICSDownload`
+  so a single file can hold many events. In the Favorites view (and only when
+  favorites exist) a `#fav-export-bar` offers **"Add all to calendar"**, which
+  downloads every favorited routine as one multi-event `.ics` (`…-favorites.ics`).
+  Each event keeps the "competition times may change" disclaimer — no live/
+  official timing. Per-card export unchanged. Tests: `calendar-export.spec.js`.
+  (Whole-day / awards-session export can follow if requested; favorites cover
+  the common "my dancer's routines" case.)
 - **P2.6 Last-updated messaging.**
 - **P2.7 Bottom navigation / IA** — Home / Schedule / Favorites / More; hide
   destinations with no content; safe-area aware.

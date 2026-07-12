@@ -163,7 +163,7 @@ function renderRoutineCard(r, dayKey, dayConf) {
 
   const [shareBtn, calendarBtn] = card.querySelectorAll('.card-action-btn');
   shareBtn.addEventListener('click', (e) => { e.stopPropagation(); shareRoutine(r, dayConf); });
-  calendarBtn.addEventListener('click', (e) => { e.stopPropagation(); downloadICS(r, dayConf); });
+  calendarBtn.addEventListener('click', (e) => { e.stopPropagation(); downloadICS(r); });
   card.querySelector('.card-fav').addEventListener('click', (e) => { e.stopPropagation(); toggleFavorite(r.id, card); });
 
   return card;
@@ -194,6 +194,30 @@ function updateFavCount() {
   const n = favoriteCount();
   badge.textContent = String(n);
   badge.style.display = n > 0 ? '' : 'none';
+}
+
+// In the Favorites view (and only when there are favorites), offer a one-tap
+// export of every favorited routine as a single calendar file.
+function updateFavExportBar() {
+  const show = activeFilter === 'favorites' && favoriteCount() > 0;
+  let bar = document.getElementById('fav-export-bar');
+  if (!show) { if (bar) bar.remove(); return; }
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'fav-export-bar';
+    bar.className = 'fav-export-bar';
+    const af = document.getElementById('active-filters');
+    if (af && af.parentNode) af.parentNode.insertBefore(bar, af.nextSibling);
+    else {
+      const main = document.querySelector('main') || document.body;
+      main.insertBefore(bar, main.firstChild);
+    }
+  }
+  const n = favoriteCount();
+  bar.innerHTML =
+    `<span class="fav-export-count">${n} favorite${n === 1 ? '' : 's'}</span>` +
+    `<button type="button" class="fav-export-btn">${ICONS.calendar}<span>Add all to calendar</span></button>`;
+  bar.querySelector('.fav-export-btn').addEventListener('click', exportFavoritesICS);
 }
 
 // ── Share + Add to Calendar ──
@@ -241,42 +265,53 @@ function icsDateTime(date) {
   return `${date.getFullYear()}${p(date.getMonth() + 1)}${p(date.getDate())}T${p(date.getHours())}${p(date.getMinutes())}00`;
 }
 
-function downloadICS(r, dayConf) {
-  const scheduledDate = r.scheduledDate || (dayConf && dayConf.date);
-  if (!scheduledDate) { showToast('Date unavailable for this routine'); return; }
+function icsSlug(s, max) {
+  return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, max || 60);
+}
 
+// A routine's start/end as Date objects (15-min reminder block), or null if the
+// date is unknown.
+function routineStartEnd(r) {
+  const scheduledDate = r.scheduledDate;
+  if (!scheduledDate) return null;
   const [timePart, ampm] = r.scheduledTime.trim().split(' ');
   let [hour, minute] = timePart.split(':').map(Number);
   if (ampm === 'pm' && hour !== 12) hour += 12;
   if (ampm === 'am' && hour === 12) hour = 0;
-
   const [y, mo, d] = scheduledDate.split('-').map(Number);
   const start = new Date(y, mo - 1, d, hour, minute);
-  const end = new Date(start.getTime() + 15 * 60000); // short reminder block — routines run just a few minutes
+  return { start, end: new Date(start.getTime() + 15 * 60000) };
+}
 
+// One VEVENT (array of lines) for a routine, or null if it has no date.
+function buildVEvent(r) {
+  const se = routineStartEnd(r);
+  if (!se) return null;
   const description = [r.dancersText, r.formatTag, r.stage ? `Stage ${r.stage}` : '',
     'Scheduled time — competition times may change. Arrive a few minutes early.']
     .filter(Boolean).join('\n');
-
-  const ics = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//APDC Competitions//EN',
+  return [
     'BEGIN:VEVENT',
     `UID:${r.id}@apdc-competitions`,
-    `DTSTART:${icsDateTime(start)}`,
-    `DTEND:${icsDateTime(end)}`,
+    `DTSTART:${icsDateTime(se.start)}`,
+    `DTEND:${icsDateTime(se.end)}`,
     `SUMMARY:${icsEscape(r.routineName + (r.routineNumber ? ` (#${r.routineNumber})` : '') + ' — ' + COMPETITION_CONFIG.name)}`,
     `DESCRIPTION:${icsEscape(description)}`,
     `LOCATION:${icsEscape(locationLabel(COMPETITION_CONFIG.location))}`,
     'END:VEVENT',
-    'END:VCALENDAR'
-  ].join('\r\n');
+  ];
+}
 
+function wrapICS(eventLineArrays) {
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//APDC Competitions//EN']
+    .concat(...eventLineArrays)
+    .concat(['END:VCALENDAR'])
+    .join('\r\n');
+}
+
+function triggerICSDownload(ics, filename) {
   const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
   const url = URL.createObjectURL(blob);
-  const filename = `${r.routineNumber || 'routine'}-${r.routineName}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) + '.ics';
-
   const a = document.createElement('a');
   a.href = url;
   a.download = filename;
@@ -284,6 +319,20 @@ function downloadICS(r, dayConf) {
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function downloadICS(r) {
+  const ev = buildVEvent(r);
+  if (!ev) { showToast('Date unavailable for this routine'); return; }
+  triggerICSDownload(wrapICS([ev]), `${r.routineNumber || 'routine'}-${icsSlug(r.routineName)}.ics`);
+}
+
+// Export every favorited routine as a single multi-event calendar file.
+function exportFavoritesICS() {
+  const events = allRoutines.filter(r => favorites.has(r.id)).map(buildVEvent).filter(Boolean);
+  if (!events.length) { showToast('No favorites to export yet'); return; }
+  triggerICSDownload(wrapICS(events), `${icsSlug(COMPETITION_CONFIG.name)}-favorites.ics`);
+  showToast(`Exported ${events.length} favorite${events.length === 1 ? '' : 's'} to calendar`);
 }
 
 function buildSchedule() {
@@ -551,6 +600,7 @@ function applyFilters() {
   noResults.classList.toggle('is-visible', empty);
   updateFilterBadge();
   updateFavCount();
+  updateFavExportBar();
   updateClearAll();
   renderActiveFilters();
   announceResults(visible);
