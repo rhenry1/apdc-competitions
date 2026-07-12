@@ -143,8 +143,11 @@ Foundation first (unblocks favorites, search, share-state):
   Note: favoriting **dancers** (spec's optional item) is deferred — the existing
   dancer-pin + spotlight callout already covers "follow a dancer"; per-routine
   stars are the more flexible primitive.
-- **P1.7 Manual-offset disclaimer** — add the required helper text; label it a
-  personal estimate; keep persistence + "On Time" reset. **[ship-safe]**
+- **P1.7 Manual-offset disclaimer** — ✅ DONE (branch `v2-p1.7-offset-disclaimer`).
+  Label "Schedule offset" → "Adjust times"; persistent disclaimer note ("Personal
+  estimate only — shifts the displayed times… does not reflect official or live
+  timing"); active status marked "· estimate"; persistence + "On Time" reset
+  unchanged. Tests: `offset-disclaimer.spec.js`. **[ship-safe]**
 - **P1.8 Empty / error states** — polished states with next-actions (clear
   filters, all days, disable favorites-only).
 - **P1.9 Accessibility pass** — semantic headings, focus states, aria-expanded/
