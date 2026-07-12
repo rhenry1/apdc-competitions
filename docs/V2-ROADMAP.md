@@ -191,10 +191,18 @@ Foundation first (unblocks favorites, search, share-state):
   "today" is overridable via `window.__APDC_NOW` for deterministic tests. Tests:
   `dashboard.spec.js`; `home.spec.js` updated. Countdown is date-based only —
   passes the P1.10 guardrail.
-- **P2.2 Competition overview page** — data-driven fields (venue, address, website,
-  livestream, hotel, parking, arrival, awards, notes, docs, last-updated); no
-  empty placeholder rows.
-- **P2.3 Resources section** — data-driven resource cards; external links labeled.
+- **P2.2 Competition overview page** — ⏸ DEFERRED (pending data). The
+  publicly-known fields are already surfaced on the schedule page — location
+  (with maps link) + date range in the header subtitle, livestream + password in
+  the livestream bar, and now last-updated (P2.6). The remaining overview fields
+  (venue name, hotel, parking, arrival, awards, notes, docs) are empty in both
+  configs, so a dedicated overview would be mostly empty rows — which the spec
+  forbids. Revisit once real venue/logistics data exists; the manifest
+  (`competitions.js`) is ready to carry it.
+- **P2.3 Resources section** — ⏸ DEFERRED (pending data). `resources: []` is
+  empty for both competitions and there are no real resource links to show yet.
+  Building an empty-only renderer now would add untestable, invisible UI.
+  Revisit when resource URLs exist.
 - **P2.4 Sharing + deep links** — ✅ DONE (branch `v2-p2.4-sharing`). Non-sensitive
   view state (day, pinned dancers/studios, search text, the Props category) is
   mirrored into the URL via `history.replaceState` on every `applyFilters` and
@@ -217,9 +225,18 @@ Foundation first (unblocks favorites, search, share-state):
   official timing. Per-card export unchanged. Tests: `calendar-export.spec.js`.
   (Whole-day / awards-session export can follow if requested; favorites cover
   the common "my dancer's routines" case.)
-- **P2.6 Last-updated messaging.**
-- **P2.7 Bottom navigation / IA** — Home / Schedule / Favorites / More; hide
-  destinations with no content; safe-area aware.
+- **P2.6 Last-updated messaging** — ✅ DONE (branch `v2-p2.6-lastupdated`). Both
+  configs carry a real `lastUpdated` date; `renderLastUpdated()` shows a quiet
+  "Schedule updated <Mon D, YYYY>" line in the header, only when the date is
+  present. Reflects when the published data was edited — not day-of timing
+  (passes the P1.10 guardrail). Tests: `last-updated.spec.js`.
+- **P2.7 Bottom navigation / IA** — ⏸ DEFERRED (redundant for now). The app is
+  effectively two screens (home + a competition schedule); on the schedule page
+  the sticky toolbar already exposes All / Props / Favorites + search, and the
+  header has a Home ("All Competitions") back-link. A persistent bottom nav would
+  duplicate those and add layout/safe-area risk right before the `main` merge.
+  Revisit if the IA grows to more real destinations (e.g. a populated overview or
+  resources page from P2.2/P2.3).
 
 ## Phase 3 — PWA & offline polish
 

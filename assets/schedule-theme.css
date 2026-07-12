@@ -154,6 +154,15 @@ h1 {
   line-height: 1.2;
 }
 
+.last-updated {
+  font-family: 'DM Mono', 'SF Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(196,181,253,0.4);
+  margin-top: -4px;
+}
+
 /* ── FILTER BAR ── */
 .filter-bar {
   max-width: 960px;
