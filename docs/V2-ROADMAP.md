@@ -313,9 +313,19 @@ merge. Landed as one CI-gated PR:
   on `online` (fade + `visibility` flip so it's truly gone for AT/tests). The
   cached schedule keeps being served either way; the pill only explains why
   content may not be the latest. Tests added to `offline.spec.js`.
-- **P3.3 Update-available flow** — "Schedule update available" toast; user-chosen
-  refresh; no abrupt reload mid-view; stale-cache cleanup. (The `lastUpdated`
-  field from P2.6 is the natural signal to surface.)
+- **P3.3 Update-available flow** — ✅ DONE (branch `v2-p3.3-update-flow`). The
+  SW no longer calls `skipWaiting()` on install: an updated worker parks in the
+  waiting state, `pwa.js` detects it (`updatefound`/`reg.waiting`) and shows a
+  **"Schedule update available — Refresh"** toast. Refresh posts
+  `SKIP_WAITING`; the page reloads **only** on a user-initiated
+  `controllerchange` (first-install `clients.claim()` never reloads). Old
+  caches were already cleaned on activate. First installs still activate
+  immediately (no predecessor to wait behind). Content freshness while online
+  is unaffected (network-first). Tests: `sw-update.spec.js` — first install
+  never reloads; a simulated update (same scope, new script URL) shows the
+  toast, and Refresh swaps the controller with exactly one reload. (No
+  `lastUpdated` comparison needed — the waiting-worker state *is* the update
+  signal.)
 - **P3.4 Install-state detection + dismissal persistence** — largely covered:
   V1 added dismissal persistence and V2.5's chip hides when standalone or when
   the browser has no install path. Remaining: verify the install-banner logic

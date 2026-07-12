@@ -113,11 +113,55 @@
     setTimeout(show, 2500);
   }
 
+  // "Schedule update available" toast — shown when an updated service worker
+  // is installed and waiting. Refresh is always the user's choice; we never
+  // reload mid-view on our own.
+  let _updateUserInitiated = false;
+  function showUpdateToast(waitingWorker) {
+    if (document.getElementById('update-toast')) return;
+    const toast = document.createElement('div');
+    toast.id = 'update-toast';
+    toast.className = 'update-toast';
+    toast.setAttribute('role', 'status');
+    toast.innerHTML =
+      '<span class="update-toast-text">Schedule update available</span>' +
+      '<button type="button" class="update-refresh">Refresh</button>';
+    toast.querySelector('.update-refresh').addEventListener('click', () => {
+      _updateUserInitiated = true;
+      waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+    });
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('visible'));
+  }
+
   function initServiceWorker(swPath) {
     if (!('serviceWorker' in navigator)) return;
-    window.addEventListener('load', () =>
-      navigator.serviceWorker.register(swPath).catch(() => {})
-    );
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register(swPath).then(reg => {
+        // Update already waiting from a previous visit.
+        if (reg.waiting && navigator.serviceWorker.controller) showUpdateToast(reg.waiting);
+        reg.addEventListener('updatefound', () => {
+          const next = reg.installing;
+          if (!next) return;
+          next.addEventListener('statechange', () => {
+            // "installed" with an existing controller = a new version is
+            // waiting. Without a controller it's the very first install —
+            // nothing to announce.
+            if (next.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdateToast(reg.waiting || next);
+            }
+          });
+        });
+      }).catch(() => {});
+
+      // Reload only for a user-chosen update. controllerchange also fires on
+      // the very first install (clients.claim) — never reload for that.
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!_updateUserInitiated) return;
+        _updateUserInitiated = false;
+        location.reload();
+      });
+    });
   }
 
   // Subtle "you're offline" pill (bottom-center, safe-area aware). The cached

@@ -37,7 +37,14 @@ self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE).then(cache => cache.addAll(ASSETS))
   );
-  self.skipWaiting();
+  // No skipWaiting() here: an updated worker waits until the user opts in via
+  // the "Schedule update available" toast (SKIP_WAITING message below), so an
+  // update never yanks the page out from under someone mid-view. A first
+  // install has no predecessor and activates immediately regardless.
+});
+
+self.addEventListener('message', e => {
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('activate', e => {
