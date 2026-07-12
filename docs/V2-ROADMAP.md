@@ -306,9 +306,13 @@ merge. Landed as one CI-gated PR:
   Tests: `offline.spec.js` — real SW install → precache → `setOffline(true)` →
   a page never visited online renders its schedule; deep link restores its
   filter offline. Fixes gap #1.
-- **P3.2 Offline indicator** — subtle banner; keep serving cached schedule.
-  (Pairs with the V2.5 skeleton: offline with a cache hit should render the
-  schedule, not the skeleton.)
+- **P3.2 Offline indicator** — ✅ DONE (branch `v2-p3.2-offline-indicator`).
+  Shared `initOfflineIndicator()` in `pwa.js` (all three pages): a subtle
+  bottom-center pill — "Offline — showing saved schedule" — with `role=status`,
+  safe-area aware, shown on the `offline` event or an offline page load, hidden
+  on `online` (fade + `visibility` flip so it's truly gone for AT/tests). The
+  cached schedule keeps being served either way; the pill only explains why
+  content may not be the latest. Tests added to `offline.spec.js`.
 - **P3.3 Update-available flow** — "Schedule update available" toast; user-chosen
   refresh; no abrupt reload mid-view; stale-cache cleanup. (The `lastUpdated`
   field from P2.6 is the natural signal to surface.)
