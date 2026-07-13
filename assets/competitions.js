@@ -30,6 +30,10 @@
       url: 'regionals-spring-2027/',
       accent: 'regional',
       published: true,
+      // Demo/sample competition: proves the countdown + schedule experience,
+      // but is NOT a real published event. Surfaced with a clear "Sample data"
+      // label wherever it appears so it's never mistaken for the real schedule.
+      sample: true,
     },
     {
       id: 'nationals-2026',
