@@ -74,10 +74,14 @@ Must not break:
 3. ~~No `prefers-reduced-motion` handling~~ — ✅ fixed in P1.1.
 4. ~~No meta description / Open Graph tags~~ — ✅ fixed in P2.4.
 5. ~~Routine identity is array-position-based~~ — ✅ fixed in P1.0 (day-scoped ids).
-6. **`regionals-spring-2027` is placeholder data** (19 TBD routines) — needs real
-   data before public launch. **STILL OPEN** — this is a *data* task, not a code
-   task: paste the real schedule into that page's `SCHEDULE` and update
-   `COMPETITION_CONFIG`/`competitions.js` when the competition publishes it.
+6. **`regionals-spring-2027` is placeholder data** (19 TBD routines) — now
+   **clearly labeled as demo/sample** (branch `fix-sample-data-labeling`): a
+   `sample: true` flag drives a "Sample data" badge on the homepage hero and an
+   unmissable "not the official schedule" banner on the page, and the page's
+   meta/OG no longer assert the fabricated dates. The countdown + schedule stay
+   live (they demonstrate the site works) but are no longer presented as real.
+   **Remaining data task:** paste the real schedule into that page's `SCHEDULE`,
+   fill real dates, and drop the `sample` flag when the competition publishes.
 7. *(new, from V2.5)* **Future-season entries need real names** — the season hero
    for "announced but undated" competitions is built and tested (undated entries
    in `competitions.js` render "Full schedule coming soon" and auto-flip to the

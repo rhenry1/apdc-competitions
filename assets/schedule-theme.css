@@ -106,6 +106,38 @@ header {
 
 .header-inner { max-width: 960px; margin: 0 auto; }
 
+/* Sample/demo notice — a clear, unmissable strip so demo schedules are never
+   taken for the real published event. */
+.sample-banner {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(251,191,36,0.25);
+  background: rgba(251,191,36,0.07);
+  font-family: 'Inter', sans-serif;
+}
+.sample-banner-tag {
+  flex-shrink: 0;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fbbf24;
+  border: 1px solid rgba(251,191,36,0.4);
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+.sample-banner-text {
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(253,230,138,0.85);
+}
+.sample-banner-text strong { color: #fde68a; font-weight: 600; }
+
 .header-brand {
   display: flex;
   align-items: center;
