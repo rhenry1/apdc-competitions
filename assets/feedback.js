@@ -54,7 +54,7 @@
         '<button type="button" class="fb-close" id="fb-close" aria-label="Close feedback"></button>' +
       '</div>' +
       '<div class="fb-body" id="fb-body">' +
-        '<p class="fb-intro">Ideas, requests, or something broken? This goes straight to the APDC team.</p>' +
+        '<p class="fb-intro">Have an idea, a request, or found a bug? Send it over — every note is read.</p>' +
         '<div class="fb-cats" role="group" aria-label="Feedback type">' +
           CATEGORIES.map(function (c) {
             return '<button type="button" class="fb-cat' + (c.id === 'idea' ? ' active' : '') +
@@ -154,7 +154,7 @@
     panel.querySelector('#fb-body').innerHTML =
       '<div class="fb-thanks">' + ICONS.check +
       '<p class="fb-thanks-title">Thank you!</p>' +
-      '<p class="fb-thanks-sub">Your feedback went straight to the APDC team.</p></div>';
+      '<p class="fb-thanks-sub">Your feedback came through — thanks for helping make this better.</p></div>';
     setTimeout(close, 2600);
   }
 
