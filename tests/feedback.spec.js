@@ -22,6 +22,15 @@ async function armWidget(page, { failFetch = false } = {}) {
 }
 
 test('widget stays hidden when no endpoint is configured', async ({ page }) => {
+  // Replace assets/feedback-config.js's response with a blank-endpoint config,
+  // independent of what's actually deployed there (production now ships a real
+  // URL). Setting window.APDC_FEEDBACK_ENDPOINT beforehand doesn't work here —
+  // the config file's own `|| ""` fallback would just override an empty value
+  // back to its real default. This covers the dormant-by-default behavior.
+  await page.route('**/assets/feedback-config.js', route => route.fulfill({
+    contentType: 'application/javascript',
+    body: 'window.APDC_FEEDBACK_ENDPOINT = "";'
+  }));
   await page.goto('/index.html');
   await page.waitForLoadState('networkidle');
   await expect(page.locator('#feedback-launch')).toHaveCount(0);
