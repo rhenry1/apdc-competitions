@@ -221,6 +221,74 @@ function updateFavExportBar() {
   bar.querySelector('.fav-export-btn').addEventListener('click', exportFavoritesICS);
 }
 
+// In the Favorites view, a compact per-day recap so a parent can plan the day
+// at a glance: how many favorites each day, the scheduled span (first–last),
+// and the longest scheduled gap between them. All values come straight from the
+// published schedule; nothing here reflects live or actual timing.
+function updateFavSummary() {
+  const show = activeFilter === 'favorites' && favoriteCount() > 0;
+  let box = document.getElementById('fav-summary');
+  if (!show) { if (box) box.remove(); return; }
+
+  // Group favorited routines by day, preserving the configured day order.
+  const rows = [];
+  COMPETITION_CONFIG.dayButtons.forEach(({ key }) => {
+    const favs = allRoutines.filter(r => r.day === key && favorites.has(r.id));
+    if (!favs.length) return;
+    const dayConf = COMPETITION_CONFIG.days[key] || {};
+    const dayTitle = dayConf.title || key;
+
+    // Order by scheduled time; keep only entries we can place on a clock.
+    const timed = favs
+      .map(r => ({ mins: timeToMinutes(r.scheduledTime), time: r.scheduledTime }))
+      .filter(t => t.mins !== null)
+      .sort((a, b) => a.mins - b.mins);
+
+    let span = '', gap = '';
+    if (timed.length) {
+      const first = timed[0], last = timed[timed.length - 1];
+      span = first === last ? first.time : `${first.time}–${last.time}`;
+      let longest = 0;
+      for (let i = 1; i < timed.length; i++) longest = Math.max(longest, timed[i].mins - timed[i - 1].mins);
+      if (longest > 0) gap = formatGap(longest);
+    }
+    rows.push({ dayTitle, count: favs.length, span, gap });
+  });
+  if (!rows.length) { if (box) box.remove(); return; }
+
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'fav-summary';
+    box.className = 'fav-summary';
+    box.setAttribute('role', 'group');
+    box.setAttribute('aria-label', 'Your favorites at a glance');
+    const bar = document.getElementById('fav-export-bar');
+    const af = document.getElementById('active-filters');
+    const anchor = bar || af;
+    if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(box, anchor.nextSibling);
+    else {
+      const main = document.querySelector('main') || document.body;
+      main.insertBefore(box, main.firstChild);
+    }
+  }
+
+  box.innerHTML =
+    '<div class="fav-summary-head">Your favorites at a glance</div>' +
+    '<ul class="fav-summary-list">' +
+    rows.map(r =>
+      '<li class="fav-summary-day">' +
+        `<span class="fs-day">${r.dayTitle}</span>` +
+        '<span class="fs-meta">' +
+          `<strong>${r.count}</strong> favorite${r.count === 1 ? '' : 's'}` +
+          (r.span ? ` &middot; ${r.span} scheduled` : '') +
+          (r.gap ? ` &middot; longest gap ${r.gap}` : '') +
+        '</span>' +
+      '</li>'
+    ).join('') +
+    '</ul>' +
+    '<p class="fav-summary-note">Scheduled times, subject to change.</p>';
+}
+
 // ── Share + Add to Calendar ──
 function showToast(message) {
   let toast = document.getElementById('action-toast');
@@ -282,6 +350,28 @@ function routineStartEnd(r) {
   const [y, mo, d] = scheduledDate.split('-').map(Number);
   const start = new Date(y, mo - 1, d, hour, minute);
   return { start, end: new Date(start.getTime() + 15 * 60000) };
+}
+
+// Parse a display time ("8:45 am") into minutes-since-midnight, or null if it
+// can't be parsed. Used only to order/label the published schedule — never to
+// imply real-time event state.
+function timeToMinutes(display) {
+  if (!display) return null;
+  const parts = display.trim().split(' ');
+  if (parts.length < 2) return null;
+  const [timePart, ampm] = parts;
+  const [h, m] = timePart.split(':').map(Number);
+  if (!Number.isFinite(h) || !Number.isFinite(m)) return null;
+  let hour = h;
+  if (/pm/i.test(ampm) && hour !== 12) hour += 12;
+  if (/am/i.test(ampm) && hour === 12) hour = 0;
+  return hour * 60 + m;
+}
+
+// Human duration from a minute count: "1h 20m", "45m".
+function formatGap(mins) {
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return (h ? h + 'h' : '') + (h && m ? ' ' : '') + (m || !h ? m + 'm' : '');
 }
 
 // One VEVENT (array of lines) for a routine, or null if it has no date.
@@ -632,6 +722,7 @@ function applyFilters() {
   updateFilterBadge();
   updateFavCount();
   updateFavExportBar();
+  updateFavSummary();
   updateClearAll();
   renderActiveFilters();
   announceResults(visible);
