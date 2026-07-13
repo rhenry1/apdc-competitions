@@ -5,4 +5,4 @@
 // Setup steps: docs/FEEDBACK-SETUP.md
 //
 // Example: window.APDC_FEEDBACK_ENDPOINT = "https://apdc-feedback.<you>.workers.dev";
-window.APDC_FEEDBACK_ENDPOINT = window.APDC_FEEDBACK_ENDPOINT || "";
+window.APDC_FEEDBACK_ENDPOINT = window.APDC_FEEDBACK_ENDPOINT || "https://apdc-feedback.rjh5179.workers.dev";
