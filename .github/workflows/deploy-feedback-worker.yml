@@ -1,0 +1,51 @@
+# Deploys the feedback worker to Cloudflare — no terminal required.
+#
+# One-time, add three repository secrets (Settings → Secrets and variables →
+# Actions → New repository secret):
+#   CLOUDFLARE_API_TOKEN   — a Cloudflare API token with the "Edit Cloudflare
+#                            Workers" template.
+#   CLOUDFLARE_ACCOUNT_ID  — your Cloudflare account ID (Workers & Pages → the
+#                            right sidebar).
+#   FEEDBACK_GH_TOKEN      — a fine-grained GitHub token scoped to THIS repo with
+#                            Issues: Read and write. (Can't be named GITHUB_*.)
+#
+# Then run this workflow (Actions → "Deploy feedback worker" → Run workflow).
+# Copy the printed workers.dev URL into assets/feedback-config.js and commit —
+# the Feedback button goes live. Full guide: docs/FEEDBACK-SETUP.md
+name: Deploy feedback worker
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy worker + set its GitHub token secret
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+          command: deploy
+          secrets: |
+            GH_ISSUES_TOKEN
+        env:
+          GH_ISSUES_TOKEN: ${{ secrets.FEEDBACK_GH_TOKEN }}
+
+      - name: What to do next
+        if: always()
+        run: |
+          {
+            echo "### Feedback worker deploy"
+            echo ""
+            echo "If the deploy step above succeeded, find the line like"
+            echo '`https://apdc-feedback.<your-subdomain>.workers.dev` in its log,'
+            echo "then paste that URL into **assets/feedback-config.js** and commit."
+            echo "The Feedback button goes live within a minute."
+            echo ""
+            echo "Missing secrets? Add CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID,"
+            echo "and FEEDBACK_GH_TOKEN under Settings → Secrets and variables → Actions."
+          } >> "$GITHUB_STEP_SUMMARY"

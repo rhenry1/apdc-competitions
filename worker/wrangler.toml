@@ -12,5 +12,7 @@ GH_OWNER = "rhenry1"
 GH_REPO = "apdc-competitions"
 ALLOW_ORIGIN = "https://rhenry1.github.io"
 
-# GITHUB_TOKEN is a SECRET — never put it here. Set it once with:
-#   npx wrangler secret put GITHUB_TOKEN
+# GH_ISSUES_TOKEN is a SECRET — never put it here. Set it once with:
+#   npx wrangler secret put GH_ISSUES_TOKEN
+# (Named GH_ISSUES_TOKEN, not GITHUB_TOKEN, because GitHub Actions forbids
+#  secrets that start with GITHUB_ — this keeps the CI-deploy path working too.)

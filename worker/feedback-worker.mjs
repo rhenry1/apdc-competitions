@@ -3,7 +3,7 @@
 // to the repo owner). Setup: docs/FEEDBACK-SETUP.md
 //
 // Bindings (set in the Cloudflare dashboard or wrangler.toml):
-//   Secret  GITHUB_TOKEN  — fine-grained PAT with "Issues: Read and write" on
+//   Secret  GH_ISSUES_TOKEN  — fine-grained PAT with "Issues: Read and write" on
 //                           the target repo. REQUIRED.
 //   Var     GH_OWNER      — repo owner (default: rhenry1)
 //   Var     GH_REPO       — repo name  (default: apdc-competitions)
@@ -99,15 +99,15 @@ export default {
     if (problem === 'spam') return json({ ok: true }, 200, headers); // accept + drop, don't tip off bots
     if (problem) return json({ ok: false, error: problem }, 400, headers);
 
-    if (!env.GITHUB_TOKEN) return json({ ok: false, error: 'Server not configured' }, 500, headers);
+    if (!env.GH_ISSUES_TOKEN) return json({ ok: false, error: 'Server not configured' }, 500, headers);
 
     const issue = buildIssue(body);
-    let res = await createIssue(owner, repo, env.GITHUB_TOKEN, issue);
+    let res = await createIssue(owner, repo, env.GH_ISSUES_TOKEN, issue);
     // If the labels don't exist yet, GitHub 422s — retry once without them so a
     // missing label never blocks real feedback.
     if (res.status === 422) {
       const { labels, ...noLabels } = issue;
-      res = await createIssue(owner, repo, env.GITHUB_TOKEN, noLabels);
+      res = await createIssue(owner, repo, env.GH_ISSUES_TOKEN, noLabels);
     }
     if (!res.ok) return json({ ok: false, error: 'Could not file issue' }, 502, headers);
 
