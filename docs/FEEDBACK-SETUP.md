@@ -37,29 +37,39 @@ reason it exists (a public web page can't keep a secret).
 
 This token can *only* create issues on this one repo — nothing else.
 
-## Step 2 — Deploy the Worker
+## Step 2 — Deploy the Worker  (pick ONE path)
 
-From a terminal, in this repo's `worker/` folder:
+### Path A — no terminal (GitHub Actions) — recommended
+
+1. Sign up for a free Cloudflare account (https://dash.cloudflare.com/sign-up).
+2. Create a **Cloudflare API token**: dash → *My Profile* → *API Tokens* →
+   *Create Token* → use the **"Edit Cloudflare Workers"** template → Create.
+   Copy it.
+3. Grab your **Account ID**: dash → *Workers & Pages* → it's in the right
+   sidebar.
+4. In GitHub, add three repository secrets (repo → *Settings* → *Secrets and
+   variables* → *Actions* → *New repository secret*):
+   - `CLOUDFLARE_API_TOKEN` — from step 2
+   - `CLOUDFLARE_ACCOUNT_ID` — from step 3
+   - `FEEDBACK_GH_TOKEN` — the GitHub token from **Step 1** above
+5. Run the deploy: repo → *Actions* → **Deploy feedback worker** → *Run
+   workflow*. When it finishes, open the *Deploy* step's log and copy the
+   `https://apdc-feedback.<your-subdomain>.workers.dev` URL.
+
+### Path B — terminal (wrangler)
+
+From this repo's `worker/` folder:
 
 ```bash
 cd worker
 npx wrangler login          # opens the browser; create a free Cloudflare account if needed
-npx wrangler secret put GITHUB_TOKEN   # paste the token from Step 1 when prompted
+npx wrangler secret put GH_ISSUES_TOKEN   # paste the token from Step 1 when prompted
 npx wrangler deploy
 ```
 
-`wrangler deploy` prints a URL like:
+`wrangler deploy` prints the same `https://apdc-feedback.<…>.workers.dev` URL.
 
-```
-https://apdc-feedback.<your-subdomain>.workers.dev
-```
-
-**Copy that URL.**
-
-(No terminal? You can instead create the Worker in the Cloudflare dashboard:
-Workers & Pages → Create → paste the contents of `feedback-worker.mjs`, add a
-**Variable** `GH_OWNER`, `GH_REPO`, `ALLOW_ORIGIN` and a **Secret**
-`GITHUB_TOKEN`, then Deploy.)
+**Either path: copy that URL for Step 3.**
 
 ## Step 3 — Turn the widget on
 
