@@ -4,14 +4,18 @@ Plan of record for the V2 enhancement effort. This is multi-session work; do not
 attempt it in one pass. Each phase lands as one or more small PRs into the `v2`
 branch, which merges to `main` (the GitHub Pages source) at agreed milestones.
 
-## Status (2026-07-12)
+## Status (2026-07-13)
 
 - **Phases 1 & 2: SHIPPED.** Merged `v2` → `main` (PR #24); the live site now
   serves V2. P2.2 / P2.3 / P2.7 deferred pending real data (see entries).
 - **V2.5 refinement pass: SHIPPED** directly to `main` (PR #25) — see the
   "V2.5 refinement" section below.
-- **Next up: Phase 3** (PWA/offline). Phase 4 remains optional.
-- Test suite: **144 Playwright tests in 20 files**, green; CI gates every PR.
+- **Phase 3 (PWA/offline): SHIPPED** (PR #32).
+- **Feedback widget: BUILT** (PR #34–36); ships dormant until the owner deploys
+  the free worker and pastes its URL — see the "Feedback" section.
+- **Phase 4: in progress** — P4.1 print + P4.2 favorites recap shipped; the rest
+  is data-/scope-dependent (see Phase 4).
+- Test suite: **Playwright, green; CI gates every PR** (see suite for count).
 
 ## Branch / hosting strategy
 
@@ -373,9 +377,17 @@ for $0.
 
 ## Phase 4 — Optional
 
-Packing/costume checklists, results/awards history, more season archives,
-print-friendly personal schedule, personal-schedule summary (first/last favorite
-routine per day, counts, gaps — all labeled "scheduled").
+- **P4.1 print-friendly schedule: SHIPPED** (PR #37). A Print button + `@media
+  print` stylesheet turn any view into an ink-friendly page; filter to Favorites
+  first to print a personal one-page schedule. Printed times are the published
+  scheduled times only (never the offset estimate).
+- **P4.2 favorites "day at a glance" summary: SHIPPED.** In the Favorites view, a
+  compact per-day recap (count, scheduled span first–last, longest scheduled gap)
+  above the list. All values are the published schedule and labeled "scheduled";
+  guardrail-clean.
+
+Still open (data- or scope-dependent): packing/costume checklists, results/awards
+history, more season archives.
 **Not recommended:** a dark-mode/light-theme toggle — the brand is intentionally
 dark; a light theme is a second full design system with real risk of cheapening
 the identity. Skip unless specifically wanted.

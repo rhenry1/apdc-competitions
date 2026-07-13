@@ -469,6 +469,50 @@ h1 {
 }
 .fav-export-btn .icon { width: 16px; height: 16px; }
 
+/* Favorites "day at a glance" recap (P4.2). Compact, ink-light, one row per day
+   that has favorites. Values are the published scheduled times only. */
+.fav-summary {
+  margin-bottom: var(--space-3);
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface, rgba(255,255,255,0.03));
+}
+.fav-summary-head {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-dim, rgba(255,255,255,0.6));
+  margin-bottom: 8px;
+}
+.fav-summary-list { list-style: none; margin: 0; padding: 0; }
+.fav-summary-day {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  padding: 5px 0;
+  border-top: 1px solid var(--color-border);
+}
+.fav-summary-day:first-child { border-top: 0; }
+.fav-summary-day .fs-day {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  min-width: 84px;
+}
+.fav-summary-day .fs-meta {
+  font-size: 13px;
+  color: var(--color-text-dim, rgba(255,255,255,0.7));
+}
+.fav-summary-day .fs-meta strong { color: var(--color-text); font-weight: 600; }
+.fav-summary-note {
+  margin: 8px 0 0;
+  font-size: 11px;
+  color: var(--color-text-dim, rgba(255,255,255,0.5));
+}
+
 .filter-chip {
   display: inline-flex;
   align-items: center;
