@@ -347,12 +347,38 @@ merge. Landed as one CI-gated PR:
   update flow on deploy); `offline.spec.js` made cache-name agnostic. Fixes
   gap #2. **Completes Phase 3.**
 
+## Feedback channel — ✅ SHIPPED (branch `feat-feedback-widget`)
+
+A "Feedback" button on every page opens a composer (Idea / Bug / Other →
+message). Submissions POST to a **serverless proxy** (Cloudflare Worker,
+`worker/feedback-worker.mjs`) that files a **GitHub issue** labeled
+`user-feedback` — GitHub then emails the owner (the alert) and Claude gets an
+issue to fix. Architecture chosen by the user over form-service / prefilled-link
+alternatives because it's the only path that truly auto-creates issues + alerts
+for $0.
+- **Ships dormant:** the widget renders nothing until an endpoint is set in
+  `assets/feedback-config.js` (`|| ""` guard, so no dead UI and existing tests
+  are untouched). Setup is one-time, ~15 min: `docs/FEEDBACK-SETUP.md`.
+- **Privacy:** collects only the message + originating page — no name/email,
+  because issues land in a public repo (docs cover pointing the worker at a
+  private repo instead).
+- **Spam:** hidden honeypot + a too-fast-submission drop in the worker; unknown
+  labels are retried-without-labels so a missing label never blocks feedback.
+- Widget CSS in `pwa.css`; both JS files joined the SW precache (cache `apdc-v5`).
+- Tests: `feedback.spec.js` (dormant-by-default, compose+send payload, short-msg
+  block, failed-send error, honeypot) and `feedback-worker.spec.js` (worker
+  `validateFeedback`/`buildIssue` unit tests via dynamic import).
+- **Owner action required to go live:** follow `docs/FEEDBACK-SETUP.md` (deploy
+  the free worker, paste its URL into `feedback-config.js`).
+
 ## Phase 4 — Optional
 
-Dark mode (proper OS-pref + override toggle; note the brand is already dark),
-packing/costume checklists, results/awards history, more season archives,
+Packing/costume checklists, results/awards history, more season archives,
 print-friendly personal schedule, personal-schedule summary (first/last favorite
 routine per day, counts, gaps — all labeled "scheduled").
+**Not recommended:** a dark-mode/light-theme toggle — the brand is intentionally
+dark; a light theme is a second full design system with real risk of cheapening
+the identity. Skip unless specifically wanted.
 
 ---
 

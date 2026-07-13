@@ -4,7 +4,7 @@
 // data is embedded in them), and every shared asset — so the whole site works
 // offline after the first visit. Runtime strategy stays network-first: always
 // fresh when online, cache fallback when offline.
-const CACHE = 'apdc-v4';
+const CACHE = 'apdc-v5';
 
 // Derive the base path from the registration scope instead of hardcoding it,
 // so the same worker functions on GitHub Pages (/apdc-competitions) and on any
@@ -32,7 +32,9 @@ const ASSETS = [
   BASE + '/assets/competitions.js',
   BASE + '/assets/icons.js',
   BASE + '/assets/pwa.js',
-  BASE + '/assets/pwa.css'
+  BASE + '/assets/pwa.css',
+  BASE + '/assets/feedback-config.js',
+  BASE + '/assets/feedback.js'
 ];
 
 self.addEventListener('install', e => {

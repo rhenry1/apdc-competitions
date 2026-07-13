@@ -1,0 +1,16 @@
+# Cloudflare Worker config for the APDC feedback proxy.
+# Deploy with:  npx wrangler deploy   (from this worker/ directory)
+# Full setup:   docs/FEEDBACK-SETUP.md
+name = "apdc-feedback"
+main = "feedback-worker.mjs"
+compatibility_date = "2024-11-01"
+
+# Public, non-secret settings. Change these if you point the worker at a
+# different repo or serve the site from another origin.
+[vars]
+GH_OWNER = "rhenry1"
+GH_REPO = "apdc-competitions"
+ALLOW_ORIGIN = "https://rhenry1.github.io"
+
+# GITHUB_TOKEN is a SECRET — never put it here. Set it once with:
+#   npx wrangler secret put GITHUB_TOKEN
