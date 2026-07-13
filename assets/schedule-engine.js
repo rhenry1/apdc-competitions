@@ -1035,9 +1035,12 @@ function initScheduleTools() {
   tools.className = 'schedule-tools';
   tools.innerHTML =
     '<button type="button" class="clear-all-global" id="clear-all-global">' + ICONS.close + 'Clear all filters</button>' +
-    '<div class="density-toggle" role="group" aria-label="Schedule density">' +
-    '<button type="button" data-density="comfortable" aria-pressed="true">Comfortable</button>' +
-    '<button type="button" data-density="compact" aria-pressed="false">Compact</button>' +
+    '<div class="schedule-tools-right">' +
+      '<button type="button" class="print-btn" id="print-btn" title="Print or save as PDF">' + ICONS.print + 'Print</button>' +
+      '<div class="density-toggle" role="group" aria-label="Schedule density">' +
+      '<button type="button" data-density="comfortable" aria-pressed="true">Comfortable</button>' +
+      '<button type="button" data-density="compact" aria-pressed="false">Compact</button>' +
+      '</div>' +
     '</div>';
   container.parentNode.insertBefore(tools, container);
 
@@ -1045,6 +1048,24 @@ function initScheduleTools() {
     b.addEventListener('click', () => applyDensity(b.dataset.density));
   });
   document.getElementById('clear-all-global').addEventListener('click', clearAllFilters);
+  // Print the current view — filter to Favorites first for a personal schedule.
+  // The @media print stylesheet strips the app chrome and lays the visible
+  // routines out cleanly on paper (times shown are the published scheduled
+  // times, never the personal offset estimate).
+  document.getElementById('print-btn').addEventListener('click', function () { window.print(); });
+
+  // A print-only footer note (hidden on screen). Reinforces that printed times
+  // are the published schedule, which can still change.
+  if (!document.querySelector('.print-footer')) {
+    const main = document.getElementById('main-content') || document.querySelector('main');
+    if (main) {
+      const pf = document.createElement('p');
+      pf.className = 'print-only print-footer';
+      pf.textContent = 'Scheduled times are subject to change. Printed from the APDC schedule portal.';
+      main.appendChild(pf);
+    }
+  }
+
   applyDensity(saved, { persist: false });
 }
 

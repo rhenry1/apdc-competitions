@@ -980,6 +980,28 @@ body::after {
 .clear-all-global:focus-visible { outline: 2px solid rgba(196,181,253,0.7); outline-offset: 2px; }
 .clear-all-global .icon { width: 0.9em; height: 0.9em; }
 
+.schedule-tools-right { display: inline-flex; align-items: center; gap: var(--space-2); margin-left: auto; }
+
+.print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: rgba(255,255,255,0.03);
+  color: var(--color-text-muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.print-btn:hover, .print-btn:focus-visible { color: var(--purple-light); border-color: rgba(167,139,250,0.4); }
+.print-btn .icon { width: 0.95em; height: 0.95em; }
+
 .density-toggle {
   display: inline-flex;
   border: 1px solid var(--color-border);
@@ -1463,4 +1485,78 @@ body.compact .card-dancers { font-size: 11px; }
   .routine-card { grid-template-columns: 40px 1fr 30px; }
 
   .card-title { font-size: 12px; }
+}
+
+/* Print-only elements are hidden on screen. */
+.print-only { display: none; }
+
+/* ── PRINT: an ink-friendly personal/day schedule ──
+   Filter to Favorites (or any view) then Print — the app chrome is stripped and
+   the visible routines print cleanly on white. Times shown are the published
+   scheduled times, never the personal offset estimate. */
+@media print {
+  html, body { background: #fff !important; }
+  body { color: #111 !important; padding: 0 !important; }
+
+  /* Drop everything that isn't the schedule itself. */
+  .bg, .filter-bar, .offset-bar, .schedule-tools, .livestream-bar,
+  .skip-link, .sr-only, #sr-status, .active-filters, #fav-export-bar, #fav-summary,
+  #filter-extra, .filter-backdrop, .filter-drawer-header,
+  .install-banner, .install-chip, .install-sheet, .install-scrim,
+  .fb-launch, .fb-panel, .offline-indicator, .update-toast,
+  .card-actions, .card-fav, .quinn-callout, .no-results,
+  .back-link, .brand-logo { display: none !important; }
+
+  header {
+    position: static !important; background: #fff !important;
+    box-shadow: none !important; padding: 0 0 8px !important; margin-bottom: 8px;
+    border-bottom: 2px solid #222;
+  }
+  .header-inner { max-width: none; }
+  h1 { color: #111 !important; filter: none !important; }
+  #header-eyebrow, .header-sub, .header-sub a, #last-updated { color: #333 !important; }
+
+  main { padding: 0 !important; }
+
+  .day-header {
+    position: static !important; background: #fff !important; box-shadow: none !important;
+    border-bottom: 1px solid #999; margin: 14px 0 6px; padding: 0 0 3px;
+    break-after: avoid;
+  }
+  .day-label, .day-title, .day-count { color: #111 !important; }
+  .day-label .icon { display: none !important; }
+
+  .routine-card:not(.hidden) {
+    break-inside: avoid;
+    background: #fff !important; color: #111 !important;
+    border: 1px solid #ccc !important; border-radius: 6px !important;
+    box-shadow: none !important;
+    display: grid !important; grid-template-columns: 82px 1fr auto;
+    gap: 2px 12px; padding: 7px 10px; margin: 0 0 6px;
+  }
+  /* Filtered-out cards (Favorites view, search) must not print. */
+  .routine-card.hidden, .day-section.hidden { display: none !important; }
+  .routine-card::before { display: none !important; }
+  .card-time { color: #111 !important; font-weight: 700; }
+  .card-time .time-adjusted { display: none !important; } /* never print the estimate */
+  .card-time .time-original {
+    color: #111 !important; text-decoration: none !important; font-size: inherit !important; opacity: 1 !important;
+  }
+  .entry-num { color: #666 !important; }
+  .card-title, .card-dancers { color: #111 !important; }
+  .card-meta .tag { border: 1px solid #999 !important; background: #fff !important; color: #333 !important; }
+  .apdc-badge { border: 1px solid #999 !important; background: #fff !important; color: #333 !important; }
+  .age-badge { color: #444 !important; }
+  .props-icon { color: #444 !important; }
+
+  /* A printed sample stays labeled as sample. */
+  .sample-banner { background: #fff !important; border-bottom: 1px solid #999 !important; }
+  .sample-banner-tag { color: #000 !important; border-color: #000 !important; }
+  .sample-banner-text, .sample-banner-text strong { color: #000 !important; }
+
+  .print-only { display: block !important; }
+  .print-footer {
+    margin-top: 16px; padding-top: 8px; border-top: 1px solid #999;
+    font-size: 10px; color: #555 !important; font-family: 'Inter', sans-serif;
+  }
 }
