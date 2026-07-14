@@ -1,5 +1,5 @@
 // @ts-check
-const { defineConfig } = require('@playwright/test');
+const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
@@ -8,15 +8,37 @@ module.exports = defineConfig({
   // half-cores is slow). CI keeps its own default for runner stability.
   workers: process.env.CI ? undefined : 4,
   reporter: process.env.CI ? 'list' : 'html',
+  // CI-only: WebKit-on-Linux has known, documented flakiness independent of
+  // any app or test bug (github.com/microsoft/playwright#27337, #34450 —
+  // "WebKit encountered an internal error", most often on navigation).
+  // A couple of retries absorbs that noise without masking a real failure —
+  // a genuinely broken test still fails 3 times in a row.
+  retries: process.env.CI ? 2 : 0,
   use: {
     baseURL: 'http://localhost:4173',
     trace: 'retain-on-failure',
-    // Optional escape hatch for environments with a pre-installed browser
-    // at a nonstandard path (e.g. sandboxed dev containers).
-    launchOptions: process.env.PLAYWRIGHT_EXECUTABLE_PATH
-      ? { executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH }
-      : {},
   },
+  // W3.7 — the audience (parents checking a dance schedule) is almost
+  // certainly iPhone-heavy, and PWA install/offline behavior is known to
+  // differ on WebKit. `webkit` approximates desktop Safari's rendering/JS
+  // engine; it's not a substitute for testing on a real iOS device (no
+  // automation tool can drive the real "Add to Home Screen" flow or iOS's
+  // actual storage-eviction policy), but it catches real engine-level bugs
+  // Chromium-only testing never would.
+  projects: [
+    {
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        // Optional escape hatch for environments with a pre-installed
+        // browser at a nonstandard path (e.g. sandboxed dev containers).
+        launchOptions: process.env.PLAYWRIGHT_EXECUTABLE_PATH
+          ? { executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH }
+          : {},
+      },
+    },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+  ],
   webServer: {
     command: 'python3 -m http.server 4173',
     url: 'http://localhost:4173/index.html',

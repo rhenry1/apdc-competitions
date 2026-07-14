@@ -28,8 +28,11 @@ for (const { name, path } of PAGES) {
   });
 }
 
-test('nationals: livestream is one resource card with the stream link and copyable password', async ({ page, context }) => {
-  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+test('nationals: livestream is one resource card with the stream link and copyable password', async ({ page, context, browserName }) => {
+  // WebKit doesn't implement Playwright's clipboard permission grants (a
+  // known, permanent tool limitation — github.com/microsoft/playwright#13037)
+  // — everything except the actual clipboard-read verification still runs.
+  if (browserName !== 'webkit') await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto('/nationals-2026/index.html');
   await page.waitForLoadState('networkidle');
   const card = page.locator('.livestream-card');
@@ -39,7 +42,9 @@ test('nationals: livestream is one resource card with the stream link and copyab
 
   await card.locator('#pw-copy-btn').click();
   await expect(card.locator('#pw-copy-btn')).toContainText(/copied/i);
-  expect((await page.evaluate(() => navigator.clipboard.readText())).trim()).toBe('APDC2026');
+  if (browserName !== 'webkit') {
+    expect((await page.evaluate(() => navigator.clipboard.readText())).trim()).toBe('APDC2026');
+  }
 });
 
 test('regionals: no livestream card is shown when the competition has no stream', async ({ page }) => {

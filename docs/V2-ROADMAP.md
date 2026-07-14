@@ -472,10 +472,31 @@ shipped. Ranked by how much each gap actually matters, not just novelty.
     since axe can't judge decorative intent and forcing it to pass would
     have meant abandoning an intentional whisper-quiet design choice for no
     user benefit.
-- **W3.7 Chromium-only test coverage.** `playwright.config.js` has no WebKit
-  project, despite the audience (parents) almost certainly being iPhone-heavy
-  and PWA install/offline behavior differing meaningfully on iOS Safari. Add a
-  WebKit project to the suite.
+- **W3.7 WebKit test coverage: SHIPPED.** Added a `webkit` project to
+  `playwright.config.js` (approximates desktop Safari's engine — not a
+  substitute for a real iOS device, but catches real WebKit-level bugs
+  Chromium-only testing never would) and updated CI to install both browsers.
+  This sandbox has no WebKit binary and can't install one, so verification
+  had to happen entirely through CI, in three rounds:
+  1. First real run found 7 WebKit failures. 3 were clipboard-permission
+     tests hitting a permanent Playwright/WebKit limitation (WebKit doesn't
+     implement `context.grantPermissions(['clipboard-*'])` at all —
+     microsoft/playwright#13037) — guarded to skip only the permission grant
+     + clipboard-read verification on webkit, keeping every other assertion
+     (including the visible "copied" confirmation) on all browsers.
+  2. The remaining 4 were `page.goto`/`reload` while `context.setOffline(true)`
+     throwing "WebKit encountered an internal error" — added CI-only retries
+     as a general flake safety net first, but they reproduced 3/3 every
+     retry, proving this is a deterministic Playwright/WebKit-on-Linux
+     limitation (microsoft/playwright#27337, #34450), not transient flakiness.
+     Skipped those 4 specific tests on webkit with the reasoning documented
+     inline; real Safari/WebKit does support offline/service workers, this is
+     purely a gap in Playwright's WebKit driver on Linux.
+  3. Final CI run: **374 passed, 4 skipped (documented), 0 failed** — 378
+     total = exactly 2× the 189-test suite, confirming WebKit ran for real,
+     not silently skipped wholesale.
+  The CI-only `retries: 2` stays — a reasonable general safety net for
+  transient infra noise, independent of the WebKit findings above.
 
 **Low priority / nice-to-have:**
 

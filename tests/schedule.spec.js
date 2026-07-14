@@ -153,8 +153,11 @@ for (const { name, path } of PAGES) {
       await expect(page.locator('#header-subtitle a')).toContainText(label);
     });
 
-    test('Share falls back to copying routine details to the clipboard', async ({ page, context }) => {
-      await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    test('Share falls back to copying routine details to the clipboard', async ({ page, context, browserName }) => {
+      // WebKit doesn't implement Playwright's clipboard permission grants (a
+      // known, permanent tool limitation — github.com/microsoft/playwright#13037)
+      // — everything except the actual clipboard-read verification still runs.
+      if (browserName !== 'webkit') await context.grantPermissions(['clipboard-read', 'clipboard-write']);
       await page.goto(path);
       await page.waitForLoadState('networkidle');
 
@@ -165,8 +168,10 @@ for (const { name, path } of PAGES) {
       await page.locator('.routine-card .card-action-btn').first().click();
       await expect(page.locator('#action-toast')).toContainText(/copied/i);
 
-      const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
-      expect(clipboardText).toContain(firstRoutine.title);
+      if (browserName !== 'webkit') {
+        const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+        expect(clipboardText).toContain(firstRoutine.title);
+      }
     });
 
     test('Add to Calendar downloads a valid .ics for the routine', async ({ page }) => {
