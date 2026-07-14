@@ -164,7 +164,7 @@ header {
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #7a6fa0;
+  color: var(--color-text-subtle);
 }
 
 .eyebrow a {
@@ -770,7 +770,7 @@ body::after {
 .day-count {
   margin-left: auto;
   font-size: 10px;
-  color: #7a6fa0;
+  color: var(--color-text-subtle);
   font-family: 'DM Mono', monospace;
 }
 

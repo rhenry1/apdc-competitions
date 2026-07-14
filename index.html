@@ -129,7 +129,8 @@
   .season-year {
     font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
     letter-spacing: 0.18em; text-transform: uppercase;
-    color: rgba(196,181,253,0.38); white-space: nowrap;
+    /* W3.6: 0.38 failed WCAG AA (2.36:1); 0.65 clears 4.5:1 with margin. */
+    color: rgba(196,181,253,0.65); white-space: nowrap;
   }
   .season-rule { flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
 
@@ -385,7 +386,8 @@
   .past-toggle {
     font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
     letter-spacing: 0.14em; text-transform: uppercase;
-    color: rgba(196,181,253,0.5); background: none; border: none;
+    /* W3.6: 0.5 failed WCAG AA (3.36:1); 0.65 clears 4.5:1 with margin. */
+    color: rgba(196,181,253,0.65); background: none; border: none;
     padding: 4px 2px; cursor: pointer; white-space: nowrap;
     display: inline-flex; align-items: center; gap: 6px;
     transition: color 0.15s;
@@ -508,7 +510,10 @@
     </div>
   </noscript>
 
-  <footer>rhenry1.github.io / apdc-competitions</footer>
+  <!-- Intentionally a faint, decorative credit line, not functional content
+       (no links, no legal text) — hidden from assistive tech rather than
+       brightened, so it doesn't get announced as if it mattered. -->
+  <footer aria-hidden="true">rhenry1.github.io / apdc-competitions</footer>
 </div>
 
 <script src="assets/icons.js"></script>
