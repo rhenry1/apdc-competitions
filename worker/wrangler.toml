@@ -16,3 +16,12 @@ ALLOW_ORIGIN = "https://rhenry1.github.io"
 #   npx wrangler secret put GH_ISSUES_TOKEN
 # (Named GH_ISSUES_TOKEN, not GITHUB_TOKEN, because GitHub Actions forbids
 #  secrets that start with GITHUB_ — this keeps the CI-deploy path working too.)
+
+# Rate limiting (W3.2) — a native Workers binding, no extra Cloudflare
+# dashboard setup required (namespace_id is just a self-chosen unique integer
+# for this binding, not a resource you provision). Caps abusive traffic well
+# above any real person's usage: 20 requests per 60s per client IP.
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1101"
+simple = { limit = 20, period = 60 }

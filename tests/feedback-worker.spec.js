@@ -45,3 +45,39 @@ test.describe('buildIssue', () => {
     expect(issue.labels).toEqual(['user-feedback', 'other']);
   });
 });
+
+// W3.2 — the fetch handler's rate-limit gate. Both env.RATE_LIMITER (a native
+// Workers binding) and env.GH_ISSUES_TOKEN are mocked; leaving GH_ISSUES_TOKEN
+// unset lets the "not rate limited" case short-circuit at the existing
+// "Server not configured" check without a real network call to GitHub.
+function postRequest(bodyObj) {
+  return new Request('https://apdc-feedback.example.workers.dev/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'CF-Connecting-IP': '203.0.113.5' },
+    body: JSON.stringify(bodyObj),
+  });
+}
+
+test.describe('fetch handler: rate limiting', () => {
+  test('a rate-limited client gets 429 before any validation or GitHub call', async () => {
+    const env = { RATE_LIMITER: { limit: async () => ({ success: false }) } };
+    const res = await worker.default.fetch(postRequest({ message: 'hello there' }), env);
+    expect(res.status).toBe(429);
+    const data = await res.json();
+    expect(data.ok).toBe(false);
+  });
+
+  test('a client under the limit proceeds past the gate', async () => {
+    const env = { RATE_LIMITER: { limit: async () => ({ success: true }) } };
+    const res = await worker.default.fetch(postRequest({ message: 'hello there', elapsed: 5000 }), env);
+    // No GH_ISSUES_TOKEN in this test env — proceeding past the rate-limit
+    // gate lands on the next check ("Server not configured"), not a 429.
+    expect(res.status).toBe(500);
+  });
+
+  test('missing the RATE_LIMITER binding does not block requests', async () => {
+    const env = {};
+    const res = await worker.default.fetch(postRequest({ message: 'hello there', elapsed: 5000 }), env);
+    expect(res.status).toBe(500); // same "not configured" path, not a crash or 429
+  });
+});

@@ -97,9 +97,14 @@ GitHub. Done.
   repo, give the Step 1 token access to that repo instead, and set `GH_REPO`
   (and `GH_OWNER` if different) in `worker/wrangler.toml` to point at it. Claude
   can still read it if you grant access.
-- **Spam:** the widget has a hidden honeypot field and the Worker drops
-  too-fast/bot submissions. If you ever get spammed, add Cloudflare's free
-  rate-limiting or a Turnstile check — ask Claude and it'll wire it in.
+- **Spam:** the widget has a hidden honeypot field, the Worker drops
+  too-fast/bot submissions, and it's rate-limited (20 requests/minute per
+  visitor — a native Cloudflare Workers feature, no dashboard setup needed).
+  If you ever get spammed anyway, a Turnstile challenge is the next step —
+  ask Claude and it'll wire it in.
 - **Cost:** $0 on Cloudflare's free tier and GitHub. No credit card needed.
+- **Already deployed and updating this later?** Re-run **Actions → Deploy
+  feedback worker → Run workflow** any time `worker/` changes (like the rate
+  limit above) — it picks up the new config automatically.
 - **Turning it off:** blank out the URL in `assets/feedback-config.js` and push;
   the button disappears.

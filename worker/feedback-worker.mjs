@@ -91,6 +91,15 @@ export default {
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
     if (request.method !== 'POST') return json({ ok: false, error: 'Method not allowed' }, 405, headers);
 
+    // W3.2 — the honeypot + too-fast-submission checks below stop naive bots,
+    // not a scripted attacker who just waits out the timer. Cap requests per
+    // client IP well above any real person's usage (see wrangler.toml).
+    if (env.RATE_LIMITER) {
+      const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+      const { success } = await env.RATE_LIMITER.limit({ key: ip });
+      if (!success) return json({ ok: false, error: 'Too many requests — please wait a moment.' }, 429, headers);
+    }
+
     let body;
     try { body = await request.json(); }
     catch { return json({ ok: false, error: 'Invalid JSON' }, 400, headers); }

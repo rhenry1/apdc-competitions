@@ -29,6 +29,10 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: worker
+          # Pinned: the rate-limiting binding (wrangler.toml [[ratelimits]])
+          # requires wrangler 4.36.0+; without this pin the action can fall
+          # back to an older 3.x install that doesn't understand it.
+          wranglerVersion: '4'
           command: deploy
           secrets: |
             GH_ISSUES_TOKEN
