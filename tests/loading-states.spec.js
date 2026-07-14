@@ -8,13 +8,24 @@ const PAGES = [
 ];
 
 test.describe('loading skeleton (before scripts render the schedule)', () => {
-  test.use({ javaScriptEnabled: false });
+  // Verify the property directly against the server-delivered HTML rather
+  // than racing to catch a live mid-parse browser state (fragile: it depends
+  // on the relative timing of the CSS and JS network requests). The skeleton
+  // markup shipping in the raw HTML — with no pre-rendered .routine-card
+  // elements — is exactly what guarantees a visitor sees it immediately, with
+  // no flash of empty content, before schedule-engine.js has even started.
+  // (Previously this test used javaScriptEnabled:false to freeze the page in
+  // its pre-script state, but that now means "JS never runs at all," which is
+  // the W3.1 no-JS-fallback scenario covered by tests/noscript-fallback.spec.js
+  // — a stuck-forever skeleton would be wrong there, since the real schedule
+  // renders statically instead.)
   for (const { name, path } of PAGES) {
-    test(`${name}: skeleton is shown, with no cards and no premature empty state`, async ({ page }) => {
-      await page.goto(path);
-      await expect(page.locator('#schedule-skeleton')).toBeVisible();
-      await expect(page.locator('.routine-card')).toHaveCount(0);
-      await expect(page.locator('#no-results')).toBeHidden();
+    test(`${name}: skeleton ships in the initial HTML, with no pre-rendered cards`, async ({ page }) => {
+      const res = await page.request.get(path);
+      const html = await res.text();
+      expect(html).toContain('id="schedule-skeleton"');
+      expect(html).not.toContain('class="routine-card');
+      expect(html).not.toMatch(/id="no-results"[^>]*class="[^"]*is-visible/);
     });
   }
 });

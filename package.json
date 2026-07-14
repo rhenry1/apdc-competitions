@@ -2,7 +2,9 @@
   "name": "apdc-competitions",
   "private": true,
   "scripts": {
-    "test": "playwright test"
+    "test": "playwright test",
+    "build:noscript": "node scripts/build-noscript.js",
+    "check:noscript": "node scripts/build-noscript.js --check"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1"
