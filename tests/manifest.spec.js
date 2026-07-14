@@ -31,8 +31,8 @@ test('manifest has an id, split any/maskable icons, and screenshots', async ({ r
 test('manifest icon + screenshot files actually exist', async ({ request }) => {
   // Manifest srcs are production-absolute (/apdc-competitions/…); check the
   // repo-root-relative equivalents the test server exposes.
-  for (const f of ['/icon-maskable-192.png', '/icon-maskable-512.png',
-                   '/screenshot-home.png', '/screenshot-schedule.png']) {
+  for (const f of ['/icons/icon-maskable-192.png', '/icons/icon-maskable-512.png',
+                   '/icons/screenshot-home.png', '/icons/screenshot-schedule.png']) {
     const res = await request.get(f);
     expect(res.ok(), `${f} should exist`).toBe(true);
     expect(res.headers()['content-type']).toContain('image/png');
