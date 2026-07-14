@@ -16,9 +16,9 @@ branch, which merges to `main` (the GitHub Pages source) at agreed milestones.
   submission → GitHub issue). See the "Feedback" section.
 - **Phase 4: buildable items SHIPPED** — P4.1 print + P4.2 favorites recap
   (PR #37, #38); the rest is data-/scope-dependent (see Phase 4).
-- **Next up: Wave 3** (resilience/performance/data-authoring — see that
-  section) — not yet started.
-- Test suite: **174 Playwright tests, green; CI gates every PR.**
+- **Wave 3: in progress.** W3.1 no-JS fallback SHIPPED (PR #43). W3.2–W3.10
+  remain (see that section).
+- Test suite: **179 Playwright tests, green; CI gates every PR.**
 
 ## Branch / hosting strategy
 
@@ -402,14 +402,15 @@ shipped. Ranked by how much each gap actually matters, not just novelty.
 
 **High priority — real gaps against this doc's own stated principles:**
 
-- **W3.1 No-JS fallback on schedule pages.** The working agreements below say
-  "core schedule must render even if optional JS fails," and the homepage
-  honors that with a `<noscript>` block — but `nationals-2026/` and
-  `regionals-spring-2027/` don't. Their entire routine list is rendered by
-  `schedule-engine.js` from embedded data, so if JS fails (ad blocker, flaky
-  venue wifi, corporate filter) a parent gets a **blank page** on the exact
-  pages that matter most. Needs a static `<noscript>` routine listing (can be
-  plainer than the JS-rendered view) generated from the same `SCHEDULE` data.
+- **W3.1 No-JS fallback on schedule pages: SHIPPED** (PR #43). Both
+  competition pages now ship a `<noscript>` routine listing generated
+  straight from that page's own `COMPETITION_CONFIG`/`SCHEDULE` via
+  `scripts/build-noscript.js`, so it can't drift — `npm run build:noscript`
+  regenerates it after any schedule edit, and a CI drift-check test fails the
+  build if it's stale. JS-only chrome (filter bar, offset bar, the empty
+  schedule skeleton) is hidden via noscript-scoped CSS rather than left
+  visible-but-inert; the static `<h1>` default now matches
+  `COMPETITION_CONFIG.name` too. Tests: `tests/noscript-fallback.spec.js`.
 - **W3.2 Feedback worker has no rate limiting.** `worker/feedback-worker.mjs`
   is a public POST endpoint visible in page source. The honeypot +
   submitted-too-fast checks stop naive bots, not a scripted attacker who just
