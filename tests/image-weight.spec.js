@@ -23,8 +23,8 @@ const ROOT = path.resolve(__dirname, '..');
 
 test.describe('image weight', () => {
   test('apple-touch-icon.png is a properly-sized 180x180 icon, not a duplicate of icon-512.png', () => {
-    const ati = path.join(ROOT, 'apple-touch-icon.png');
-    const icon512 = path.join(ROOT, 'icon-512.png');
+    const ati = path.join(ROOT, 'icons', 'apple-touch-icon.png');
+    const icon512 = path.join(ROOT, 'icons', 'icon-512.png');
     expect(pngDimensions(ati)).toEqual({ width: 180, height: 180 });
     expect(sha256(ati)).not.toBe(sha256(icon512));
     expect(fs.statSync(ati).size).toBeLessThan(50 * 1024); // was 185KB
@@ -34,7 +34,7 @@ test.describe('image weight', () => {
     const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'manifest.json'), 'utf8'));
     for (const icon of manifest.icons) {
       const [w, h] = icon.sizes.split('x').map(Number);
-      const file = path.join(ROOT, path.basename(icon.src));
+      const file = path.join(ROOT, icon.src.replace('/apdc-competitions/', ''));
       expect(pngDimensions(file), icon.src).toEqual({ width: w, height: h });
     }
   });
@@ -42,9 +42,9 @@ test.describe('image weight', () => {
   test('total icon + screenshot payload stays well under 1MB', () => {
     const files = [
       'apple-touch-icon.png', 'favicon-96x96.png', 'icon-192.png', 'icon-512.png',
-      'icon-maskable-192.png', 'icon-maskable-512.png', 'og-image.png',
+      'icon-maskable-192.png', 'icon-maskable-512.png',
       'screenshot-home.png', 'screenshot-schedule.png',
-    ];
+    ].map(f => path.join('icons', f)).concat(['og-image.png']);
     const total = files.reduce((sum, f) => sum + fs.statSync(path.join(ROOT, f)).size, 0);
     expect(total).toBeLessThan(600 * 1024); // was ~1MB before optimization
   });
