@@ -1,8 +1,9 @@
 /* APDC — shared visual theme for competition schedule pages
    (nationals-2026, regionals-spring-2027, and future events).
-   Requires assets/pwa.css for .install-banner / .icon. */
-
-@import url('https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Inter:wght@200;300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+   Requires assets/pwa.css for .install-banner / .icon.
+   Brand fonts (Tenor Sans / Inter / DM Mono) are self-hosted in
+   assets/fonts.css (W3.4) — linked from each page's <head>, not imported
+   here, so they're discovered early and precached for offline use. */
 
 :root {
   /* Schedule-specific aliases now source from the shared design tokens
