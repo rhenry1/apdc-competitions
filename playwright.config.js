@@ -8,6 +8,12 @@ module.exports = defineConfig({
   // half-cores is slow). CI keeps its own default for runner stability.
   workers: process.env.CI ? undefined : 4,
   reporter: process.env.CI ? 'list' : 'html',
+  // CI-only: WebKit-on-Linux has known, documented flakiness independent of
+  // any app or test bug (github.com/microsoft/playwright#27337, #34450 —
+  // "WebKit encountered an internal error", most often on navigation).
+  // A couple of retries absorbs that noise without masking a real failure —
+  // a genuinely broken test still fails 3 times in a row.
+  retries: process.env.CI ? 2 : 0,
   use: {
     baseURL: 'http://localhost:4173',
     trace: 'retain-on-failure',
