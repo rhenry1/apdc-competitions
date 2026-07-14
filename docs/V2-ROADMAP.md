@@ -450,10 +450,28 @@ shipped. Ranked by how much each gap actually matters, not just novelty.
   encoding): total icon+screenshot payload dropped from ~1MB to ~470KB (54%).
   Test: `tests/image-weight.spec.js` guards the specific regression (the
   duplicate-icon bug) and a payload budget so this can't silently creep back.
-- **W3.6 No automated accessibility scanning.** `a11y.spec.js` hand-checks
-  semantics (labels, roles, landmarks) but nothing catches color-contrast or
-  other WCAG violations automatically. Add an `@axe-core/playwright` pass in
-  CI.
+- **W3.6 Automated accessibility scanning: SHIPPED.** `tests/axe-scan.spec.js`
+  runs `@axe-core/playwright` (WCAG 2.0/2.1 A+AA) across all three pages —
+  catches what `a11y.spec.js`'s hand-checks don't (color contrast, ARIA
+  misuse). Found and fixed real issues on first run:
+  - **Color contrast:** `--color-text-subtle` (`#7a6fa0`) failed AA against
+    the lighter card-highlight backgrounds (as low as 3.65:1) — lightened to
+    `#8a7fae` (clears 4.5:1 everywhere, still visibly subtler than
+    `--color-text-muted`). The homepage's past-season year label and
+    show/hide toggle were similarly under-contrast (`rgba(...,0.38)` /
+    `0.5`) — bumped to `0.65`.
+  - **`aria-hidden-focus`:** the filter drawer's `#filter-extra` was marked
+    `aria-hidden="true"` while closed but still contained focusable
+    inputs/buttons — a keyboard user could Tab into "invisible" controls.
+    Fixed with the `inert` attribute alongside `aria-hidden`, toggled with
+    open/close (removes the whole subtree from focus, not just from the
+    accessibility tree).
+  - The homepage's faint footer credit line is excluded from the scan
+    (documented as WCAG 1.4.3's "pure decoration" exemption — no links, no
+    informational content, already `aria-hidden`) rather than brightened,
+    since axe can't judge decorative intent and forcing it to pass would
+    have meant abandoning an intentional whisper-quiet design choice for no
+    user benefit.
 - **W3.7 Chromium-only test coverage.** `playwright.config.js` has no WebKit
   project, despite the audience (parents) almost certainly being iPhone-heavy
   and PWA install/offline behavior differing meaningfully on iOS Safari. Add a

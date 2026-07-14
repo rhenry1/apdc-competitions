@@ -24,7 +24,11 @@
   /* ── Text ── */
   --color-text:        #ffffff;
   --color-text-muted:  #a89cc8;
-  --color-text-subtle: #7a6fa0;
+  /* W3.6: lightened from #7a6fa0 — failed WCAG AA (as low as 3.65:1) against
+     the lighter card-highlight backgrounds (--card-quinn-bg/--card-both-bg).
+     #8a7fae clears 4.5:1 against every surface color in use, still visibly
+     subtler than --color-text-muted. */
+  --color-text-subtle: #8a7fae;
 
   /* ── Lines ── */
   --color-border:        rgba(255,255,255,0.07);

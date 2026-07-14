@@ -596,6 +596,7 @@ function openFilterDrawer() {
   filterBackdrop.classList.add('open');
   filterExtra.classList.add('open');
   filterExtra.setAttribute('aria-hidden', 'false');
+  filterExtra.inert = false;
   filterToggle.classList.add('open');
   filterToggle.setAttribute('aria-expanded', 'true');
 
@@ -619,6 +620,7 @@ function closeFilterDrawer() {
   filterBackdrop.classList.remove('open');
   filterExtra.classList.remove('open');
   filterExtra.setAttribute('aria-hidden', 'true');
+  filterExtra.inert = true;
   filterToggle.classList.remove('open');
   filterToggle.setAttribute('aria-expanded', 'false');
   if (_drawerKeydown) { document.removeEventListener('keydown', _drawerKeydown); _drawerKeydown = null; }
@@ -635,6 +637,12 @@ function initFilterDrawer() {
   filterExtra.setAttribute('aria-modal', 'true');
   filterExtra.setAttribute('aria-label', 'Filters');
   filterExtra.setAttribute('aria-hidden', 'true');
+  // aria-hidden alone isn't enough: an ARIA-hidden container must not contain
+  // focusable descendants (WCAG 4.1.2 / axe rule aria-hidden-focus) — a sighted
+  // keyboard user could still Tab into "invisible" controls. `inert` removes
+  // the whole subtree from both focus and hit-testing while closed, and is
+  // cleared alongside aria-hidden the moment the drawer opens.
+  filterExtra.inert = true;
 
   const header = document.createElement('div');
   header.className = 'filter-drawer-header';
