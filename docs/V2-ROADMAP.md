@@ -443,10 +443,13 @@ shipped. Ranked by how much each gap actually matters, not just novelty.
   (`apdc-v6`), so the brand typeface survives offline instead of silently
   falling back to a system font. Test:
   `tests/offline.spec.js` → "brand fonts (self-hosted) stay loaded offline".
-- **W3.5 Unoptimized image weight.** `apple-touch-icon.png` is a byte-identical
-  copy of `icon-512.png` (188KB) instead of a properly-sized ~180×180 icon;
-  other icons/`og-image.png` are similarly heavy. Real payload savings for
-  parents on venue wifi/cellular.
+- **W3.5 Image weight: SHIPPED.** `apple-touch-icon.png` was a byte-identical
+  512×512 copy of `icon-512.png` (185KB) instead of a properly-sized icon —
+  resized to the correct 180×180 (19.6KB). Every other icon/`og-image.png`/
+  screenshot was lossless-recompressed (no visual change, just better PNG
+  encoding): total icon+screenshot payload dropped from ~1MB to ~470KB (54%).
+  Test: `tests/image-weight.spec.js` guards the specific regression (the
+  duplicate-icon bug) and a payload budget so this can't silently creep back.
 - **W3.6 No automated accessibility scanning.** `a11y.spec.js` hand-checks
   semantics (labels, roles, landmarks) but nothing catches color-contrast or
   other WCAG violations automatically. Add an `@axe-core/playwright` pass in
