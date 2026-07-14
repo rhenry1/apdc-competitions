@@ -411,12 +411,18 @@ shipped. Ranked by how much each gap actually matters, not just novelty.
   schedule skeleton) is hidden via noscript-scoped CSS rather than left
   visible-but-inert; the static `<h1>` default now matches
   `COMPETITION_CONFIG.name` too. Tests: `tests/noscript-fallback.spec.js`.
-- **W3.2 Feedback worker has no rate limiting.** `worker/feedback-worker.mjs`
-  is a public POST endpoint visible in page source. The honeypot +
-  submitted-too-fast checks stop naive bots, not a scripted attacker who just
-  waits 1.2s. Add Cloudflare's free rate-limiting rules or a Turnstile
-  challenge (both $0; Turnstile already flagged as an escape hatch in
-  `docs/FEEDBACK-SETUP.md`).
+- **W3.2 Feedback worker rate limiting: SHIPPED** (code-complete; live once
+  the owner re-runs the deploy workflow). `worker/wrangler.toml` adds a
+  native Cloudflare `[[ratelimits]]` binding (20 requests/min per client IP,
+  no dashboard setup needed — the namespace_id is just a self-chosen integer,
+  not a provisioned resource) checked first in `feedback-worker.mjs`'s fetch
+  handler, ahead of the existing honeypot/too-fast checks. Pinned
+  `wranglerVersion: '4'` in `deploy-feedback-worker.yml` since the binding
+  needs wrangler 4.36.0+ (the action's unpinned default installed 3.90.0).
+  Tests: `tests/feedback-worker.spec.js` (429 when limited, proceeds when not,
+  and a missing binding doesn't crash the worker). **Owner action:** re-run
+  **Actions → Deploy feedback worker → Run workflow** to push this live —
+  ordinary code changes here don't auto-deploy.
 - **W3.3 Data-authoring workflow.** Real schedule data is hand-authored JS
   object literals embedded directly in each competition's HTML — likely the
   actual reason real Regionals/future-competition data has stalled, since any
