@@ -4,18 +4,21 @@ Plan of record for the V2 enhancement effort. This is multi-session work; do not
 attempt it in one pass. Each phase lands as one or more small PRs into the `v2`
 branch, which merges to `main` (the GitHub Pages source) at agreed milestones.
 
-## Status (2026-07-13)
+## Status (2026-07-14)
 
 - **Phases 1 & 2: SHIPPED.** Merged `v2` → `main` (PR #24); the live site now
   serves V2. P2.2 / P2.3 / P2.7 deferred pending real data (see entries).
 - **V2.5 refinement pass: SHIPPED** directly to `main` (PR #25) — see the
   "V2.5 refinement" section below.
 - **Phase 3 (PWA/offline): SHIPPED** (PR #32).
-- **Feedback widget: BUILT** (PR #34–36); ships dormant until the owner deploys
-  the free worker and pastes its URL — see the "Feedback" section.
-- **Phase 4: in progress** — P4.1 print + P4.2 favorites recap shipped; the rest
-  is data-/scope-dependent (see Phase 4).
-- Test suite: **Playwright, green; CI gates every PR** (see suite for count).
+- **Feedback widget: LIVE** (PR #34–39) — deployed to Cloudflare, endpoint
+  wired into `assets/feedback-config.js`, confirmed end-to-end (real
+  submission → GitHub issue). See the "Feedback" section.
+- **Phase 4: buildable items SHIPPED** — P4.1 print + P4.2 favorites recap
+  (PR #37, #38); the rest is data-/scope-dependent (see Phase 4).
+- **Next up: Wave 3** (resilience/performance/data-authoring — see that
+  section) — not yet started.
+- Test suite: **174 Playwright tests, green; CI gates every PR.**
 
 ## Branch / hosting strategy
 
@@ -391,6 +394,69 @@ history, more season archives.
 **Not recommended:** a dark-mode/light-theme toggle — the brand is intentionally
 dark; a light theme is a second full design system with real risk of cheapening
 the identity. Skip unless specifically wanted.
+
+## Wave 3 — Resilience, performance, and data-authoring (from 2026-07-14 site review)
+
+A full source-level pass (HTML, engine, CSS, worker, tests, CI) after Phase 4
+shipped. Ranked by how much each gap actually matters, not just novelty.
+
+**High priority — real gaps against this doc's own stated principles:**
+
+- **W3.1 No-JS fallback on schedule pages.** The working agreements below say
+  "core schedule must render even if optional JS fails," and the homepage
+  honors that with a `<noscript>` block — but `nationals-2026/` and
+  `regionals-spring-2027/` don't. Their entire routine list is rendered by
+  `schedule-engine.js` from embedded data, so if JS fails (ad blocker, flaky
+  venue wifi, corporate filter) a parent gets a **blank page** on the exact
+  pages that matter most. Needs a static `<noscript>` routine listing (can be
+  plainer than the JS-rendered view) generated from the same `SCHEDULE` data.
+- **W3.2 Feedback worker has no rate limiting.** `worker/feedback-worker.mjs`
+  is a public POST endpoint visible in page source. The honeypot +
+  submitted-too-fast checks stop naive bots, not a scripted attacker who just
+  waits 1.2s. Add Cloudflare's free rate-limiting rules or a Turnstile
+  challenge (both $0; Turnstile already flagged as an escape hatch in
+  `docs/FEEDBACK-SETUP.md`).
+- **W3.3 Data-authoring workflow.** Real schedule data is hand-authored JS
+  object literals embedded directly in each competition's HTML — likely the
+  actual reason real Regionals/future-competition data has stalled, since any
+  update means writing raw JS or asking Claude to. Consider moving
+  `SCHEDULE`/`COMPETITION_CONFIG` into plain JSON files (still fully static,
+  no backend) plus a validation test that catches authoring errors (duplicate
+  entry numbers, bad enum values, out-of-order times) before they ship. Lowers
+  the barrier for the owner to self-serve updates.
+
+**Medium priority:**
+
+- **W3.4 Font loading.** Fonts load via a render-blocking `@import` in CSS
+  (no `<link rel="preconnect">`, no `<link rel="stylesheet">`) and aren't in
+  the SW precache, so the brand typeface (Tenor Sans) silently disappears
+  offline — inconsistent with the Phase 3 "full offline shell" work. Switch to
+  preconnect + `<link>` tags; consider self-hosting + precaching the font
+  files for true offline parity.
+- **W3.5 Unoptimized image weight.** `apple-touch-icon.png` is a byte-identical
+  copy of `icon-512.png` (188KB) instead of a properly-sized ~180×180 icon;
+  other icons/`og-image.png` are similarly heavy. Real payload savings for
+  parents on venue wifi/cellular.
+- **W3.6 No automated accessibility scanning.** `a11y.spec.js` hand-checks
+  semantics (labels, roles, landmarks) but nothing catches color-contrast or
+  other WCAG violations automatically. Add an `@axe-core/playwright` pass in
+  CI.
+- **W3.7 Chromium-only test coverage.** `playwright.config.js` has no WebKit
+  project, despite the audience (parents) almost certainly being iPhone-heavy
+  and PWA install/offline behavior differing meaningfully on iOS Safari. Add a
+  WebKit project to the suite.
+
+**Low priority / nice-to-have:**
+
+- **W3.8** No `robots.txt`/`sitemap.xml` — minor SEO hygiene, low stakes for a
+  family-facing utility site.
+- **W3.9** `schedule-engine.js` has grown to ~1,330 lines covering rendering,
+  filters, favorites, search, sharing, calendar export, and print. Not urgent,
+  but a maintainability candidate for splitting into focused modules if more
+  features keep landing on it.
+- **W3.10** No "how to add a competition" runbook for the owner. Even a short
+  doc reduces back-and-forth for routine data-entry (partly superseded if
+  W3.3 ships, since JSON + validation is largely self-explanatory).
 
 ---
 
