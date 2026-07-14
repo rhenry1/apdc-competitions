@@ -472,10 +472,15 @@ shipped. Ranked by how much each gap actually matters, not just novelty.
     since axe can't judge decorative intent and forcing it to pass would
     have meant abandoning an intentional whisper-quiet design choice for no
     user benefit.
-- **W3.7 Chromium-only test coverage.** `playwright.config.js` has no WebKit
-  project, despite the audience (parents) almost certainly being iPhone-heavy
-  and PWA install/offline behavior differing meaningfully on iOS Safari. Add a
-  WebKit project to the suite.
+- **W3.7 WebKit test coverage: IN PROGRESS.** Added a `webkit` project to
+  `playwright.config.js` (approximates desktop Safari's engine — not a
+  substitute for a real iOS device, but catches real WebKit-level bugs
+  Chromium-only testing never would) and updated CI to install both browsers.
+  **Caveat:** this sandbox has no WebKit binary available and cannot install
+  one, so this could only be verified against Chromium locally (189/189
+  green, config refactor is a no-op there) — the actual WebKit run is
+  unverified until CI reports back. If it surfaces real failures, they need a
+  follow-up fix, not a silent skip.
 
 **Low priority / nice-to-have:**
 
