@@ -434,12 +434,15 @@ shipped. Ranked by how much each gap actually matters, not just novelty.
 
 **Medium priority:**
 
-- **W3.4 Font loading.** Fonts load via a render-blocking `@import` in CSS
-  (no `<link rel="preconnect">`, no `<link rel="stylesheet">`) and aren't in
-  the SW precache, so the brand typeface (Tenor Sans) silently disappears
-  offline — inconsistent with the Phase 3 "full offline shell" work. Switch to
-  preconnect + `<link>` tags; consider self-hosting + precaching the font
-  files for true offline parity.
+- **W3.4 Font loading: SHIPPED.** The three brand fonts (Tenor Sans, Inter,
+  DM Mono) are now self-hosted in `assets/fonts/` (8 `.woff2` files — Latin +
+  Latin Extended-A only, Inter's variable-weight file shared across its 5
+  weights) and linked via `assets/fonts.css`, replacing the render-blocking
+  Google Fonts `@import` in both `index.html` and `schedule-theme.css`. No
+  third-party font requests at all now, and the files are in the SW precache
+  (`apdc-v6`), so the brand typeface survives offline instead of silently
+  falling back to a system font. Test:
+  `tests/offline.spec.js` → "brand fonts (self-hosted) stay loaded offline".
 - **W3.5 Unoptimized image weight.** `apple-touch-icon.png` is a byte-identical
   copy of `icon-512.png` (188KB) instead of a properly-sized ~180×180 icon;
   other icons/`og-image.png` are similarly heavy. Real payload savings for

@@ -86,4 +86,24 @@ test.describe('offline shell', () => {
     await expect(page.locator('#offline-indicator')).toBeVisible();
     await context.setOffline(false);
   });
+
+  // W3.4 — brand fonts are self-hosted + precached, so they survive offline
+  // instead of silently falling back to a system font.
+  test('brand fonts (self-hosted) stay loaded offline', async ({ page, context }) => {
+    await page.goto('/nationals-2026/index.html');
+    await page.waitForLoadState('networkidle');
+    await swReady(page);
+
+    await context.setOffline(true);
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+
+    const h1Family = await page.locator('h1').evaluate(el => getComputedStyle(el).fontFamily);
+    expect(h1Family).toContain('Tenor Sans');
+    const loadedFamilies = await page.evaluate(() =>
+      [...document.fonts].filter(f => f.status === 'loaded').map(f => f.family)
+    );
+    expect(loadedFamilies).toEqual(expect.arrayContaining(['Tenor Sans', 'DM Mono', 'Inter']));
+    await context.setOffline(false);
+  });
 });

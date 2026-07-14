@@ -4,7 +4,7 @@
 // data is embedded in them), and every shared asset — so the whole site works
 // offline after the first visit. Runtime strategy stays network-first: always
 // fresh when online, cache fallback when offline.
-const CACHE = 'apdc-v5';
+const CACHE = 'apdc-v6';
 
 // Derive the base path from the registration scope instead of hardcoding it,
 // so the same worker functions on GitHub Pages (/apdc-competitions) and on any
@@ -34,7 +34,19 @@ const ASSETS = [
   BASE + '/assets/pwa.js',
   BASE + '/assets/pwa.css',
   BASE + '/assets/feedback-config.js',
-  BASE + '/assets/feedback.js'
+  BASE + '/assets/feedback.js',
+  // Self-hosted brand fonts (W3.4) — previously loaded from Google Fonts, so
+  // the brand typeface silently vanished offline. Now same-origin and
+  // precached like everything else.
+  BASE + '/assets/fonts.css',
+  BASE + '/assets/fonts/tenor-sans-400-latin.woff2',
+  BASE + '/assets/fonts/tenor-sans-400-latin-ext.woff2',
+  BASE + '/assets/fonts/dm-mono-400-latin.woff2',
+  BASE + '/assets/fonts/dm-mono-400-latin-ext.woff2',
+  BASE + '/assets/fonts/dm-mono-500-latin.woff2',
+  BASE + '/assets/fonts/dm-mono-500-latin-ext.woff2',
+  BASE + '/assets/fonts/inter-latin.woff2',
+  BASE + '/assets/fonts/inter-latin-ext.woff2'
 ];
 
 self.addEventListener('install', e => {
@@ -61,9 +73,10 @@ self.addEventListener('activate', e => {
 });
 
 // Network-first: always fresh when online, cache fallback when offline.
-// Only same-origin GETs are handled — cross-origin requests (fonts, the
-// external livestream) go straight to the network, and non-GETs can't be
-// cached at all.
+// Only same-origin GETs are handled — cross-origin requests (the external
+// livestream link) go straight to the network, and non-GETs can't be cached
+// at all. Fonts are same-origin (self-hosted, see assets/fonts.css) and
+// precached above, so they're covered by this same logic.
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
