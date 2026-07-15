@@ -2,7 +2,8 @@
 
 A static, offline-capable PWA schedule portal for Amanda Page Dance Company —
 no backend, no build step, hosted on GitHub Pages. See `docs/V2-ROADMAP.md`
-for the full project history and what's next.
+for the full project history and what's next, or
+`docs/ADD-A-COMPETITION.md` for how to add a new competition page.
 
 ## Folder structure
 
