@@ -360,7 +360,14 @@ h1 {
   z-index: 200;
   display: flex;
   flex-direction: column;
+  /* `vh` is pinned to the "large" viewport (as if the browser's address bar
+     were collapsed), so on mobile Safari/Chrome with the bar visible, a tall
+     sheet can end up sized past the actually-visible area and get clipped
+     behind that bar. `dvh` tracks the real, current viewport and updates as
+     the bar shows/hides — kept as a second declaration so unsupported
+     browsers just fall back to the vh value above. */
   max-height: 85vh;
+  max-height: 85dvh;
   background: var(--color-surface);
   border-top: 1px solid var(--color-border-strong);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;

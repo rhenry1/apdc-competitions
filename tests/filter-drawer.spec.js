@@ -1,4 +1,6 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+const path = require('path');
 
 // P1.5 — accessible filter drawer (bottom sheet) + unified active-filter chips.
 const PAGES = [
@@ -87,3 +89,16 @@ for (const { name, path } of PAGES) {
     });
   });
 }
+
+// Guards the fix for the drawer sizing itself against mobile Safari/Chrome's
+// "large" viewport (assumes the address bar is collapsed) instead of the
+// actually-visible one — which let the bar cover the bottom of the open
+// sheet. `dvh` tracks the real, current viewport; headless Playwright has no
+// address bar to reproduce the bug against, so this asserts the CSS fallback
+// chain stays in place rather than the visual symptom.
+test('filter drawer sizes against the dynamic (not just large) viewport height', () => {
+  const css = fs.readFileSync(path.join(__dirname, '..', 'assets', 'schedule-theme.css'), 'utf8');
+  const rule = css.match(/\.filter-extra\s*\{[^}]*\}/)[0];
+  expect(rule).toMatch(/max-height:\s*85vh/);
+  expect(rule).toMatch(/max-height:\s*85dvh/);
+});
