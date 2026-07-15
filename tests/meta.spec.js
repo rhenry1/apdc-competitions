@@ -26,3 +26,22 @@ for (const path of PAGES) {
     expect(await content('meta[name="twitter:image"]')).toMatch(/og-image\.png$/);
   });
 }
+
+// W3.8 — robots.txt/sitemap.xml so crawlers can find and index all three pages.
+test('robots.txt allows crawling and points to the sitemap', async ({ request }) => {
+  const res = await request.get('/robots.txt');
+  expect(res.ok()).toBe(true);
+  const body = await res.text();
+  expect(body).toMatch(/User-agent:\s*\*/);
+  expect(body).toMatch(/Allow:\s*\//);
+  expect(body).toMatch(/Sitemap:\s*https:\/\/rhenry1\.github\.io\/apdc-competitions\/sitemap\.xml/);
+});
+
+test('sitemap.xml lists all three pages with the production origin', async ({ request }) => {
+  const res = await request.get('/sitemap.xml');
+  expect(res.ok()).toBe(true);
+  const body = await res.text();
+  for (const path of ['/', '/nationals-2026/', '/regionals-spring-2027/']) {
+    expect(body).toContain(`https://rhenry1.github.io/apdc-competitions${path}</loc>`);
+  }
+});

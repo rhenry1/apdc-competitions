@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rhenry1.github.io/apdc-competitions/sitemap.xml
