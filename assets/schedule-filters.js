@@ -127,6 +127,19 @@ function initFilterDrawer() {
   filterToggle.addEventListener('click', openFilterDrawer);
   filterBackdrop.addEventListener('click', closeFilterDrawer);
   header.querySelector('.filter-drawer-close').addEventListener('click', closeFilterDrawer);
+
+  // Safari's back/forward cache can restore this page with the drawer's
+  // closed-state `transform` still painted at wherever it was mid-slide when
+  // the user navigated away, even though the (correct, closed) DOM state was
+  // preserved too — the class says closed, but the compositor never got a
+  // paint telling it so. Forcing a reflow on restore repaints it against the
+  // current (closed) styles instead of the stale frozen one.
+  window.addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
+    filterExtra.style.transition = 'none';
+    void filterExtra.offsetHeight;
+    filterExtra.style.transition = '';
+  });
 }
 
 function setActiveInGroup(nodeList, activeEl) {

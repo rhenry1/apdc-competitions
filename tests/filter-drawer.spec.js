@@ -43,6 +43,30 @@ for (const { name, path } of PAGES) {
       await page.locator('.filter-backdrop').click({ position: { x: 5, y: 5 } });
       await expect(page.locator('#filter-extra')).not.toHaveClass(/open/);
     });
+
+    // Guards against Safari's back/forward cache restoring a page with the
+    // drawer's `transform` still painted mid-slide from before the user
+    // navigated away, even though its (closed) class state came back correct
+    // — a real device could show a stuck sliver of the drawer with no way to
+    // reproduce that specific compositor staleness headless. This asserts the
+    // `pageshow`/`persisted` handler runs cleanly and leaves the drawer closed.
+    test('a bfcache restore (pageshow with persisted) leaves the drawer closed, no errors', async ({ page }) => {
+      const errors = [];
+      page.on('pageerror', (e) => errors.push(e));
+
+      await page.goto(path);
+      await page.waitForLoadState('networkidle');
+      await page.locator('#filter-toggle').click();
+      await page.locator('.filter-backdrop').click({ position: { x: 5, y: 5 } });
+      await expect(page.locator('#filter-extra')).not.toHaveClass(/open/);
+
+      await page.evaluate(() => {
+        window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
+      });
+
+      await expect(page.locator('#filter-extra')).not.toHaveClass(/open/);
+      expect(errors).toEqual([]);
+    });
   });
 
   test.describe(`${name} active-filter chips`, () => {
