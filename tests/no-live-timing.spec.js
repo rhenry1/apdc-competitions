@@ -75,7 +75,15 @@ test.describe('no-live-timing guardrail', () => {
   test('shared engine + page sources contain no banned live-timing claims', () => {
     const root = path.resolve(__dirname, '..');
     const files = [
-      'assets/schedule-engine.js',
+      'assets/schedule-data.js',
+      'assets/schedule-cards.js',
+      'assets/schedule-calendar.js',
+      'assets/schedule-build.js',
+      'assets/schedule-filters.js',
+      'assets/schedule-search.js',
+      'assets/schedule-toolbar.js',
+      'assets/schedule-api.js',
+      'assets/schedule-init.js',
       'nationals-2026/index.html',
       'regionals-spring-2027/index.html',
       'index.html',

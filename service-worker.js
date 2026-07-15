@@ -4,7 +4,7 @@
 // data is embedded in them), and every shared asset — so the whole site works
 // offline after the first visit. Runtime strategy stays network-first: always
 // fresh when online, cache fallback when offline.
-const CACHE = 'apdc-v7';
+const CACHE = 'apdc-v8';
 
 // Derive the base path from the registration scope instead of hardcoding it,
 // so the same worker functions on GitHub Pages (/apdc-competitions) and on any
@@ -28,7 +28,17 @@ const ASSETS = [
   BASE + '/icons/icon-maskable-512.png',
   BASE + '/assets/tokens.css',
   BASE + '/assets/schedule-theme.css',
-  BASE + '/assets/schedule-engine.js',
+  // Schedule engine (W3.9) — split into focused files that must all load
+  // together; see schedule-data.js's header for what each one does.
+  BASE + '/assets/schedule-data.js',
+  BASE + '/assets/schedule-cards.js',
+  BASE + '/assets/schedule-calendar.js',
+  BASE + '/assets/schedule-build.js',
+  BASE + '/assets/schedule-filters.js',
+  BASE + '/assets/schedule-search.js',
+  BASE + '/assets/schedule-toolbar.js',
+  BASE + '/assets/schedule-api.js',
+  BASE + '/assets/schedule-init.js',
   BASE + '/assets/competitions.js',
   BASE + '/assets/icons.js',
   BASE + '/assets/pwa.js',

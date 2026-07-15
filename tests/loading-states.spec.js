@@ -13,7 +13,7 @@ test.describe('loading skeleton (before scripts render the schedule)', () => {
   // on the relative timing of the CSS and JS network requests). The skeleton
   // markup shipping in the raw HTML — with no pre-rendered .routine-card
   // elements — is exactly what guarantees a visitor sees it immediately, with
-  // no flash of empty content, before schedule-engine.js has even started.
+  // no flash of empty content, before the schedule engine scripts have even started.
   // (Previously this test used javaScriptEnabled:false to freeze the page in
   // its pre-script state, but that now means "JS never runs at all," which is
   // the W3.1 no-JS-fallback scenario covered by tests/noscript-fallback.spec.js
