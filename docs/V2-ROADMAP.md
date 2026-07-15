@@ -16,9 +16,12 @@ branch, which merges to `main` (the GitHub Pages source) at agreed milestones.
   submission → GitHub issue). See the "Feedback" section.
 - **Phase 4: buildable items SHIPPED** — P4.1 print + P4.2 favorites recap
   (PR #37, #38); the rest is data-/scope-dependent (see Phase 4).
-- **Wave 3: in progress.** W3.1 no-JS fallback SHIPPED (PR #43). W3.2–W3.10
-  remain (see that section).
-- Test suite: **179 Playwright tests, green; CI gates every PR.**
+- **Wave 3: buildable items SHIPPED.** W3.1–W3.2, W3.4–W3.10 all shipped (PR
+  #43, #45–#52); only W3.3 (data-authoring/JSON migration) remains — the
+  biggest, most invasive item, deliberately left for a dedicated pass (see
+  that section).
+- Test suite: **191 Playwright tests × 2 browsers (chromium, webkit), green;
+  CI gates every PR.**
 
 ## Branch / hosting strategy
 
@@ -500,15 +503,34 @@ shipped. Ranked by how much each gap actually matters, not just novelty.
 
 **Low priority / nice-to-have:**
 
-- **W3.8** No `robots.txt`/`sitemap.xml` — minor SEO hygiene, low stakes for a
-  family-facing utility site.
-- **W3.9** `schedule-engine.js` has grown to ~1,330 lines covering rendering,
-  filters, favorites, search, sharing, calendar export, and print. Not urgent,
-  but a maintainability candidate for splitting into focused modules if more
-  features keep landing on it.
-- **W3.10** No "how to add a competition" runbook for the owner. Even a short
-  doc reduces back-and-forth for routine data-entry (partly superseded if
-  W3.3 ships, since JSON + validation is largely self-explanatory).
+- **W3.8 robots.txt/sitemap.xml: SHIPPED.** Basic SEO hygiene — `robots.txt`
+  allows crawling and points to `sitemap.xml`, which lists all three pages.
+  Not added to the service worker precache (crawler-facing, not part of the
+  offline app experience). Tests added to `tests/meta.spec.js`.
+- **W3.9 schedule-engine.js split: SHIPPED.** The 1,338-line monolith is cut
+  into 9 focused files along its existing logical boundaries —
+  `schedule-data.js` (favorites persistence + routine/dancer/studio model),
+  `schedule-cards.js` (card rendering + favorites UI), `schedule-calendar.js`
+  (share + .ics export), `schedule-build.js` (reads
+  `COMPETITION_CONFIG`/`SCHEDULE`, builds the DOM), `schedule-filters.js`
+  (filter state, drawer, `applyFilters`), `schedule-search.js` (dancer/studio
+  pickers, active-filter chips, search box), `schedule-toolbar.js` (time
+  offset, density toggle, print, clear-all), `schedule-api.js` (`window.APDC`
+  public API, shareable deep links), `schedule-init.js` (the
+  `DOMContentLoaded` bootstrap). All 9 stay plain classic `<script>` tags
+  sharing one global scope in a fixed load order (documented in
+  `schedule-data.js`'s header) — real ES modules were ruled out because a
+  module's isolated scope can't see the page's inline
+  `COMPETITION_CONFIG`/`SCHEDULE` script. Zero lines were reordered relative
+  to each other; verified the 9 files concatenate back to a byte-identical
+  copy of the original file before shipping.
+- **W3.10 add-a-competition runbook: SHIPPED.** `docs/ADD-A-COMPETITION.md`
+  walks through copying the template, editing
+  `COMPETITION_CONFIG`/`SCHEDULE`, registering in `assets/competitions.js`,
+  wiring the service worker precache + `sitemap.xml`, regenerating the
+  noscript fallback, and updating the test suite's page lists. Linked from
+  the root `README.md`. Will need a pass if W3.3 ships (JSON + validation
+  would simplify several of these steps).
 
 ---
 
