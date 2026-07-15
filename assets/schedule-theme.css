@@ -368,6 +368,14 @@ h1 {
      browsers just fall back to the vh value above. */
   max-height: 85vh;
   max-height: 85dvh;
+  /* Mobile Safari's floating/compact toolbar renders in its own layer on top
+     of the page rather than reserving space for it, so a `bottom: 0` sheet's
+     bottom edge (and everything docked to it, like the close button) sits
+     right underneath it. `env(safe-area-inset-bottom)` is the value Apple
+     grows specifically for this case — inset the sheet's own content by it
+     rather than moving `bottom` itself, so the sheet's background still
+     reaches the true edge instead of leaving a gap under it. */
+  padding-bottom: env(safe-area-inset-bottom);
   background: var(--color-surface);
   border-top: 1px solid var(--color-border-strong);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
