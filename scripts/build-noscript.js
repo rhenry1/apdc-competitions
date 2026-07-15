@@ -90,7 +90,7 @@ function renderNoscriptBlock(config, schedule) {
 }
 
 // The engine overwrites #header-title's textContent with COMPETITION_CONFIG.name
-// on load (see schedule-engine.js), so keeping the static default in sync is a
+// on load (see assets/schedule-build.js), so keeping the static default in sync is a
 // no-op when JS runs — but it means the <h1> reads the real competition name
 // instead of a generic placeholder on the (rare) load where JS never runs.
 function syncHeaderTitle(html, config) {
