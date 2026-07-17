@@ -393,7 +393,11 @@ h1 {
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   box-shadow: var(--shadow-lg);
   transform: translateY(101%);
-  transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+  /* Wave 4 §3.5: this is the largest sheet on the site (a full modal, not a
+     small control), so it gets the "large modal" end of the spec's timing
+     guidance rather than the faster "standard" transition other controls
+     use — was a hardcoded 0.28s duplicating what --ease-premium already is. */
+  transition: transform var(--duration-modal) var(--ease-premium);
 }
 .filter-extra.open { transform: translateY(0); }
 
@@ -451,7 +455,7 @@ h1 {
   background: rgba(0,0,0,0.55);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.28s ease, visibility 0.28s;
+  transition: opacity var(--duration-modal) var(--ease-premium), visibility var(--duration-modal);
 }
 .filter-backdrop.open { opacity: 1; visibility: visible; }
 
