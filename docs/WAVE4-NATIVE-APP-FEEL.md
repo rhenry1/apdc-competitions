@@ -132,7 +132,68 @@ number → title → tags → dancer name → actions; the spec's ordering puts
 dancer name before the stage/type tags, a cosmetic swap not worth a separate
 step on its own).
 
-## Steps 3-7
+**Owner review: approved 2026-07-17, go-ahead given for Step 3.**
+
+## Step 3 — App Shell: STATUS
+
+**Shipped to `wave4-native-app-feel`** (not `main`).
+
+- **Safe-area audit (§3.2)**: the schedule pages already had `env(safe-area-inset-*)`
+  handling for `header`/`.filter-bar`/`main`, but only inside a
+  `@media (max-width: 480px)` block — which covers essentially every phone
+  in *portrait*, but not landscape (a landscape iPhone is comfortably wider
+  than 480px logical pixels while still having a real side inset from the
+  notch/rounded corner). Moved the `env(safe-area-inset-left/right)` handling
+  for `header`, `.filter-bar`, and `main` to the base (unconditional) rules
+  so it applies regardless of orientation or viewport width; `max(Npx, env(...))`
+  is always safe to apply since it's simply `0` on devices without an inset.
+  Also added the same left/right handling to `.filter-extra-inner` and
+  `.filter-drawer-header` (the filter bottom sheet spans full width by
+  design) and to `.sample-banner`, and gave the homepage's `.wrap` the same
+  treatment (it previously had no safe-area handling at all).
+- **Header refinement (§3.3)**: the schedule pages' `<header>` moved from a
+  fully opaque gradient fill to a translucent one, letting the shared
+  `.app-bg` ambient gradient tint through faintly — a small step toward the
+  "layered surface" look without adding a `backdrop-filter` that would have
+  no real content to blur (the header isn't sticky, so nothing distinct ever
+  scrolls behind it — that would have been performance cost for zero visual
+  gain). The existing sticky `.schedule-toolbar` (filter/offset controls,
+  already `backdrop-filter: blur(20px)` + translucent) already satisfies the
+  spec's "stays reachable and readable while scrolling" requirement; a
+  scroll-direction-based shrink/restore header animation was in the spec as
+  an explicit "optionally" and is deferred rather than added as new
+  behavioral complexity on top of a pattern that already works.
+- **Bottom navigation (§3.4) — deliberately not built.** The spec says to
+  add this "if the site has multiple primary destinations" and lists
+  Home/Schedule/Dancers/Events/More as *examples*. This site doesn't
+  actually have that structure: there's the homepage (a list of
+  competitions) and each competition's own schedule page — no separate
+  Dancers or Events sections exist to link to. A bottom nav here would mean
+  either fabricating destinations that don't exist yet or duplicating
+  Home/Back links that already work as plain in-page controls, which cuts
+  against the spec's own §2.2 ("avoid decorative elements that compete with
+  content") and §2.3 ("information first"). Flagging this explicitly rather
+  than silently skipping it — if there's a concrete destination in mind
+  (e.g. a future "Favorites" or "Dancers" view) that would make a bottom nav
+  genuinely useful, that's worth a dedicated discussion rather than
+  retrofitting one in.
+- **Persistent content shell / page padding (§3.1)**: reviewed the homepage
+  (620px max-width, 28px side margins, list-style content) against the
+  schedule pages (960px max-width, 16px side margins, dense grid-card
+  content) — left these as they are. They're different content types with
+  already-coherent internal rhythms; forcing identical numbers would mean
+  reworking the homepage's several hardcoded `-28px` accent-bar offsets for
+  no real user-facing benefit, and "consistent" in the spec's own words
+  means a coherent design language, not pixel-identical margins across
+  fundamentally different layouts.
+- Verified: full local Playwright suite (chromium) green (195/197 on the
+  first run — the 2 failures were `data-model.spec.js` and
+  `deep-links.spec.js`, both unrelated to this change and confirmed as this
+  sandbox's known CPU-contention flakes by re-running just those two files
+  in isolation, where both passed). Visual screenshots reviewed at mobile
+  portrait and landscape viewports.
+
+## Steps 4-7
 
 Not started. Each will get its own section here as it lands, following the
 same pattern: what shipped, why, how it was verified, screenshots for the

@@ -83,11 +83,20 @@ body {
   min-height: 100vh;
 }
 
-/* ── HEADER ── */
+/* ── HEADER ──
+   Wave 4 §3.2/§3.3: reserves the notch/Dynamic-Island and side safe areas
+   unconditionally (not just below the old 480px breakpoint, which missed
+   landscape phones — a landscape iPhone is comfortably wider than that but
+   still has a side inset to respect) and moves from a fully opaque fill to
+   a translucent one, letting the shared .app-bg ambient gradient tint
+   through faintly for the "layered surface" look the spec asks for. */
 header {
   padding: 24px 16px 18px;
+  padding-top: max(24px, env(safe-area-inset-top));
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
   border-bottom: 1px solid rgba(167,139,250,0.12);
-  background: linear-gradient(180deg, #06031a 0%, #09061f 100%);
+  background: linear-gradient(180deg, rgba(6,3,26,0.94) 0%, rgba(9,6,31,0.88) 100%);
 }
 
 /* ── STICKY TOOLBAR ── wraps the filter bar + offset bar as one pinned unit.
@@ -115,6 +124,8 @@ header {
   max-width: 960px;
   margin: 0 auto;
   padding: 10px 16px;
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
   border-bottom: 1px solid rgba(251,191,36,0.25);
   background: rgba(251,191,36,0.07);
   font-family: 'Inter', sans-serif;
@@ -211,6 +222,8 @@ h1 {
   max-width: 960px;
   margin: 0 auto;
   padding: 14px 16px 12px;
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
   border-bottom: 1px solid rgba(167,139,250,0.12);
   display: flex;
   flex-direction: column;
@@ -389,6 +402,8 @@ h1 {
   align-items: center;
   justify-content: space-between;
   padding: var(--space-4) var(--space-4) var(--space-3);
+  padding-left: max(var(--space-4), env(safe-area-inset-left));
+  padding-right: max(var(--space-4), env(safe-area-inset-right));
   border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
@@ -422,6 +437,11 @@ h1 {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: var(--space-4) var(--space-4) calc(var(--space-6) + env(safe-area-inset-bottom));
+  /* Wave 4 §3.2: this sheet spans full width (left:0; right:0 on
+     .filter-extra) by design, so in landscape its edges can sit under the
+     side notch/rounded corner — pad the content in from there too. */
+  padding-left: max(var(--space-4), env(safe-area-inset-left));
+  padding-right: max(var(--space-4), env(safe-area-inset-right));
 }
 
 .filter-backdrop {
@@ -691,6 +711,9 @@ main {
   max-width: 960px;
   margin: 0 auto;
   padding: 20px 16px 40px;
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+  padding-bottom: max(40px, env(safe-area-inset-bottom));
   background: transparent;
 }
 
