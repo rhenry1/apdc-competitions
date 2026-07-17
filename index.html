@@ -281,19 +281,28 @@
     color: rgba(255,255,255,0.55);
   }
 
-  /* ── NEXT-COMPETITION HERO ── */
+  /* ── NEXT-COMPETITION HERO ──
+     Wave 4 §4.5/§4.11: this is this site's one "Level 3 / Featured Surface"
+     card — the single most important thing on the homepage — so it gets the
+     largest radius and the richest, most elevated shadow in the depth
+     hierarchy. Everything else on the page (comp-row) stays a plain list
+     row rather than becoming its own card, per §4.5's "only one or two
+     featured cards per viewport" and §4.16's "avoid oversized cards on
+     dense lists". */
   .next-hero {
     display: block; text-decoration: none; color: inherit;
     position: relative; overflow: hidden;
     margin: 8px 0 4px;
     padding: 26px 24px 24px;
-    border-radius: 20px;
+    border-radius: var(--radius-card-lg);
     border: 1px solid rgba(196,181,253,0.14);
     background:
       linear-gradient(155deg, rgba(124,58,237,0.16) 0%, rgba(76,29,149,0.05) 55%, rgba(255,255,255,0.02) 100%);
-    box-shadow: 0 18px 48px -28px rgba(124,58,237,0.7);
+    box-shadow: var(--shadow-card-featured);
     -webkit-tap-highlight-color: transparent;
     opacity: 0; animation: fadeUp 0.7s ease forwards 0.45s;
+    transition: box-shadow var(--duration-fast) var(--ease-premium),
+                transform var(--duration-fast) var(--ease-premium);
   }
   .next-hero::before {
     content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
@@ -302,7 +311,10 @@
   .next-hero.accent-nationals::before {
     background: linear-gradient(180deg, #fde68a 0%, #c084fc 100%);
   }
-  .next-hero:active { transform: translateY(1px); }
+  @media (hover: hover) {
+    .next-hero:hover { transform: translateY(-2px); box-shadow: 0 28px 64px -24px rgba(124,58,237,0.55), inset 0 1px 0 rgba(255,255,255,0.09); }
+  }
+  .next-hero:active { transform: translateY(1px) scale(0.995); }
 
   .hero-eyebrow {
     display: inline-flex; align-items: center; gap: 8px;

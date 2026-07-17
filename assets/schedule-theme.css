@@ -794,17 +794,27 @@ body::after {
   grid-template-columns: 62px 1fr auto;
   gap: 2px var(--space-4);
   align-items: start;
-  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-5);
-  border-radius: var(--radius-md);
+  /* Wave 4 §4.2/§4.6: card radii/spacing moved to the shared card-radius and
+     card-shadow tokens — a "standard" card per the depth hierarchy (Level 1,
+     base surface), sized for a dense, repeated list rather than the largest
+     "primary" card treatment. */
+  padding: var(--space-5);
+  border-radius: var(--radius-card-sm);
   border: 1px solid var(--color-border);
-  background: var(--color-surface);
+  background: var(--color-surface-card);
   margin-bottom: var(--space-2);
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.15s, box-shadow var(--duration-fast) var(--ease-premium),
+              transform var(--duration-fast) var(--ease-premium);
 }
-.routine-card:hover { box-shadow: var(--shadow-md); }
+/* §4.12 interactive states — pointer devices only get the hover lift;
+   touch/keyboard already have their own feedback on the buttons inside. */
+@media (hover: hover) {
+  .routine-card:hover { box-shadow: var(--shadow-card-elevated); transform: translateY(-1px); }
+}
+.routine-card:active { transform: scale(0.995); }
 
 /* A routine opened from a shared deep link (?routine=…) is briefly spotlighted. */
 .routine-card.deep-target {
@@ -915,7 +925,7 @@ body::after {
   width: 34px;
   height: 34px;
   padding: 0;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-card-btn); /* Wave 4 §4.2 — buttons inside cards, 12-16px */
   border: 1px solid var(--color-border);
   background: rgba(255,255,255,0.03);
   color: var(--color-text-subtle);
