@@ -84,7 +84,55 @@ change implying live accuracy beyond scheduled times.
 - Verified: full local Playwright suite (chromium) green (194/194), axe scan
   clean on all three pages, visual screenshots reviewed at mobile viewport.
 
-## Steps 2-7
+**Owner review: approved ("Looks good") 2026-07-17.**
+
+## Step 2 — Card System: STATUS
+
+**Shipped to `wave4-native-app-feel`** (not `main`).
+
+This site already had the two card archetypes the spec asks for; Step 2 is
+about applying the new depth hierarchy and tokens to them, not building from
+scratch:
+
+- **`.routine-card`** (schedule pages, `assets/schedule-theme.css`) — the
+  spec's "Level 1 / base surface, standard card." Moved from `--radius-md`
+  (12px) to `--radius-card-sm` (16px, within the spec's compact-card range
+  given how many of these render on one screen), from `--shadow-sm`/`-md` to
+  `--shadow-card`/`-card-elevated` (adds the subtle inset top highlight from
+  §4.3), padding unified to `--space-5` (was an asymmetric 16/16/16/20).
+  Added a hover lift (`translateY(-1px)`, guarded to `@media (hover: hover)`
+  so it can't get stuck on touch) and a press scale (`0.995`) per §4.12 —
+  decorative only, since the card's actual tap targets are the
+  share/calendar/favorite buttons already inside it, which keep their
+  existing states. `.card-action-btn` radius moved to `--radius-card-btn`
+  (14px, the spec's 12-16px "buttons inside cards" range).
+  `body.compact .routine-card`'s own padding/shadow overrides (already a
+  reasonable compact-card treatment per §4.16) were left as-is.
+- **`.next-hero`** (homepage, `index.html`) — already this site's "Level 3 /
+  featured surface" card (next-competition countdown, gradient background,
+  left accent bar) before Wave 4 even started. Bumped to `--radius-card-lg`
+  (24px) and `--shadow-card-featured` (a richer, more elevated shadow), added
+  a hover lift + press scale matching the routine cards. Deliberately did
+  **not** turn `.comp-row` (the plain list rows for every other competition)
+  into cards of their own — §4.5 says only one or two featured cards per
+  viewport, and §4.16 says dense lists should avoid oversized card treatment;
+  this site's existing "one hero, plain rows for the rest" pattern already
+  matches that intent.
+- New test: `tests/design-system.spec.js` — `.app-bg` is a shared fixed
+  layer across all three pages (Step 1 carryover, added here).
+- Verified: full local Playwright suite (chromium) green (197/197), axe scan
+  clean, visual screenshots reviewed at mobile viewport (homepage hero card,
+  routine card list).
+
+Deferred to a later pass, not in scope for this slice: the badge system
+overhaul (§4.9 — existing tags/badges work and aren't broken), expandable
+cards (§4.14, a "may" not a "must"), and reordering routine-card content to
+match the spec's exact 1-6 order (§4.10 — currently very close already:
+number → title → tags → dancer name → actions; the spec's ordering puts
+dancer name before the stage/type tags, a cosmetic swap not worth a separate
+step on its own).
+
+## Steps 3-7
 
 Not started. Each will get its own section here as it lands, following the
 same pattern: what shipped, why, how it was verified, screenshots for the
