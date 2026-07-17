@@ -44,7 +44,13 @@
 
   .wrap {
     position: relative; z-index: 1;
-    max-width: 620px; margin: 0 auto; padding: 0 28px;
+    max-width: 620px; margin: 0 auto;
+    padding: 0 28px;
+    /* Wave 4 §3.2: reserve the landscape side inset too — 28px already
+       covers the usual notch protrusion in portrait, but max() keeps this
+       correct if a device's inset is ever wider. */
+    padding-left: max(28px, env(safe-area-inset-left));
+    padding-right: max(28px, env(safe-area-inset-right));
   }
 
   /* ── HEADER ── */
