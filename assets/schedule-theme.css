@@ -72,11 +72,10 @@
 }
 
 body {
+  /* Wave 4: the ambient gradient moved to the shared .app-bg fixed layer
+     (assets/app-shell.css) — background here is just the flat fallback
+     paint-first-frame color. */
   background: var(--bg);
-  background-image:
-    radial-gradient(ellipse at 10% 25%,  rgba(109,40,217,0.22) 0%, transparent 40%),
-    radial-gradient(ellipse at 90% 55%,  rgba(88,28,220,0.18)  0%, transparent 40%),
-    radial-gradient(ellipse at 50% 95%,  rgba(76,29,149,0.15)  0%, transparent 50%);
   color: var(--text);
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 14px;

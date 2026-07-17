@@ -33,6 +33,24 @@ for (const { name, path } of PAGES) {
       expect(tokens.tapMin).toBe('44px');
     });
 
+    // Wave 4 §3.1/§5 — one shared background layer across all three pages
+    // instead of three slightly different bespoke gradients, so the app
+    // shell doesn't visually "reset" moving between pages.
+    test('shares one fixed .app-bg layer, positioned behind all content', async ({ page }) => {
+      await page.goto(path);
+      await page.waitForLoadState('networkidle');
+
+      const bg = page.locator('body > .app-bg');
+      await expect(bg).toHaveCount(1);
+      const style = await bg.evaluate(el => {
+        const cs = getComputedStyle(el);
+        return { position: cs.position, zIndex: cs.zIndex, pointerEvents: cs.pointerEvents };
+      });
+      expect(style.position).toBe('fixed');
+      expect(Number(style.zIndex)).toBeLessThan(0);
+      expect(style.pointerEvents).toBe('none');
+    });
+
     test('honors prefers-reduced-motion without hiding animate-in content', async ({ page }) => {
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.goto(path);

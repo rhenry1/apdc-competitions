@@ -27,6 +27,7 @@
 <meta name="twitter:image" content="https://rhenry1.github.io/apdc-competitions/og-image.png">
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/app-shell.css">
 <link rel="stylesheet" href="assets/pwa.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,15 +40,6 @@
     min-height: 100vh;
     overflow-x: hidden;
     padding-bottom: max(60px, env(safe-area-inset-bottom));
-  }
-
-  .bg {
-    position: fixed; inset: 0; z-index: 0;
-    background:
-      radial-gradient(ellipse 120% 55% at -10% 0%,  rgba(109,40,217,0.32) 0%, transparent 55%),
-      radial-gradient(ellipse 80%  45% at 110% 35%, rgba(76,29,149,0.22)  0%, transparent 55%),
-      radial-gradient(ellipse 70%  40% at 50% 110%, rgba(109,40,217,0.15) 0%, transparent 50%);
-    pointer-events: none;
   }
 
   .wrap {
@@ -63,7 +55,14 @@
 
   .overline {
     font-size: 9px; font-weight: 500; letter-spacing: 0.32em;
-    text-transform: uppercase; color: rgba(196,181,253,0.4);
+    text-transform: uppercase;
+    /* Wave 4: was a translucent rgba(196,181,253,0.4) — its contrast only
+       passed WCAG AA because the old, brighter background gradient happened
+       to sit behind it. The calmer Wave 4 background exposed that hidden
+       dependency. --color-text-subtle is the same lilac family, already
+       audited (W3.6) to clear 4.5:1 against every surface in use, opaque so
+       it doesn't depend on whatever happens to render behind it. */
+    color: var(--color-text-subtle);
     margin-bottom: 22px; display: flex; align-items: center; gap: 16px;
   }
   .overline::after {
@@ -105,7 +104,10 @@
   .studio-name {
     font-family: 'Inter', sans-serif;
     font-size: 9px; font-weight: 400; letter-spacing: 0.3em;
-    text-transform: uppercase; color: rgba(196,181,253,0.5);
+    text-transform: uppercase;
+    /* Wave 4: same fix as .overline above — opaque, pre-audited token instead
+       of a translucent color that depended on the old background's brightness. */
+    color: var(--color-text-subtle);
     margin-bottom: 32px;
   }
 
@@ -468,7 +470,7 @@
 </style>
 </head>
 <body style="background:#06041a;">
-<div class="bg"></div>
+<div class="app-bg"></div>
 <div class="wrap">
 
   <div class="header">
