@@ -1,4 +1,17 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+const path = require('path');
+
+// Wave 4 §3.5 — cross-document view transitions are a progressive
+// enhancement (unsupported browsers just ignore the whole at-rule), but the
+// opt-in must stay scoped to prefers-reduced-motion: no-preference so a
+// reduced-motion user never gets it regardless of browser support.
+test('cross-document view transitions are scoped to prefers-reduced-motion: no-preference', () => {
+  const css = fs.readFileSync(path.join(__dirname, '..', 'assets', 'app-shell.css'), 'utf8');
+  const match = css.match(/@media \(prefers-reduced-motion:\s*no-preference\)\s*\{([\s\S]*?)\n\}/);
+  expect(match).not.toBeNull();
+  expect(match[1]).toMatch(/@view-transition\s*\{[\s\S]*navigation:\s*auto/);
+});
 
 // P1.1 — design tokens are available everywhere and reduced-motion is honored.
 const PAGES = [

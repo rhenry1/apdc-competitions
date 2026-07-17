@@ -193,7 +193,50 @@ step on its own).
   in isolation, where both passed). Visual screenshots reviewed at mobile
   portrait and landscape viewports.
 
-## Steps 4-7
+**Owner review: go-ahead given for Step 4.**
+
+## Step 4 — Motion & Interaction: STATUS
+
+**Shipped to `wave4-native-app-feel`** (not `main`).
+
+- **View transitions (§3.5)**: added `@view-transition { navigation: auto; }`
+  (the standards-track cross-document View Transitions API) to
+  `assets/app-shell.css`, so navigating between the homepage and a
+  competition's schedule page gets a brief crossfade instead of a hard cut.
+  This is a pure progressive enhancement — browsers that don't support the
+  `@view-transition` at-rule (Safari, Firefox as of this writing) simply
+  ignore it and navigate exactly as they do today, no feature-detection or
+  fallback code needed. Customized only the root crossfade's duration/easing
+  (to the Wave 4 tokens) — not its fade-only nature — deliberately staying
+  away from the spec's "avoid large swipes / zoom / bounce" warning for
+  page-level motion. Scoped inside `@media (prefers-reduced-motion:
+  no-preference)` so a reduced-motion user never gets it, layered on top of
+  whatever a supporting browser already does for that setting on its own.
+- **Card press/hover states (§4.12)**: already done in Step 2.
+- **Bottom-sheet transitions (§3.6)**: the filter drawer's slide + backdrop
+  fade already existed; moved both off a hardcoded `0.28s
+  cubic-bezier(0.4,0,0.2,1)` (which was, digit for digit, the Wave 4
+  `--ease-premium` curve already) onto `var(--duration-modal)` /
+  `var(--ease-premium)` — the "large modal" end of the spec's timing
+  guidance, since this sheet is the single biggest overlay on the site.
+- **Reduced-motion (§3.5, §7)**: already covered globally since P1.1
+  (`assets/tokens.css` collapses all animation/transition durations to
+  ~0 under `prefers-reduced-motion: reduce`) — the new view-transition
+  opt-in adds a second, belt-and-suspenders layer on top of that for this
+  specific feature.
+- **Expandable cards (§4.14) — deliberately not built.** This is a "may,"
+  not a "must," and there's no unshown information on a routine card to
+  expand *into* — number, title, dancers, tags, time, and actions are all
+  already visible. Building an expand/collapse interaction here would mean
+  inventing a reason for it (e.g. manufacturing a "details" section) rather
+  than solving a real information-density problem, which cuts against
+  §2.1's "avoid unnecessary" guidance.
+- New test: `tests/design-system.spec.js` — the view-transition opt-in
+  stays scoped to `prefers-reduced-motion: no-preference`.
+- Verified: full local Playwright suite (chromium) green (198/198, no
+  flakes this run).
+
+## Steps 5-7
 
 Not started. Each will get its own section here as it lands, following the
 same pattern: what shipped, why, how it was verified, screenshots for the
