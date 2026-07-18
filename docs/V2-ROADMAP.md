@@ -387,10 +387,12 @@ for $0.
 
 ## Phase 4 — Optional
 
-- **P4.1 print-friendly schedule: SHIPPED** (PR #37). A Print button + `@media
-  print` stylesheet turn any view into an ink-friendly page; filter to Favorites
-  first to print a personal one-page schedule. Printed times are the published
-  scheduled times only (never the offset estimate).
+- **P4.1 print-friendly schedule: SHIPPED** (PR #37, expanded PR #67). An
+  Export button opens a small menu: Print / Save as PDF (the `@media print`
+  stylesheet turns any view into an ink-friendly page) and Download as Excel
+  (a `.csv` of whatever's currently visible). Filter to Favorites or a single
+  day first for a personal or single-day export. Both printed and exported
+  times are the published scheduled times only (never the offset estimate).
 - **P4.2 favorites "day at a glance" summary: SHIPPED.** In the Favorites view, a
   compact per-day recap (count, scheduled span first–last, longest scheduled gap)
   above the list. All values are the published schedule and labeled "scheduled";

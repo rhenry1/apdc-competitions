@@ -51,6 +51,75 @@ function applyDensity(mode, { persist = true } = {}) {
   if (persist) localStorage.setItem(DENSITY_KEY, mode);
 }
 
+// ── Export menu: Print/PDF (existing) + download the current view as Excel ──
+function csvEscape(val) {
+  const s = String(val == null ? '' : val);
+  return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+
+// Exports whatever's currently visible under the active filters — filter to
+// Favorites or a single day first for a personal or single-day export, same
+// as Print already works. Times are the published schedule (never the
+// personal offset estimate), matching the print stylesheet's own rule.
+function exportScheduleCSV() {
+  const cards = window._cards || document.querySelectorAll('.routine-card');
+  const visibleIds = [...cards].filter(c => !c.classList.contains('hidden')).map(c => c.dataset.routineId);
+  if (!visibleIds.length) { showToast('No routines to export'); return; }
+
+  const byId = new Map(allRoutines.map(r => [r.id, r]));
+  const rows = visibleIds.map(id => byId.get(id)).filter(Boolean);
+  const dayTitle = key => (COMPETITION_CONFIG.days[key] || {}).title || key;
+
+  const headers = ['Day', 'Time', 'Entry #', 'Routine', 'Age Group', 'Format', 'Style', 'Stage', 'Studio', 'Dancers'];
+  const lines = [headers.map(csvEscape).join(',')];
+  rows.forEach(r => {
+    lines.push([
+      dayTitle(r.day), r.scheduledTime, r.routineNumber, r.routineName,
+      r.ageLabel, r.formatTag, r.style, r.stage, r.studio, r.dancersText,
+    ].map(csvEscape).join(','));
+  });
+
+  // Leading BOM so Excel opens it as UTF-8 instead of mangling names with accents.
+  const csv = '\uFEFF' + lines.join('\r\n') + '\r\n';
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${icsSlug(COMPETITION_CONFIG.name)}-schedule.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  showToast(`Exported ${rows.length} routine${rows.length === 1 ? '' : 's'} to Excel`);
+}
+
+function initExportMenu() {
+  const btn = document.getElementById('export-btn');
+  const panel = document.getElementById('export-panel');
+  if (!btn || !panel) return;
+
+  const closeMenu = () => { panel.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+  const openMenu = () => { panel.hidden = false; btn.setAttribute('aria-expanded', 'true'); };
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (panel.hidden) openMenu(); else closeMenu();
+  });
+  document.addEventListener('click', (e) => {
+    if (!panel.hidden && !panel.contains(e.target) && e.target !== btn) closeMenu();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !panel.hidden) { closeMenu(); btn.focus(); }
+  });
+
+  // Print the current view — filter to Favorites first for a personal schedule.
+  // The @media print stylesheet strips the app chrome and lays the visible
+  // routines out cleanly on paper (times shown are the published scheduled
+  // times, never the personal offset estimate).
+  document.getElementById('export-print').addEventListener('click', () => { closeMenu(); window.print(); });
+  document.getElementById('export-excel').addEventListener('click', () => { closeMenu(); exportScheduleCSV(); });
+}
+
 function initScheduleTools() {
   const container = document.getElementById('schedule-container');
   if (!container || document.querySelector('.schedule-tools')) return;
@@ -61,7 +130,13 @@ function initScheduleTools() {
   tools.innerHTML =
     '<button type="button" class="clear-all-global" id="clear-all-global">' + ICONS.close + 'Clear all filters</button>' +
     '<div class="schedule-tools-right">' +
-      '<button type="button" class="print-btn" id="print-btn" title="Print or save as PDF">' + ICONS.print + 'Print</button>' +
+      '<div class="export-menu">' +
+        '<button type="button" class="export-btn" id="export-btn" aria-haspopup="true" aria-expanded="false" title="Export the current view">' + ICONS.print + 'Export</button>' +
+        '<div class="export-panel" id="export-panel" role="menu" hidden>' +
+          '<button type="button" class="export-option" id="export-print" role="menuitem">Print / Save as PDF</button>' +
+          '<button type="button" class="export-option" id="export-excel" role="menuitem">Download as Excel (.csv)</button>' +
+        '</div>' +
+      '</div>' +
       '<div class="density-toggle" role="group" aria-label="Schedule density">' +
       '<button type="button" data-density="comfortable" aria-pressed="true">Comfortable</button>' +
       '<button type="button" data-density="compact" aria-pressed="false">Compact</button>' +
@@ -73,11 +148,7 @@ function initScheduleTools() {
     b.addEventListener('click', () => applyDensity(b.dataset.density));
   });
   document.getElementById('clear-all-global').addEventListener('click', clearAllFilters);
-  // Print the current view — filter to Favorites first for a personal schedule.
-  // The @media print stylesheet strips the app chrome and lays the visible
-  // routines out cleanly on paper (times shown are the published scheduled
-  // times, never the personal offset estimate).
-  document.getElementById('print-btn').addEventListener('click', function () { window.print(); });
+  initExportMenu();
 
   // A print-only footer note (hidden on screen). Reinforces that printed times
   // are the published schedule, which can still change.
