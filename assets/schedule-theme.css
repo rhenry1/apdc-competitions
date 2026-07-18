@@ -1438,7 +1438,18 @@ body.compact .card-dancers { font-size: 11px; }
 
 /* ── LIVE STREAM BUTTON ── */
 /* ── LIVESTREAM RESOURCE CARD (watch link + password, one card) ── */
-.livestream-bar { margin: 0 0 6px; }
+/* Wave 4 §6.3 QA finding: this sits outside <main>, so unlike every other
+   content band on the page it had no max-width — on wide/desktop viewports
+   it stretched edge to edge while everything else stayed in the 960px
+   column, exactly the "resembles an admin dashboard" look §6.3 warns
+   against. Matches .filter-bar's own recipe so the card lines up with the
+   routine cards below it. */
+.livestream-bar {
+  max-width: 960px;
+  margin: 0 auto 6px;
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
 .livestream-card {
   padding: 16px 16px 14px;
   border-radius: var(--radius-lg, 16px);
