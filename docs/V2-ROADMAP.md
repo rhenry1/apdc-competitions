@@ -20,7 +20,11 @@ branch, which merges to `main` (the GitHub Pages source) at agreed milestones.
   #43, #45–#52); only W3.3 (data-authoring/JSON migration) remains — the
   biggest, most invasive item, deliberately left for a dedicated pass (see
   that section).
-- Test suite: **191 Playwright tests × 2 browsers (chromium, webkit), green;
+- **Wave 4 (Native App Feel & Premium Card Design): SHIPPED** — developed on
+  a long-lived `wave4-native-app-feel` branch (PR #57–#64) and promoted to
+  `main` once all 7 steps were reviewed. See `docs/WAVE4-NATIVE-APP-FEEL.md`
+  for the full plan, what shipped in each step, and the QA pass.
+- Test suite: **205 Playwright tests × 2 browsers (chromium, webkit), green;
   CI gates every PR.**
 
 ## Branch / hosting strategy

@@ -1,10 +1,14 @@
 # Wave 4 — Native App Feel & Premium Card Design
 
-**Status: IN PROGRESS on the long-lived branch `wave4-native-app-feel`.**
-This branch is never merged to `main` mid-flight — it only promotes to `main`
-(and the live site) when explicitly approved. Every step below lands as its
-own short-lived `wave4-step<N>-<slug>` branch, PR'd into `wave4-native-app-feel`
-(not `main`), CI-gated the same as every other change in this repo.
+**Status: SHIPPED to `main` 2026-07-18**, after all 7 steps were built on the
+long-lived `wave4-native-app-feel` branch and reviewed one at a time. Every
+step below landed as its own short-lived `wave4-step<N>-<slug>` branch, PR'd
+into `wave4-native-app-feel` (not `main` directly), CI-gated the same as
+every other change in this repo — the whole effort stayed off the live site
+until the owner explicitly approved promoting it. Real-device testing (real
+iOS Safari, real Android Chrome, real screen readers) was *not* done from
+this environment before promotion — see Step 7's "what I could NOT verify"
+section below.
 
 Source: a detailed design brief from the owner (2026-07-17) — "Phase 3:
 Native App Feel and Premium Card Design" (13 sections, 18 acceptance
