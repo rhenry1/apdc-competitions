@@ -17,6 +17,69 @@ function renderLastUpdated() {
   if (el) el.textContent = 'Schedule updated ' + fmt;
 }
 
+// Livestream resource card — data-driven off COMPETITION_CONFIG.livestream so
+// every competition page gets the right state just by filling in config,
+// instead of each page hand-writing its own markup. A missing/null
+// `livestream` key means no stream is planned at all, so the card is
+// omitted entirely; a present-but-empty `url` means one is planned but the
+// link isn't live yet, so a "coming soon" placeholder renders instead —
+// never a broken or fake link (see tests/no-live-timing.spec.js).
+function renderLivestream() {
+  const host = document.getElementById('livestream-bar');
+  if (!host) return;
+  const ls = COMPETITION_CONFIG.livestream;
+  if (!ls) { host.innerHTML = ''; return; }
+
+  if (!ls.url) {
+    host.innerHTML = `
+      <div class="livestream-card livestream-card--pending">
+        <div class="resource-badge"><span class="livestream-dot livestream-dot--pending"></span> Livestream</div>
+        <div class="resource-title">Stream link coming soon</div>
+        <div class="resource-sub">We don't have the stream link yet — check back closer to the event.</div>
+        <button class="livestream-btn" type="button" disabled>
+          ${ICONS.calendar}
+          Not yet available
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  host.innerHTML = `
+    <div class="livestream-card">
+      <div class="resource-badge"><span class="livestream-dot"></span> Livestream</div>
+      <div class="resource-title">Watch the competition stream</div>
+      <div class="resource-sub">Can't be there in person? Follow along from the official stage stream.</div>
+      <a class="livestream-btn" id="livestream-btn" href="${ls.url}" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5v14l11-7z"/></svg>
+        Watch stream
+      </a>
+      ${ls.password ? `
+      <div class="livestream-password">
+        <span class="pw-label">Password</span>
+        <code id="stream-pw">${ls.password}</code>
+        <button class="pw-copy-btn" id="pw-copy-btn">Copy</button>
+      </div>` : ''}
+    </div>
+  `;
+
+  const pwCopyBtn = document.getElementById('pw-copy-btn');
+  const pwEl = document.getElementById('stream-pw');
+  if (pwCopyBtn && pwEl) {
+    const defaultLabel = pwCopyBtn.textContent;
+    pwCopyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(pwEl.textContent.trim()).then(() => {
+        pwCopyBtn.innerHTML = ICONS.check + ' Copied';
+        pwCopyBtn.classList.add('copied');
+        setTimeout(() => {
+          pwCopyBtn.textContent = defaultLabel;
+          pwCopyBtn.classList.remove('copied');
+        }, 1800);
+      });
+    });
+  }
+}
+
 function buildSchedule() {
   allRoutines = [];
   // Header hierarchy: type/season eyebrow → competition name → where & when.
@@ -32,6 +95,7 @@ function buildSchedule() {
     : '';
   document.getElementById('header-subtitle').innerHTML = locHtml + (COMPETITION_CONFIG.dates || '');
   renderLastUpdated();
+  renderLivestream();
 
   const dayRow = document.getElementById('day-filter-row');
   COMPETITION_CONFIG.dayButtons.forEach(btn => {

@@ -7,7 +7,7 @@ static file you edit directly.
 ## 1. Copy an existing page as a template
 
 `regionals-spring-2027/` is the simpler of the two existing pages (fewer
-days, no livestream) and is the best starting template:
+days) and is the best starting template:
 
 ```bash
 cp -r regionals-spring-2027 my-new-competition-2027
@@ -26,10 +26,18 @@ Both are plain JS object literals near the bottom of the file, inside a
 - `COMPETITION_CONFIG`: `id` (matches the folder name), `name`, `type`
   (`"Nationals"` / `"Regionals"` / etc.), `season`, `status`
   (`"upcoming"` / `"past"`), `startDate`/`endDate` (`YYYY-MM-DD`,
-  inclusive), `location`, `dates` (display string), `livestream` (leave
-  `url`/`password` empty if none), `resources`, `lastUpdated`, `days` (one
-  entry per day key used in `SCHEDULE`), and `dayButtons` (the filter bar's
-  day chips, in schedule order).
+  inclusive), `location`, `dates` (display string), `livestream`,
+  `resources`, `lastUpdated`, `days` (one entry per day key used in
+  `SCHEDULE`), and `dayButtons` (the filter bar's day chips, in schedule
+  order).
+  - `livestream` is rendered by `assets/schedule-build.js`'s
+    `renderLivestream()` — no per-page markup needed. Set it to `null` (or
+    omit the key) if no stream is planned at all, and the card is skipped.
+    Give it `{ url: "", password: "" }` once a stream is planned but the
+    link isn't live yet — this renders a disabled "coming soon" card rather
+    than a broken or fake link. Fill in `url` (and `password`, if the stream
+    is behind one) once you have the real details, and the working card
+    with a copyable password appears automatically.
 - `SCHEDULE`: one array per day key from `days`. Each entry is either
   `{ type: 'routine', ... }` (a performance — see any existing entry for the
   full field list: `entry`, `title`, `time`, `level`, `format`, `studio`,
@@ -90,5 +98,6 @@ npm test
   ships later, most of steps 2 and 7 get simpler or disappear — this doc will
   need a pass at that point.
 - Real schedule data usually isn't final until close to the event; it's fine
-  to publish a page early with `status: "upcoming"`, empty `livestream`, and
-  a partial `SCHEDULE`, then fill it in as details firm up.
+  to publish a page early with `status: "upcoming"`, a "coming soon"
+  `livestream` (or `null` if none is planned), and a partial `SCHEDULE`,
+  then fill it in as details firm up.
