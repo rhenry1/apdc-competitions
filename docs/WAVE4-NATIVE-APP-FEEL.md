@@ -275,8 +275,47 @@ against the Wave 4 spec found they already meet it:
 - Verified: full local Playwright suite (chromium) green (198/198, no
   flakes this run). Empty-state screenshot reviewed at mobile viewport.
 
-## Steps 6-7
+**Owner review: go-ahead given for Step 6.**
 
-Not started. Each will get its own section here as it lands, following the
+## Step 6 — PWA Polish: STATUS
+
+**Shipped to `wave4-native-app-feel`** (not `main`).
+
+Most of §3.11 was already solid — `manifest.json` already has a stable
+`id`, correct `start_url`/`scope`, `display: standalone`, a
+`background_color`/`theme_color` that both already match the app
+background (`#06041a`), split any/maskable icons, and store-style
+screenshots. All three pages already consistently set
+`apple-mobile-web-app-capable`, `apple-mobile-web-app-status-bar-style:
+black-translucent`, an apple-touch-icon, and the manifest link. The audit
+found two real, concrete gaps rather than needing a rebuild:
+
+- **White flash on launch.** The homepage has
+  `<html style="background:#06041a;">` inline — painted before any
+  stylesheet loads over the network, so first paint is already dark. The
+  two schedule pages didn't have this; they relied entirely on
+  `schedule-theme.css` loading first. Since a shared/deep-linked competition
+  page (not the homepage) is the more likely install or launch target,
+  this was the actual gap the spec's "no white flash" requirement was
+  pointing at. Added the same inline style to both.
+- **Inconsistent home-screen label.** Without `apple-mobile-web-app-title`,
+  iOS falls back to whatever the page's `<title>` happens to be when
+  someone taps "Add to Home Screen" — which differs across all three pages
+  (e.g. "APDC Competition Schedule — Sample" for regionals). Added
+  `apple-mobile-web-app-title` and `application-name` (both `"APDC"`,
+  matching the manifest's `short_name`) to all three pages, so the
+  home-screen icon reads the same regardless of which page someone
+  installed from.
+- Bumped the service worker's `CACHE` to `apdc-v10` (precached HTML content
+  changed), matching this repo's established convention.
+- New tests in `tests/manifest.spec.js`: `<html>` paints the app background
+  before any CSS loads (all three pages), and the home-screen title
+  metadata is present and consistent (all three pages).
+- Verified: full local Playwright suite (chromium) green (204/204, no
+  flakes this run).
+
+## Step 7
+
+Not started. Will get its own section here as it lands, following the
 same pattern: what shipped, why, how it was verified, screenshots for the
 owner's review.
