@@ -985,7 +985,7 @@ body::after {
   box-shadow: 0 8px 30px rgba(0,0,0,0.5);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity var(--duration-fast) var(--ease-premium), transform var(--duration-fast) var(--ease-premium);
   z-index: 1000;
   white-space: nowrap;
 }
@@ -1342,7 +1342,7 @@ body.compact .card-dancers { font-size: 11px; }
   height: 20px; width: 42%; margin: 18px 0 6px; border-radius: 6px;
 }
 .skel-card {
-  height: 84px; border-radius: var(--radius-lg, 16px);
+  height: 84px; border-radius: var(--radius-card-sm); /* tracks .routine-card's own radius */
   border: 1px solid rgba(167,139,250,0.10);
 }
 .skel-day, .skel-card {

@@ -236,7 +236,46 @@ step on its own).
 - Verified: full local Playwright suite (chromium) green (198/198, no
   flakes this run).
 
-## Steps 5-7
+**Owner review: go-ahead given for Step 5.**
+
+## Step 5 — Application States: STATUS
+
+**Shipped to `wave4-native-app-feel`** (not `main`).
+
+This step turned out smaller than the others by design: skeleton loading
+(§3.12), empty states (§3.13), and offline feedback (§3.14) were all already
+built in earlier waves (R3, P1.8, P3.2/P3.3 respectively) — auditing them
+against the Wave 4 spec found they already meet it:
+
+- **Skeleton loading**: `.skel-card`/`.skel-day` already approximate the
+  final layout, use a subtle shimmer (already reduced-motion-guarded), and
+  reserve layout space so nothing shifts when real content arrives. Only
+  change: `.skel-card`'s radius now explicitly tracks `--radius-card-sm`
+  (the same value it already resolved to via the old `--radius-lg` token —
+  no visual change, but it now stays in sync if the routine card's radius
+  ever moves again).
+- **Empty states** (`.no-results` / `.empty-icon/-title/-msg/-actions`):
+  already has a concise title ("No routines match"), a short explanation,
+  one clear next action ("Clear all filters"), and a subtle accent (the
+  purple-tinted icon pill) — matches §3.13 point for point already, so
+  nothing needed changing here. Screenshot attached for the owner's
+  reference.
+- **Offline feedback**: the offline pill already explains staleness
+  ("Offline — showing saved schedule"), and the service worker's
+  network-first strategy already means the moment connectivity returns, the
+  very next fetch gets fresh data automatically — no separate "reconnect"
+  logic needed.
+- **Toast/confirmation feedback**: tokenized the three toast/pill
+  components' transitions (`.action-toast`, `.offline-indicator`,
+  `.update-toast`/`.update-refresh`) from ad hoc `0.2s`/`0.25s ease` onto
+  `--duration-fast`/`--ease-premium`, matching the timing language used
+  everywhere else in Wave 4. Visually identical (180ms vs. 200-250ms isn't
+  perceptible) — this is about one consistent motion vocabulary across the
+  site, not a user-facing change.
+- Verified: full local Playwright suite (chromium) green (198/198, no
+  flakes this run). Empty-state screenshot reviewed at mobile viewport.
+
+## Steps 6-7
 
 Not started. Each will get its own section here as it lands, following the
 same pattern: what shipped, why, how it was verified, screenshots for the
