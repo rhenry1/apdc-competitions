@@ -1078,7 +1078,9 @@ body::after {
 
 .schedule-tools-right { display: inline-flex; align-items: center; gap: var(--space-2); margin-left: auto; }
 
-.print-btn {
+.export-menu { position: relative; }
+
+.export-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1095,8 +1097,41 @@ body::after {
   -webkit-tap-highlight-color: transparent;
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-.print-btn:hover, .print-btn:focus-visible { color: var(--purple-light); border-color: rgba(167,139,250,0.4); }
-.print-btn .icon { width: 0.95em; height: 0.95em; }
+.export-btn:hover, .export-btn:focus-visible, .export-btn[aria-expanded="true"] {
+  color: var(--purple-light); border-color: rgba(167,139,250,0.4);
+}
+.export-btn .icon { width: 0.95em; height: 0.95em; }
+
+.export-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  /* Above the sticky toolbar (z-index 90) and sticky day headers (z-index
+     40) it renders next to, or clicks land on them instead of the panel. */
+  z-index: 150;
+  min-width: 190px;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface-2, #1e1245);
+  box-shadow: var(--shadow-md);
+}
+.export-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 10px;
+  min-height: var(--tap-min, 44px);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text);
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.export-option:hover, .export-option:focus-visible { background: rgba(167,139,250,0.14); }
 
 .density-toggle {
   display: inline-flex;
