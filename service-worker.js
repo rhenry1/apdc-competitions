@@ -4,7 +4,7 @@
 // data is embedded in them), and every shared asset — so the whole site works
 // offline after the first visit. Runtime strategy stays network-first: always
 // fresh when online, cache fallback when offline.
-const CACHE = 'apdc-v10';
+const CACHE = 'apdc-v11';
 
 // Derive the base path from the registration scope instead of hardcoding it,
 // so the same worker functions on GitHub Pages (/apdc-competitions) and on any
@@ -88,13 +88,22 @@ self.addEventListener('activate', e => {
 // livestream link) go straight to the network, and non-GETs can't be cached
 // at all. Fonts are same-origin (self-hosted, see assets/fonts.css) and
 // precached above, so they're covered by this same logic.
+//
+// { cache: 'no-cache' } forces every fetch to revalidate with the server
+// instead of silently trusting the browser's ordinary HTTP cache — without
+// it, a plain fetch() can return a stale disk-cached response and never hit
+// the network at all, which defeats "network-first" for anyone whose last
+// visit is still within the response's Cache-Control freshness window (a
+// private/incognito window has no such cache, so it never showed the bug).
+// 'no-cache' still allows a cheap 304 when nothing changed — it just
+// guarantees that check actually happens.
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   if (new URL(req.url).origin !== self.location.origin) return;
 
   e.respondWith(
-    fetch(req)
+    fetch(req, { cache: 'no-cache' })
       .then(response => {
         if (response.ok) {
           const copy = response.clone();
