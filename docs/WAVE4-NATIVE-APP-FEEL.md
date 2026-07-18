@@ -314,8 +314,129 @@ found two real, concrete gaps rather than needing a rebuild:
 - Verified: full local Playwright suite (chromium) green (204/204, no
   flakes this run).
 
-## Step 7
+**Owner review: go-ahead given for Step 7 (final step).**
 
-Not started. Will get its own section here as it lands, following the
-same pattern: what shipped, why, how it was verified, screenshots for the
-owner's review.
+## Step 7 — Quality Assurance: STATUS
+
+**Shipped to `wave4-native-app-feel`** (not `main`). This is the final step
+— see the acceptance-criteria review and the honest-limits section below
+before deciding whether to promote this branch to `main`.
+
+### Bug found and fixed during this pass
+
+**`.livestream-bar` stretched edge-to-edge on desktop.** It's a direct
+sibling of `<main>` rather than nested inside it, so unlike literally every
+other content band on the schedule pages (header, filter bar, offset bar,
+main) it had no `max-width` — on desktop viewports (checked at 1440px) it
+spanned the full browser width while everything else stayed inside the
+shared 960px column, which is exactly the "resembles an admin dashboard"
+look §6.3 explicitly warns against. This is a pre-existing bug (present
+since R4 shipped the livestream card, unrelated to anything Wave 4 touched
+before this) that a dense-content mobile viewport would never reveal — it
+only shows up on a wide desktop window, which is precisely what this step's
+"desktop testing" / "visual consistency review" checks were for. Fixed by
+giving it the same `max-width: 960px; margin: 0 auto;` + safe-area side
+padding recipe `.filter-bar` already uses, so it now lines up exactly with
+the routine cards below it. New regression test in
+`tests/design-system.spec.js`.
+
+### What I could verify from this sandbox
+
+- **Full regression suite**: 205 tests × chromium, green (a couple of
+  unrelated flakes on full-suite runs, confirmed passing in isolation each
+  time — this sandbox's known CPU-contention pattern, documented
+  throughout this project).
+- **Accessibility**: `axe-core` scan (WCAG 2.0/2.1 A+AA) clean on all three
+  pages; existing hand-written a11y checks (headings, labels, live regions,
+  skip link, focus trapping) all green.
+- **Keyboard navigation**: covered by existing tests (filter drawer focus
+  trap/Escape/restore-focus, skip link) — nothing in Wave 4 added new
+  interactive elements that need new keyboard support; the hover/press
+  states added in Step 2 are pointer-gated (`@media (hover: hover)`) so they
+  don't affect keyboard or touch users at all.
+- **Reduced motion**: verified globally (P1.1's site-wide neutralizer) and
+  specifically for the Step 4 view-transition opt-in (explicitly scoped to
+  `no-preference`).
+- **Visual consistency**: screenshotted all three pages at 390/430/768/1024/1440px
+  (the same breakpoint set R5 established) — no horizontal overflow at any
+  width on any page, confirmed via `document.documentElement.scrollWidth`.
+  This is what surfaced the livestream-bar bug above.
+- **Backdrop-filter usage**: exactly one use site-wide (`.schedule-toolbar`,
+  20px blur on a small sticky bar) — well within §4.4's 12-24px guidance and
+  nowhere near a large scrolling region.
+- **Basic load timing**: page-load/FCP timings via the Performance API,
+  sanity-checked as "nothing catastrophically slow was added" — not a real
+  performance profile (see limits below).
+
+### What I could NOT verify — real-device testing is still needed
+
+This sandbox has no physical iPhone, no physical Android device, and no
+screen reader to drive. Being direct about this rather than claiming
+coverage I don't have:
+
+- **Real Mobile Safari.** Playwright's `webkit` project (used in CI)
+  approximates Safari's rendering/JS engine but is not Safari on iOS — it
+  has no floating/compact toolbar chrome, no real back/forward cache, no
+  real `env(safe-area-inset-*)` values from an actual notch. Every real bug
+  found earlier in this project (the toolbar-clipping issue, the bfcache
+  stale-paint issue) was caught from a screen recording on an actual phone,
+  not from any automated test. The same is true here: I cannot confirm the
+  safe-area fixes, the header treatment, or the card interactions actually
+  look and feel right on a real iPhone.
+- **Real Android Chrome.** Not tested at all — this project has never had
+  access to a real Android device or Android-specific emulation.
+- **Real screen readers** (VoiceOver, TalkBack). `axe-core` catches a lot of
+  the same underlying issues, but it's a static analysis, not a person
+  actually navigating with a screen reader — subtleties like reading order,
+  verbosity, and gesture navigation aren't things it can check.
+- **Real performance profiling** (Lighthouse, real network throttling, a
+  real mid-range phone's CPU). The timing numbers above are this sandbox's
+  local loopback server with no network latency and a desktop-class CPU —
+  not representative of a real mobile connection or device.
+
+**Recommendation:** before promoting `wave4-native-app-feel` to `main`, do
+a hands-on pass on an actual iPhone (Safari) covering: opening/closing the
+filter drawer, scrolling through a full day's schedule, installing the PWA
+and relaunching it, and navigating between the homepage and a schedule page
+to see the view-transition crossfade. If anything looks or feels off,
+report it the same way as before (a screenshot or screen recording is far
+more effective here than a description) and I'll fix it before this goes
+live.
+
+### Acceptance criteria (spec §12) — status
+
+1. Mobile site feels like a cohesive app — addressed (Steps 1-6); final
+   judgment is the owner's on a real device.
+2. Existing schedule functionality intact — verified, full suite green
+   throughout every step.
+3. Primary pages share a consistent app shell — done (Steps 1, 3).
+4. Safe-area spacing works on modern iPhones — fixed and audited (Step 3);
+   **not verified on a real notched device.**
+5. All cards use the new shared card system — done for the two card
+   archetypes that exist (routine card, featured hero); badges/smaller
+   components deliberately deferred (documented in Step 2).
+6. Featured vs. standard hierarchy is clear — done (Step 2).
+7. Interactive card states (press/hover/focus) are polished — done (Step 2;
+   focus states were already solid from earlier waves).
+8. Page/modal transitions feel smooth and restrained — done (Step 4).
+9. Loading/empty states match the premium language — done (Step 5; mostly
+   already there from earlier waves).
+10. Installed PWA uses APDC branding, no launch white flash — fixed
+    (Step 6); **the white-flash fix itself hasn't been confirmed on a real
+    installed PWA.**
+11. No live-timing claims — unaffected; the existing guardrail test still
+    passes.
+12. Readable and accessible — axe-clean throughout; **no real screen-reader
+    pass.**
+13. Reduced-motion respected — verified.
+14. Scrolling remains smooth on mobile — no heavy blur/scroll-jacking
+    added; **not verified on a real device's actual scroll performance.**
+15. No broken links/filters/schedules/competition pages — verified, full
+    suite green.
+16. Reusable tokens/components used instead of duplicated styles — done
+    (Step 1 tokens used consistently through Steps 2-6).
+17. Mobile/tablet/desktop layouts pass visual review — done; this pass
+    specifically is what caught and fixed the livestream-bar bug above.
+18. Tested in Safari iOS, Chrome Android, and desktop — **partial.**
+    WebKit/Chromium in CI approximate the two mobile engines but aren't the
+    real thing; desktop Chromium testing is real and thorough.
