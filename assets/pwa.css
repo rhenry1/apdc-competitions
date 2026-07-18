@@ -135,13 +135,17 @@
   visibility: hidden;
   pointer-events: none;
   /* visibility flips after the fade-out completes */
-  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+  transition: opacity var(--duration-fast) var(--ease-premium),
+              transform var(--duration-fast) var(--ease-premium),
+              visibility 0s linear var(--duration-fast);
 }
 .offline-indicator.visible {
   opacity: 1;
   visibility: visible;
   transform: translate(-50%, 0);
-  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s;
+  transition: opacity var(--duration-fast) var(--ease-premium),
+              transform var(--duration-fast) var(--ease-premium),
+              visibility 0s;
 }
 .offline-dot {
   width: 7px;
@@ -173,7 +177,7 @@
   letter-spacing: 0.02em;
   white-space: nowrap;
   opacity: 0;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition: opacity var(--duration-fast) var(--ease-premium), transform var(--duration-fast) var(--ease-premium);
 }
 .update-toast.visible { opacity: 1; transform: translate(-50%, 0); }
 .update-refresh {
@@ -185,7 +189,7 @@
   padding: 6px 14px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: background 0.15s;
+  transition: background var(--duration-fast) var(--ease-premium);
 }
 .update-refresh:hover, .update-refresh:focus-visible { background: rgba(196,181,253,0.24); }
 
