@@ -1,0 +1,40 @@
+/* APDC — Wave 4 app shell: shared background treatment (spec §3.1, §5).
+   One fixed decorative layer behind every page, replacing three slightly
+   different bespoke gradients (homepage's `.bg`, the schedule pages' body
+   background-image) with a single calmer recipe, so the app doesn't visually
+   "reset" moving between pages. `z-index: -1` on a fixed first-child of
+   <body> means later content needs no z-index of its own to paint above it. */
+
+.app-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--color-bg-primary);
+  background-image:
+    radial-gradient(ellipse 110% 55% at -10% 0%,  rgba(124,58,237,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 80%  45% at 110% 35%, rgba(88,28,220,0.08)  0%, transparent 60%),
+    radial-gradient(ellipse 70%  40% at 50% 110%, rgba(76,29,149,0.07)  0%, transparent 55%);
+}
+
+/* Wave 4 §3.5 — cross-document view transitions between pages (home <->
+   a competition's schedule), so navigating doesn't hard-cut to a blank
+   flash-then-repaint. `@view-transition` is a progressive enhancement:
+   browsers that don't support it (Safari, Firefox as of this writing)
+   simply ignore the whole rule and navigate exactly as before — nothing to
+   feature-detect or fall back manually. Scoped to `no-preference` so a
+   reduced-motion user never gets it, on top of whatever a supporting
+   browser already does automatically for that same setting. Only the root
+   crossfade's timing is customized (duration/easing tokens) — not its
+   fade-only nature — deliberately staying far from the spec's "avoid large
+   swipes / zoom / bounce" guidance for page-level motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: var(--duration-standard);
+    animation-timing-function: var(--ease-premium);
+  }
+}

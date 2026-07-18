@@ -1,4 +1,35 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+const path = require('path');
+
+// Wave 4 §3.5 — cross-document view transitions are a progressive
+// enhancement (unsupported browsers just ignore the whole at-rule), but the
+// opt-in must stay scoped to prefers-reduced-motion: no-preference so a
+// reduced-motion user never gets it regardless of browser support.
+test('cross-document view transitions are scoped to prefers-reduced-motion: no-preference', () => {
+  const css = fs.readFileSync(path.join(__dirname, '..', 'assets', 'app-shell.css'), 'utf8');
+  const match = css.match(/@media \(prefers-reduced-motion:\s*no-preference\)\s*\{([\s\S]*?)\n\}/);
+  expect(match).not.toBeNull();
+  expect(match[1]).toMatch(/@view-transition\s*\{[\s\S]*navigation:\s*auto/);
+});
+
+// Wave 4 §6.3 QA finding — .livestream-bar sits outside <main> as a direct
+// sibling, so unlike every other content band on the page (header, filter
+// bar, offset bar, main) it had no max-width: on wide/desktop viewports it
+// stretched edge to edge while everything else stayed in the shared 960px
+// column, which is exactly the "resembles an admin dashboard" look §6.3
+// warns against.
+test('nationals-2026: livestream card stays in the shared content column on desktop', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/nationals-2026/index.html');
+  await page.waitForLoadState('networkidle');
+  const [bar, main] = await Promise.all([
+    page.locator('.livestream-bar').boundingBox(),
+    page.locator('main').boundingBox(),
+  ]);
+  expect(bar.x).toBeCloseTo(main.x, 0);
+  expect(bar.width).toBeCloseTo(main.width, 0);
+});
 
 // P1.1 — design tokens are available everywhere and reduced-motion is honored.
 const PAGES = [
@@ -31,6 +62,24 @@ for (const { name, path } of PAGES) {
       expect(tokens.radiusMd).toBe('12px');
       expect(tokens.shadowMd).not.toBe('');
       expect(tokens.tapMin).toBe('44px');
+    });
+
+    // Wave 4 §3.1/§5 — one shared background layer across all three pages
+    // instead of three slightly different bespoke gradients, so the app
+    // shell doesn't visually "reset" moving between pages.
+    test('shares one fixed .app-bg layer, positioned behind all content', async ({ page }) => {
+      await page.goto(path);
+      await page.waitForLoadState('networkidle');
+
+      const bg = page.locator('body > .app-bg');
+      await expect(bg).toHaveCount(1);
+      const style = await bg.evaluate(el => {
+        const cs = getComputedStyle(el);
+        return { position: cs.position, zIndex: cs.zIndex, pointerEvents: cs.pointerEvents };
+      });
+      expect(style.position).toBe('fixed');
+      expect(Number(style.zIndex)).toBeLessThan(0);
+      expect(style.pointerEvents).toBe('none');
     });
 
     test('honors prefers-reduced-motion without hiding animate-in content', async ({ page }) => {

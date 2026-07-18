@@ -62,6 +62,66 @@
 
   /* ── Minimum accessible tap target ── */
   --tap-min: 44px;
+
+  /* ══ Wave 4 — Native App Feel & Premium Card Design ══
+     Additive: existing tokens above are untouched, so nothing adopts these
+     until a component is deliberately migrated in a later Wave 4 step. */
+
+  /* ── Surface hierarchy (spec §4.5, §9) ── */
+  --color-bg-primary:       var(--color-bg);
+  --color-bg-elevated:      #0d0824;   /* app-shell chrome: header, bottom nav */
+  --color-surface-card:     var(--color-surface);    /* Level 1 — base surface */
+  --color-surface-elevated: var(--color-surface-2);  /* Level 2 — elevated surface */
+  --color-surface-featured: #241454;   /* Level 3 — featured surface (sparingly) */
+
+  --color-text-primary:   var(--color-text);
+  --color-text-secondary: var(--color-text-muted);
+  --color-border-subtle:  var(--color-border);
+  --color-accent-primary: var(--purple);
+
+  /* ── Card radii (spec §4.2) ── */
+  --radius-card-lg: 24px;  /* primary/large cards, 22-28px range */
+  --radius-card-md: 20px;  /* standard cards, 18-22px range */
+  --radius-card-sm: 16px;  /* compact cards, 14-18px range */
+  --radius-card-btn: 14px; /* buttons inside cards, 12-16px range */
+
+  /* ── Card shadows / depth hierarchy (spec §4.3, §4.5) ── */
+  --shadow-card:          0 16px 40px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.05);
+  --shadow-card-elevated: 0 20px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.07);
+  --shadow-card-featured: 0 24px 56px rgba(76,29,149,0.35), inset 0 1px 0 rgba(255,255,255,0.09);
+
+  /* ── Glass blur (spec §4.4 — sparingly, 12-24px) ── */
+  --blur-glass: 16px;
+
+  /* ── Additional spacing step for large card padding (spec §4.6) ── */
+  --space-7: 28px;
+
+  /* ── Motion (spec §3.5, §4.13, §9) ── */
+  --duration-fast:     180ms;
+  --duration-standard: 240ms;
+  --duration-modal:    320ms;
+  --ease-premium: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── Typography hierarchy inside cards (spec §4.7) ── */
+  --text-eyebrow-size:     11px;
+  --text-eyebrow-weight:   500;
+  --text-eyebrow-tracking: 0.12em;
+  --text-primary-value-size:   20px;
+  --text-primary-value-weight: 600;
+  --text-secondary-detail-size:   15px;
+  --text-secondary-detail-weight: 400;
+  --text-meta-size:   12px;
+  --text-meta-weight: 400;
+
+  /* ── Z-index scale (spec §9) — supersedes ad hoc values as components
+     migrate; existing hand-picked z-indexes (e.g. the filter drawer's 199/200)
+     are untouched until each is deliberately converted. ── */
+  --z-card:            1;
+  --z-sticky-header:   100;
+  --z-drawer-backdrop: 199;
+  --z-drawer:          200;
+  --z-toast:           300;
+  --z-modal:           400;
 }
 
 /* Respect users who ask for reduced motion: neutralize animations and

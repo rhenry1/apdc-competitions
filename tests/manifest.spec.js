@@ -39,6 +39,31 @@ test('manifest icon + screenshot files actually exist', async ({ request }) => {
   }
 });
 
+// Wave 4 §3.11 — no white flash on launch, and a consistent home-screen
+// label regardless of which page the user happened to "Add to Home
+// Screen" from. Only the homepage had the inline <html> background before
+// this; the two schedule pages (the more likely install/deep-link target)
+// relied entirely on an external stylesheet loading first.
+const PAGES = ['/index.html', '/nationals-2026/index.html', '/regionals-spring-2027/index.html'];
+for (const path of PAGES) {
+  test(`${path}: <html> paints the app background before any CSS loads`, async ({ page }) => {
+    await page.goto(path);
+    // On the schedule pages, page JS re-serializes the whole style attribute
+    // when it later sets --toolbar-h via .style.setProperty(), which
+    // normalizes #06041a to its rgb() form — check the resolved color
+    // rather than the literal hex text.
+    const bg = await page.evaluate(() => document.documentElement.style.background);
+    expect(bg).toMatch(/#06041a|rgb\(6,\s*4,\s*26\)/);
+  });
+
+  test(`${path}: consistent home-screen title metadata`, async ({ page }) => {
+    await page.goto(path);
+    const content = (name) => page.locator(`meta[name="${name}"]`).getAttribute('content');
+    expect(await content('apple-mobile-web-app-title')).toBe('APDC');
+    expect(await content('application-name')).toBe('APDC');
+  });
+}
+
 test('dismissed install banner stays dismissed while the header chip remains', async ({ browser }) => {
   const context = await browser.newContext({
     userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',

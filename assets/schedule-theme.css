@@ -72,11 +72,10 @@
 }
 
 body {
+  /* Wave 4: the ambient gradient moved to the shared .app-bg fixed layer
+     (assets/app-shell.css) — background here is just the flat fallback
+     paint-first-frame color. */
   background: var(--bg);
-  background-image:
-    radial-gradient(ellipse at 10% 25%,  rgba(109,40,217,0.22) 0%, transparent 40%),
-    radial-gradient(ellipse at 90% 55%,  rgba(88,28,220,0.18)  0%, transparent 40%),
-    radial-gradient(ellipse at 50% 95%,  rgba(76,29,149,0.15)  0%, transparent 50%);
   color: var(--text);
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 14px;
@@ -84,11 +83,20 @@ body {
   min-height: 100vh;
 }
 
-/* ── HEADER ── */
+/* ── HEADER ──
+   Wave 4 §3.2/§3.3: reserves the notch/Dynamic-Island and side safe areas
+   unconditionally (not just below the old 480px breakpoint, which missed
+   landscape phones — a landscape iPhone is comfortably wider than that but
+   still has a side inset to respect) and moves from a fully opaque fill to
+   a translucent one, letting the shared .app-bg ambient gradient tint
+   through faintly for the "layered surface" look the spec asks for. */
 header {
   padding: 24px 16px 18px;
+  padding-top: max(24px, env(safe-area-inset-top));
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
   border-bottom: 1px solid rgba(167,139,250,0.12);
-  background: linear-gradient(180deg, #06031a 0%, #09061f 100%);
+  background: linear-gradient(180deg, rgba(6,3,26,0.94) 0%, rgba(9,6,31,0.88) 100%);
 }
 
 /* ── STICKY TOOLBAR ── wraps the filter bar + offset bar as one pinned unit.
@@ -116,6 +124,8 @@ header {
   max-width: 960px;
   margin: 0 auto;
   padding: 10px 16px;
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
   border-bottom: 1px solid rgba(251,191,36,0.25);
   background: rgba(251,191,36,0.07);
   font-family: 'Inter', sans-serif;
@@ -212,6 +222,8 @@ h1 {
   max-width: 960px;
   margin: 0 auto;
   padding: 14px 16px 12px;
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
   border-bottom: 1px solid rgba(167,139,250,0.12);
   display: flex;
   flex-direction: column;
@@ -381,7 +393,11 @@ h1 {
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   box-shadow: var(--shadow-lg);
   transform: translateY(101%);
-  transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+  /* Wave 4 §3.5: this is the largest sheet on the site (a full modal, not a
+     small control), so it gets the "large modal" end of the spec's timing
+     guidance rather than the faster "standard" transition other controls
+     use — was a hardcoded 0.28s duplicating what --ease-premium already is. */
+  transition: transform var(--duration-modal) var(--ease-premium);
 }
 .filter-extra.open { transform: translateY(0); }
 
@@ -390,6 +406,8 @@ h1 {
   align-items: center;
   justify-content: space-between;
   padding: var(--space-4) var(--space-4) var(--space-3);
+  padding-left: max(var(--space-4), env(safe-area-inset-left));
+  padding-right: max(var(--space-4), env(safe-area-inset-right));
   border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
@@ -423,6 +441,11 @@ h1 {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: var(--space-4) var(--space-4) calc(var(--space-6) + env(safe-area-inset-bottom));
+  /* Wave 4 §3.2: this sheet spans full width (left:0; right:0 on
+     .filter-extra) by design, so in landscape its edges can sit under the
+     side notch/rounded corner — pad the content in from there too. */
+  padding-left: max(var(--space-4), env(safe-area-inset-left));
+  padding-right: max(var(--space-4), env(safe-area-inset-right));
 }
 
 .filter-backdrop {
@@ -432,7 +455,7 @@ h1 {
   background: rgba(0,0,0,0.55);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.28s ease, visibility 0.28s;
+  transition: opacity var(--duration-modal) var(--ease-premium), visibility var(--duration-modal);
 }
 .filter-backdrop.open { opacity: 1; visibility: visible; }
 
@@ -692,6 +715,9 @@ main {
   max-width: 960px;
   margin: 0 auto;
   padding: 20px 16px 40px;
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+  padding-bottom: max(40px, env(safe-area-inset-bottom));
   background: transparent;
 }
 
@@ -795,17 +821,27 @@ body::after {
   grid-template-columns: 62px 1fr auto;
   gap: 2px var(--space-4);
   align-items: start;
-  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-5);
-  border-radius: var(--radius-md);
+  /* Wave 4 §4.2/§4.6: card radii/spacing moved to the shared card-radius and
+     card-shadow tokens — a "standard" card per the depth hierarchy (Level 1,
+     base surface), sized for a dense, repeated list rather than the largest
+     "primary" card treatment. */
+  padding: var(--space-5);
+  border-radius: var(--radius-card-sm);
   border: 1px solid var(--color-border);
-  background: var(--color-surface);
+  background: var(--color-surface-card);
   margin-bottom: var(--space-2);
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.15s, box-shadow var(--duration-fast) var(--ease-premium),
+              transform var(--duration-fast) var(--ease-premium);
 }
-.routine-card:hover { box-shadow: var(--shadow-md); }
+/* §4.12 interactive states — pointer devices only get the hover lift;
+   touch/keyboard already have their own feedback on the buttons inside. */
+@media (hover: hover) {
+  .routine-card:hover { box-shadow: var(--shadow-card-elevated); transform: translateY(-1px); }
+}
+.routine-card:active { transform: scale(0.995); }
 
 /* A routine opened from a shared deep link (?routine=…) is briefly spotlighted. */
 .routine-card.deep-target {
@@ -916,7 +952,7 @@ body::after {
   width: 34px;
   height: 34px;
   padding: 0;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-card-btn); /* Wave 4 §4.2 — buttons inside cards, 12-16px */
   border: 1px solid var(--color-border);
   background: rgba(255,255,255,0.03);
   color: var(--color-text-subtle);
@@ -949,7 +985,7 @@ body::after {
   box-shadow: 0 8px 30px rgba(0,0,0,0.5);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity var(--duration-fast) var(--ease-premium), transform var(--duration-fast) var(--ease-premium);
   z-index: 1000;
   white-space: nowrap;
 }
@@ -1306,7 +1342,7 @@ body.compact .card-dancers { font-size: 11px; }
   height: 20px; width: 42%; margin: 18px 0 6px; border-radius: 6px;
 }
 .skel-card {
-  height: 84px; border-radius: var(--radius-lg, 16px);
+  height: 84px; border-radius: var(--radius-card-sm); /* tracks .routine-card's own radius */
   border: 1px solid rgba(167,139,250,0.10);
 }
 .skel-day, .skel-card {
@@ -1402,7 +1438,18 @@ body.compact .card-dancers { font-size: 11px; }
 
 /* ── LIVE STREAM BUTTON ── */
 /* ── LIVESTREAM RESOURCE CARD (watch link + password, one card) ── */
-.livestream-bar { margin: 0 0 6px; }
+/* Wave 4 §6.3 QA finding: this sits outside <main>, so unlike every other
+   content band on the page it had no max-width — on wide/desktop viewports
+   it stretched edge to edge while everything else stayed in the 960px
+   column, exactly the "resembles an admin dashboard" look §6.3 warns
+   against. Matches .filter-bar's own recipe so the card lines up with the
+   routine cards below it. */
+.livestream-bar {
+  max-width: 960px;
+  margin: 0 auto 6px;
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
 .livestream-card {
   padding: 16px 16px 14px;
   border-radius: var(--radius-lg, 16px);
