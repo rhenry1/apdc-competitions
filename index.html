@@ -189,7 +189,9 @@
   .comp-type {
     font-family: 'Inter', sans-serif; font-size: 8px; font-weight: 600;
     letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 7px;
-    color: rgba(196,181,253,0.45);
+    /* 0.45 failed WCAG AA (2.91:1) once a plain regional row could render
+       upcoming (not just soon/completed); 0.72 clears 4.5:1 with margin. */
+    color: rgba(196,181,253,0.72);
   }
   .comp-row.nationals-row:not(.soon) .comp-type { color: rgba(253,230,138,0.7); }
   .comp-row.soon .comp-type { color: rgba(255,255,255,0.15); }
@@ -206,7 +208,9 @@
   .comp-details {
     display: flex; flex-wrap: wrap; gap: 3px 18px;
     font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300;
-    color: rgba(255,255,255,0.3); letter-spacing: 0.02em;
+    /* 0.3 failed WCAG AA (2.53:1) once a plain regional row could render
+       upcoming (not just soon/completed); 0.55 clears 4.5:1 with margin. */
+    color: rgba(255,255,255,0.55); letter-spacing: 0.02em;
   }
   .comp-row.nationals-row:not(.soon) .comp-details { color: rgba(255,255,255,0.45); }
   .comp-row.soon .comp-details { color: rgba(255,255,255,0.1); }

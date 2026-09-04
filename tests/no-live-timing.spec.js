@@ -38,6 +38,9 @@ const PAGES = [
   '/index.html',
   '/nationals-2026/index.html',
   '/regionals-spring-2027/index.html',
+  '/regionals-march-2027/index.html',
+  '/regionals-april-2027/index.html',
+  '/regionals-may-2027/index.html',
 ];
 
 // The approved offset disclaimer intentionally says the estimate "does not
@@ -86,6 +89,9 @@ test.describe('no-live-timing guardrail', () => {
       'assets/schedule-init.js',
       'nationals-2026/index.html',
       'regionals-spring-2027/index.html',
+      'regionals-march-2027/index.html',
+      'regionals-april-2027/index.html',
+      'regionals-may-2027/index.html',
       'index.html',
     ];
     const findings = [];

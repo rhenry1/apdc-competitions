@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#06041a;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="APDC">
+<meta name="application-name" content="APDC">
+<meta name="theme-color" content="#06041a">
+<link rel="icon" type="image/x-icon" href="../icons/favicon.ico">
+<link rel="icon" type="image/png" sizes="96x96" href="../icons/favicon-96x96.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="manifest" href="../manifest.json">
+<title>Backstage Regionals 2027 · Schedule</title>
+<meta name="description" content="Full routine schedule for Backstage Regionals 2027 (April 23–25, Poughkeepsie, NY) from Amanda Page Dance Company. Search routines, favorite them, and add calendar reminders.">
+<link rel="canonical" href="https://rhenry1.github.io/apdc-competitions/regionals-april-2027/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="APDC Competitions">
+<meta property="og:title" content="Backstage Regionals 2027 · Schedule">
+<meta property="og:description" content="Full routine schedule for Backstage Regionals 2027 (April 23–25, Poughkeepsie, NY). Search routines, favorite them, and add calendar reminders.">
+<meta property="og:url" content="https://rhenry1.github.io/apdc-competitions/regionals-april-2027/">
+<meta property="og:image" content="https://rhenry1.github.io/apdc-competitions/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Backstage Regionals 2027 · Schedule">
+<meta name="twitter:description" content="Full routine schedule for Backstage Regionals 2027, Poughkeepsie, NY.">
+<meta name="twitter:image" content="https://rhenry1.github.io/apdc-competitions/og-image.png">
+<link rel="stylesheet" href="../assets/fonts.css">
+<link rel="stylesheet" href="../assets/tokens.css">
+<link rel="stylesheet" href="../assets/app-shell.css">
+<link rel="stylesheet" href="../assets/schedule-theme.css">
+<link rel="stylesheet" href="../assets/pwa.css">
+</head>
+<body>
+<div class="app-bg"></div>
+
+<header>
+  <div class="header-inner">
+    <a class="back-link" href="../"><span class="back-arrow">‹</span> All Competitions</a>
+    <div class="header-brand">
+      <span class="brand-logo">APDC</span>
+      <span class="eyebrow" id="header-eyebrow">Regionals</span>
+    </div>
+    <h1 id="header-title">Backstage Regionals 2027</h1>
+    <div class="eyebrow header-sub" id="header-subtitle"></div>
+  </div>
+</header>
+
+<div class="filter-bar" id="filter-bar">
+
+  <!-- Row 1: Show + inline search -->
+  <div class="filter-row">
+    <span class="filter-label">Show</span>
+    <button class="btn show-btn active" data-filter="all" aria-pressed="true">All</button>
+    <button class="btn show-btn" data-filter="props" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 21 7.5 21 16.5 12 21 3 16.5 3 7.5Z"/><path d="M3 7.5 12 12 21 7.5"/><line x1="12" y1="12" x2="12" y2="21"/></svg> Props</button>
+    <button class="btn show-btn" data-filter="favorites" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3.2l2.6 5.35 5.9.86-4.27 4.16 1.01 5.87L12 16.9l-5.25 2.76 1-5.87L3.5 9.41l5.9-.86z"/></svg> Favorites<span class="fav-count" id="fav-count" style="display:none">0</span></button>
+    <div class="search-wrap" id="search-wrap">
+      <span class="search-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="20" y1="20" x2="15.2" y2="15.2"/></svg></span>
+      <input class="dancer-input" id="dancer-input" type="text" placeholder="Search routines, dancers…" aria-label="Search routines, dancers, studios, styles, and numbers" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+      <div class="dancer-dropdown" id="dancer-dropdown"></div>
+    </div>
+  </div>
+
+  <button class="filter-toggle-btn" id="filter-toggle" aria-expanded="false" aria-controls="filter-extra"></button>
+
+  <!-- Row 2: Active pills — only visible when dancers selected -->
+  <div class="filter-row" id="pill-row" style="display:none;">
+    <span class="filter-label">Who</span>
+    <div id="dancer-pill-wrap" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;flex:1;min-width:0;"></div>
+    <button class="btn" id="clear-all-btn" style="display:none;font-size:10px;padding:4px 8px;color:#8878b0;border-color:rgba(255,255,255,0.08);flex-shrink:0;">Clear all</button>
+  </div>
+
+  <!-- Studio / Type / Day filters — collapsed by default, toggled via #filter-toggle -->
+  <div class="filter-extra" id="filter-extra">
+  <div class="filter-extra-inner">
+
+    <div class="filter-row" id="studio-row">
+      <span class="filter-label">Studio</span>
+      <div class="search-wrap" id="studio-search-wrap">
+        <span class="search-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1"/><line x1="9" y1="7.5" x2="9" y2="7.51"/><line x1="15" y1="7.5" x2="15" y2="7.51"/><line x1="9" y1="11.5" x2="9" y2="11.51"/><line x1="15" y1="11.5" x2="15" y2="11.51"/><line x1="10" y1="21" x2="10" y2="17"/><line x1="14" y1="21" x2="14" y2="17"/></svg></span>
+        <input class="dancer-input" id="studio-input" type="text" placeholder="Studio..." aria-label="Filter by studio" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+        <div class="dancer-dropdown" id="studio-dropdown"></div>
+      </div>
+      <div id="studio-pill-wrap" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;flex:1;min-width:0;"></div>
+      <button class="btn" id="studio-clear-btn" style="display:none;font-size:10px;padding:4px 8px;color:#8878b0;border-color:rgba(255,255,255,0.08);flex-shrink:0;">Clear</button>
+    </div>
+
+    <div class="filter-row" id="cat-row" role="group" aria-label="Filter by type">
+      <span class="filter-label">Type</span>
+      <button class="btn cat-btn active" data-level="" data-format="" aria-pressed="true">All</button>
+      <button class="btn cat-btn" data-level="" data-format="solo" aria-pressed="false">Solo</button>
+      <button class="btn cat-btn" data-level="" data-format="group" aria-pressed="false">Groups</button>
+      <button class="btn cat-btn" data-level="" data-format="production" aria-pressed="false">Production</button>
+      <button class="btn cat-btn" data-level="petite" data-format="" aria-pressed="false">Petite</button>
+      <button class="btn cat-btn" data-level="junior" data-format="" aria-pressed="false">Junior</button>
+      <button class="btn cat-btn" data-level="teen" data-format="" aria-pressed="false">Teen</button>
+      <button class="btn cat-btn" data-level="senior" data-format="" aria-pressed="false">Senior</button>
+    </div>
+
+    <!-- Day filters (remaining buttons injected by the schedule engine) -->
+    <div class="filter-row" id="day-filter-row" role="group" aria-label="Filter by day">
+      <span class="filter-label">Day</span>
+      <button class="btn day-btn active" data-day="all" aria-pressed="true">All</button>
+    </div>
+
+  </div>
+  </div>
+
+</div>
+
+<div class="offset-bar" id="offset-bar">
+  <span class="offset-label">Adjust times</span>
+  <div class="offset-btns" role="group" aria-label="Adjust displayed times by minutes">
+    <button class="offset-btn" data-delta="-30" aria-pressed="false">−30</button>
+    <button class="offset-btn" data-delta="-15" aria-pressed="false">−15</button>
+    <button class="offset-btn" data-delta="-10" aria-pressed="false">−10</button>
+    <button class="offset-btn" data-delta="-5" aria-pressed="false">−5</button>
+    <button class="offset-btn active" data-delta="0" aria-pressed="true">On Time</button>
+    <button class="offset-btn" data-delta="5" aria-pressed="false">+5</button>
+    <button class="offset-btn" data-delta="10" aria-pressed="false">+10</button>
+    <button class="offset-btn" data-delta="15" aria-pressed="false">+15</button>
+    <button class="offset-btn" data-delta="30" aria-pressed="false">+30</button>
+  </div>
+  <span class="offset-status" id="offset-status" style="display:none"></span>
+  <p class="offset-note">Personal estimate only — shifts the displayed times if the event is running early or late. It does not reflect official or live timing.</p>
+</div>
+
+<!-- Livestream card is rendered by assets/schedule-build.js's renderLivestream(),
+     driven by COMPETITION_CONFIG.livestream below. -->
+<div class="livestream-bar" id="livestream-bar"></div>
+
+<main id="main-content">
+  <!-- NOSCRIPT-FALLBACK:START (generated by scripts/build-noscript.js — do not hand-edit) -->
+<noscript>
+<style>#filter-bar,#offset-bar,#schedule-container,#no-results{display:none!important}</style>
+<div class="ns-fallback">
+<p>JavaScript is required for the interactive schedule (search, filters, favorites). Scheduled times are subject to change. Here is the full published schedule:</p>
+<section><h3>Friday, April 23</h3><ul><li class="ns-note">Full routine schedule not yet published — check back closer to the event.</li></ul></section><section><h3>Saturday, April 24</h3><ul><li class="ns-note">Full routine schedule not yet published — check back closer to the event.</li></ul></section><section><h3>Sunday, April 25</h3><ul><li class="ns-note">Full routine schedule not yet published — check back closer to the event.</li></ul></section>
+</div>
+</noscript>
+<!-- NOSCRIPT-FALLBACK:END -->
+  <!-- Dancer spotlight — built dynamically -->
+  <div class="quinn-callout" id="quinn-callout" style="display:none">
+    <div class="callout-header" id="callout-header"></div>
+    <div class="quinn-schedule" id="callout-schedule"></div>
+  </div>
+  <!-- Schedule rendered by assets/schedule-*.js (see schedule-data.js header for the file list + load order) -->
+  <div id="schedule-container">
+    <div class="schedule-skeleton" id="schedule-skeleton" aria-hidden="true">
+      <div class="skel-day"></div>
+      <div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div>
+      <div class="skel-day"></div>
+      <div class="skel-card"></div><div class="skel-card"></div>
+    </div>
+  </div>
+  <div class="no-results" id="no-results">No routines match this filter.</div>
+</main>
+
+<!-- Install Banner -->
+<div class="install-banner hidden" id="install-banner">
+  <div class="banner-icon" id="banner-icon"></div>
+  <div class="banner-text">
+    <div class="banner-title">Add to Home Screen</div>
+    <div class="banner-body" id="banner-body"></div>
+    <div class="banner-actions">
+      <button class="banner-btn-install" id="banner-install" style="display:none">Install App</button>
+      <button class="banner-btn-dismiss" id="banner-dismiss">Maybe later</button>
+    </div>
+  </div>
+  <button class="banner-close" id="banner-close" aria-label="Close"></button>
+</div>
+
+<script src="../assets/icons.js"></script>
+<script src="../assets/pwa.js"></script>
+
+<!-- ============================================================
+     COMPETITION TEMPLATE — APDC Dance Competition Dashboard
+     ============================================================
+     TO USE FOR A NEW COMPETITION:
+     1. Update COMPETITION_CONFIG with the new event details
+     2. Replace SCHEDULE with the new day-by-day routine list
+     3. Update manifest.json name/short_name
+     4. Deploy to GitHub Pages
+     ============================================================ -->
+<script>
+const COMPETITION_CONFIG = {
+  id: "regionals-april-2027",
+  name: "Backstage Regionals 2027",
+  type: "Regionals",
+  season: "2026-2027",
+  status: "upcoming",
+  startDate: "2027-04-23",
+  endDate: "2027-04-25",
+  location: { venue: "MJN Convention Center – Mid Hudson Civic Center", city: "Poughkeepsie", state: "NY", address: "" },
+  dates: "April 23–25, 2027",
+  livestream: null,
+  resources: [],
+  lastUpdated: "2026-09-04",
+  days: {
+    fri: { label: "Day 1", title: "Friday, April 23", count: "", date: "2027-04-23" },
+    sat: { label: "Day 2", title: "Saturday, April 24", count: "", date: "2027-04-24" },
+    sun: { label: "Day 3", title: "Sunday, April 25", count: "", date: "2027-04-25" },
+  },
+  dayButtons: [
+    { key: "fri", label: "Fri 4/23" },
+    { key: "sat", label: "Sat 4/24" },
+    { key: "sun", label: "Sun 4/25" },
+  ]
+};
+
+const SCHEDULE = {
+  fri: [
+    { type: 'meta', text: "Full routine schedule not yet published — check back closer to the event." },
+  ],
+  sat: [
+    { type: 'meta', text: "Full routine schedule not yet published — check back closer to the event." },
+  ],
+  sun: [
+    { type: 'meta', text: "Full routine schedule not yet published — check back closer to the event." },
+  ],
+};
+</script>
+<script src="../assets/schedule-data.js"></script>
+<script src="../assets/schedule-cards.js"></script>
+<script src="../assets/schedule-calendar.js"></script>
+<script src="../assets/schedule-build.js"></script>
+<script src="../assets/schedule-filters.js"></script>
+<script src="../assets/schedule-search.js"></script>
+<script src="../assets/schedule-toolbar.js"></script>
+<script src="../assets/schedule-api.js"></script>
+<script src="../assets/schedule-init.js"></script>
+<script src="../assets/feedback-config.js"></script>
+<script src="../assets/feedback.js"></script>
+
+</body>
+</html>
