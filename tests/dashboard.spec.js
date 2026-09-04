@@ -53,8 +53,10 @@ test.describe('landing dashboard', () => {
 
   test('the featured competition is not duplicated as a plain row', async ({ page }) => {
     await gotoAt(page, '2026-09-01T12:00:00');
-    // The upcoming comp appears once (as the hero), not also as a .comp-row.
-    await expect(page.locator('.comp-row:not(.completed) .comp-name')).toHaveCount(0);
+    // The hero's competition appears once (as the hero), not also as a .comp-row —
+    // other upcoming competitions are free to appear as their own rows.
+    const heroName = await page.locator('.next-hero .hero-name').innerText();
+    await expect(page.locator('.comp-row:not(.completed) .comp-name', { hasText: heroName })).toHaveCount(0);
   });
 
   test('past rows carry no bogus "00" sequence number', async ({ page }) => {
@@ -83,8 +85,9 @@ test.describe('season hero (undated competition)', () => {
   }
 
   test('shows a season hero with "coming soon" and no countdown when the next comp is undated', async ({ page }) => {
-    // After the dated Regionals has passed, the undated Nationals 2027 is next.
-    await gotoWithUndated(page, '2026-11-01T12:00:00');
+    // After every dated competition in the manifest has passed, the undated
+    // Nationals 2027 is next.
+    await gotoWithUndated(page, '2027-06-01T12:00:00');
     const hero = page.locator('.next-hero.season-hero');
     await expect(hero).toHaveCount(1);
     await expect(hero.locator('.hero-name')).toContainText(/Nationals 2027/);

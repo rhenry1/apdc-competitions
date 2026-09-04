@@ -6,6 +6,9 @@ const PAGES = [
   '/index.html',
   '/nationals-2026/index.html',
   '/regionals-spring-2027/index.html',
+  '/regionals-march-2027/index.html',
+  '/regionals-april-2027/index.html',
+  '/regionals-may-2027/index.html',
 ];
 
 for (const path of PAGES) {
@@ -37,11 +40,11 @@ test('robots.txt allows crawling and points to the sitemap', async ({ request })
   expect(body).toMatch(/Sitemap:\s*https:\/\/rhenry1\.github\.io\/apdc-competitions\/sitemap\.xml/);
 });
 
-test('sitemap.xml lists all three pages with the production origin', async ({ request }) => {
+test('sitemap.xml lists all pages with the production origin', async ({ request }) => {
   const res = await request.get('/sitemap.xml');
   expect(res.ok()).toBe(true);
   const body = await res.text();
-  for (const path of ['/', '/nationals-2026/', '/regionals-spring-2027/']) {
+  for (const path of ['/', '/nationals-2026/', '/regionals-spring-2027/', '/regionals-march-2027/', '/regionals-april-2027/', '/regionals-may-2027/']) {
     expect(body).toContain(`https://rhenry1.github.io/apdc-competitions${path}</loc>`);
   }
 });

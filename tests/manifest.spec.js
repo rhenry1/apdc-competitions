@@ -44,7 +44,7 @@ test('manifest icon + screenshot files actually exist', async ({ request }) => {
 // Screen" from. Only the homepage had the inline <html> background before
 // this; the two schedule pages (the more likely install/deep-link target)
 // relied entirely on an external stylesheet loading first.
-const PAGES = ['/index.html', '/nationals-2026/index.html', '/regionals-spring-2027/index.html'];
+const PAGES = ['/index.html', '/nationals-2026/index.html', '/regionals-spring-2027/index.html', '/regionals-march-2027/index.html', '/regionals-april-2027/index.html', '/regionals-may-2027/index.html'];
 for (const path of PAGES) {
   test(`${path}: <html> paints the app background before any CSS loads`, async ({ page }) => {
     await page.goto(path);
