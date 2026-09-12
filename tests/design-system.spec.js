@@ -35,7 +35,7 @@ test('nationals-2026: livestream card stays in the shared content column on desk
 const PAGES = [
   { name: 'homepage', path: '/index.html' },
   { name: 'nationals-2026', path: '/nationals-2026/index.html' },
-  { name: 'regionals-spring-2027', path: '/regionals-spring-2027/index.html' },
+  { name: 'regionals-march-2027', path: '/regionals-march-2027/index.html' },
 ];
 
 for (const { name, path } of PAGES) {

@@ -19,18 +19,18 @@ test.describe('landing dashboard', () => {
 
     const hero = page.locator('.next-hero');
     await expect(hero).toHaveCount(1);
-    await expect(hero).toHaveAttribute('href', 'regionals-spring-2027/');
+    await expect(hero).toHaveAttribute('href', 'regionals-march-2027/');
     await expect(hero.locator('.hero-eyebrow')).toContainText(/next competition/i);
-    await expect(hero.locator('.hero-name')).toContainText(/Regionals — Fall 2026/);
-    // 2026-09-01 → 2026-10-11 is 40 calendar days.
-    await expect(hero.locator('.hero-days')).toHaveText('40');
+    await expect(hero.locator('.hero-name')).toContainText(/Turn It Up Regionals 2027/);
+    // 2026-09-01 → 2027-03-17 is 197 calendar days.
+    await expect(hero.locator('.hero-days')).toHaveText('197');
     await expect(hero.locator('.hero-days-label')).toHaveText(/days to go/i);
     await expect(hero.locator('.hero-weekend')).toHaveCount(0);
     expect(errors).toEqual([]);
   });
 
   test('during the event: hero shows the Competition Weekend label, no countdown', async ({ page }) => {
-    await gotoAt(page, '2026-10-11T12:00:00');
+    await gotoAt(page, '2027-03-19T12:00:00');
     const hero = page.locator('.next-hero');
     await expect(hero).toHaveCount(1);
     await expect(hero.locator('.hero-weekend')).toContainText(/competition weekend/i);
@@ -98,7 +98,7 @@ test.describe('season hero (undated competition)', () => {
   test('a dated competition still wins the hero; the undated one is a "Schedule coming soon" row', async ({ page }) => {
     await gotoWithUndated(page, '2026-09-01T12:00:00');
     // Dated Regionals keeps the countdown hero (auto-switch by data).
-    await expect(page.locator('.next-hero:not(.season-hero) .hero-days')).toHaveText('40');
+    await expect(page.locator('.next-hero:not(.season-hero) .hero-days')).toHaveText('197');
     // The undated one appears as a soon row.
     const soonRow = page.locator('.comp-row.soon');
     await expect(soonRow).toHaveCount(1);

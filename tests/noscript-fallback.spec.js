@@ -4,12 +4,14 @@ const path = require('path');
 const { buildForFile } = require('../scripts/build-noscript.js');
 
 // W3.1 — the core schedule must render even if JS fails entirely (the site's
-// own working agreement). nationals-2026 and regionals-spring-2027 ship a
-// <noscript> fallback generated straight from each page's SCHEDULE data, so
-// it can never drift from what the interactive engine renders.
+// own working agreement). Every competition page ships a <noscript> fallback
+// generated straight from that page's SCHEDULE data, so it can never drift
+// from what the interactive engine renders.
 const PAGES = [
   { name: 'nationals-2026', path: '/nationals-2026/index.html', file: 'nationals-2026/index.html' },
-  { name: 'regionals-spring-2027', path: '/regionals-spring-2027/index.html', file: 'regionals-spring-2027/index.html' },
+  { name: 'regionals-march-2027', path: '/regionals-march-2027/index.html', file: 'regionals-march-2027/index.html' },
+  { name: 'regionals-april-2027', path: '/regionals-april-2027/index.html', file: 'regionals-april-2027/index.html' },
+  { name: 'regionals-may-2027', path: '/regionals-may-2027/index.html', file: 'regionals-may-2027/index.html' },
 ];
 
 test.describe('no-JS fallback: generator stays in sync with SCHEDULE', () => {
@@ -39,11 +41,10 @@ test.describe('no-JS fallback: rendered behavior with JavaScript disabled', () =
     await expect(page.locator('#schedule-container')).toBeHidden();
   });
 
-  test('regionals-spring-2027 shows the sample schedule and its sample banner', async ({ page }) => {
-    await page.goto('/regionals-spring-2027/index.html');
-    // Static markup (not JS-dependent) — the sample disclosure still shows.
-    await expect(page.locator('.sample-banner')).toBeVisible();
-    await expect(page.locator('.ns-fallback')).not.toHaveCount(0);
+  test('regionals-march-2027 shows the "not yet published" placeholder, no sample banner', async ({ page }) => {
+    await page.goto('/regionals-march-2027/index.html');
+    await expect(page.locator('.sample-banner')).toHaveCount(0);
+    await expect(page.locator('.ns-fallback')).toContainText(/not yet published/i);
     await expect(page.locator('#filter-bar')).toBeHidden();
   });
 

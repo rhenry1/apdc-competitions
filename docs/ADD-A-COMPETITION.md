@@ -6,11 +6,11 @@ static file you edit directly.
 
 ## 1. Copy an existing page as a template
 
-`regionals-spring-2027/` is the simpler of the two existing pages (fewer
-days) and is the best starting template:
+`regionals-april-2027/` is one of the simpler existing pages (fewer
+days) and is a good starting template:
 
 ```bash
-cp -r regionals-spring-2027 my-new-competition-2027
+cp -r regionals-april-2027 my-new-competition-2027
 ```
 
 The folder name becomes the public URL segment

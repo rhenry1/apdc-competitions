@@ -5,7 +5,6 @@ const { test, expect } = require('@playwright/test');
 // normalized model via window.APDC rather than the authored SCHEDULE literals.
 const PAGES = [
   { name: 'nationals-2026', path: '/nationals-2026/index.html', expectId: 'nationals-2026' },
-  { name: 'regionals-spring-2027', path: '/regionals-spring-2027/index.html', expectId: 'regionals-spring-2027' },
 ];
 
 for (const { name, path, expectId } of PAGES) {

@@ -7,7 +7,7 @@ const { AxeBuilder } = require('@axe-core/playwright');
 // three pages, scoped to WCAG 2.0/2.1 A+AA — the well-understood, broadly
 // agreed-upon baseline (axe's "best-practice" rules are more opinionated and
 // left out to avoid noisy, debatable findings).
-const PAGES = ['/index.html', '/nationals-2026/index.html', '/regionals-spring-2027/index.html', '/regionals-march-2027/index.html', '/regionals-april-2027/index.html', '/regionals-may-2027/index.html'];
+const PAGES = ['/index.html', '/nationals-2026/index.html', '/regionals-march-2027/index.html', '/regionals-april-2027/index.html', '/regionals-may-2027/index.html'];
 
 test.describe('automated accessibility scan (axe-core, WCAG 2.0/2.1 A+AA)', () => {
   for (const path of PAGES) {

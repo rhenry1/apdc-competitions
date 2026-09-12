@@ -16,26 +16,6 @@
   // Newest first is not required; helpers sort as needed.
   var COMPETITIONS = [
     {
-      id: 'regionals-spring-2027',
-      name: 'Turn It Up Regionals — Fall 2026',
-      type: 'Regionals',
-      season: '2026-2027',
-      seasonLabel: '2026 – 2027 Season',
-      status: 'upcoming',
-      startDate: '2026-10-11',
-      endDate: '2026-10-12',
-      dates: 'October 11–12, 2026',
-      city: 'Cherry Hill',
-      state: 'NJ',
-      url: 'regionals-spring-2027/',
-      accent: 'regional',
-      published: true,
-      // Demo/sample competition: proves the countdown + schedule experience,
-      // but is NOT a real published event. Surfaced with a clear "Sample data"
-      // label wherever it appears so it's never mistaken for the real schedule.
-      sample: true,
-    },
-    {
       id: 'nationals-2026',
       name: 'Turn It Up Nationals 2026',
       type: 'Nationals',

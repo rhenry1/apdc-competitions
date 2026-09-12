@@ -12,7 +12,7 @@ for the full project history and what's next, or
 ├── index.html                    # Homepage — upcoming/past competitions
 ├── nationals-2026/                # A competition's schedule page
 │   └── index.html                #   (data is embedded directly in the page)
-├── regionals-spring-2027/         # Another competition's schedule page
+├── regionals-march-2027/          # Another competition's schedule page
 │   └── index.html
 ├── manifest.json                  # PWA manifest
 ├── service-worker.js              # Offline precache + network-first fetch

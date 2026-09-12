@@ -5,7 +5,6 @@ const path = require('path');
 // P1.5 — accessible filter drawer (bottom sheet) + unified active-filter chips.
 const PAGES = [
   { name: 'nationals-2026', path: '/nationals-2026/index.html' },
-  { name: 'regionals-spring-2027', path: '/regionals-spring-2027/index.html' },
 ];
 
 for (const { name, path } of PAGES) {

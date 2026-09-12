@@ -64,8 +64,8 @@ from 14 cases at V1 to 144 tests across 20 files.
 
 Must not break:
 - Landing hub (`index.html`) with upcoming + past-season sections.
-- Competition schedule pages (`nationals-2026/`, `regionals-spring-2027/`) and
-  their direct URLs.
+- Competition schedule pages (`nationals-2026/`, `regionals-march-2027/`,
+  `regionals-april-2027/`, `regionals-may-2027/`) and their direct URLs.
 - Filters: dancer, studio, routine-type, day; clear actions; props filter.
 - Manual schedule offset (persisted per `apdc-schedule-offset`).
 - Livestream link + password + copy action (nationals page).
@@ -88,20 +88,15 @@ Must not break:
 3. ~~No `prefers-reduced-motion` handling~~ — ✅ fixed in P1.1.
 4. ~~No meta description / Open Graph tags~~ — ✅ fixed in P2.4.
 5. ~~Routine identity is array-position-based~~ — ✅ fixed in P1.0 (day-scoped ids).
-6. **`regionals-spring-2027` is placeholder data** (19 TBD routines) — now
-   **clearly labeled as demo/sample** (branch `fix-sample-data-labeling`): a
-   `sample: true` flag drives a "Sample data" badge on the homepage hero and an
-   unmissable "not the official schedule" banner on the page, and the page's
-   meta/OG no longer assert the fabricated dates. The countdown + schedule stay
-   live (they demonstrate the site works) but are no longer presented as real.
-   **Remaining data task:** paste the real schedule into that page's `SCHEDULE`,
-   fill real dates, and drop the `sample` flag when the competition publishes.
-7. *(new, from V2.5)* **Future-season entries need real names** — the season hero
-   for "announced but undated" competitions is built and tested (undated entries
-   in `competitions.js` render "Full schedule coming soon" and auto-flip to the
-   countdown card once `startDate` is set), but no real future competition is in
-   the manifest yet. When APDC announces one, add it to `competitions.js` with no
-   `startDate`.
+6. ~~`regionals-spring-2027` is placeholder data~~ — ✅ resolved: the demo/sample
+   page (labeled via `fix-sample-data-labeling`, a `sample: true` flag +
+   "Sample data" badge/banner) has been removed now that the 2026-2027 season's
+   real Regionals dates/locations are confirmed. See item 7.
+7. ~~Future-season entries need real names~~ — ✅ resolved: `competitions.js` now
+   carries three real, dated 2026-2027 season Regionals (`regionals-march-2027`,
+   `regionals-april-2027`, `regionals-may-2027`), replacing the old sample entry.
+   The undated "announced" season-hero path (from V2.5) is still built and
+   tested for whenever a future competition is announced without a date yet.
 
 ---
 

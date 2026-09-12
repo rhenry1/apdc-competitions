@@ -3,7 +3,6 @@ const { test, expect } = require('@playwright/test');
 // P1.4 — unified free-text search across all routine fields.
 const PAGES = [
   { name: 'nationals-2026', path: '/nationals-2026/index.html' },
-  { name: 'regionals-spring-2027', path: '/regionals-spring-2027/index.html' },
 ];
 
 const visible = (page) => page.locator('.routine-card:not(.hidden)');

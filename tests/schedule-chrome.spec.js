@@ -5,7 +5,6 @@ const { test, expect } = require('@playwright/test');
 // first-use estimate reminder.
 const PAGES = [
   { name: 'nationals-2026', path: '/nationals-2026/index.html' },
-  { name: 'regionals-spring-2027', path: '/regionals-spring-2027/index.html' },
 ];
 
 for (const { name, path } of PAGES) {
@@ -47,14 +46,7 @@ test('nationals: livestream is one resource card with the stream link and copyab
   }
 });
 
-test('regionals: shows a "coming soon" livestream card when the link is not yet available', async ({ page }) => {
-  await page.goto('/regionals-spring-2027/index.html');
-  await page.waitForLoadState('networkidle');
-  const card = page.locator('.livestream-card');
-  await expect(card).toBeVisible();
-  await expect(card).toContainText(/coming soon/i);
-  const btn = card.locator('.livestream-btn');
-  await expect(btn).toBeDisabled();
-  expect(await btn.evaluate(el => el.tagName)).toBe('BUTTON');
-  await expect(card.locator('#stream-pw')).toHaveCount(0);
-});
+// Coverage for the "coming soon" livestream state (COMPETITION_CONFIG.livestream
+// = { url: '', password: '' }) returns once a live page actually uses it — none
+// of the current pages do (nationals-2026 has a real link; the 2026-2027
+// Regionals pages don't have livestream plans confirmed yet, so they use `null`).

@@ -4,7 +4,6 @@ const { test, expect } = require('@playwright/test');
 // data was last edited. It is not live/day-of timing (guarded by P1.10).
 const PAGES = [
   '/nationals-2026/index.html',
-  '/regionals-spring-2027/index.html',
 ];
 
 for (const path of PAGES) {

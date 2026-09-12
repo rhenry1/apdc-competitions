@@ -4,7 +4,6 @@ const { test, expect } = require('@playwright/test');
 // the "no routines" empty state is never shown before the data has loaded.
 const PAGES = [
   { name: 'nationals-2026', path: '/nationals-2026/index.html' },
-  { name: 'regionals-spring-2027', path: '/regionals-spring-2027/index.html' },
 ];
 
 test.describe('loading skeleton (before scripts render the schedule)', () => {

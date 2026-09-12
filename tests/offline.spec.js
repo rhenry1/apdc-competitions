@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 // P3.1 — full offline shell. After one visit anywhere on the site, the service
-// worker has precached the hub, both competition pages (schedule data is
+// worker has precached the hub, every competition page (schedule data is
 // embedded in them), and all shared assets, so every page renders offline.
 // These tests drive the real SW in Chromium: install → precache → cut the
 // network → navigate.
@@ -15,7 +15,7 @@ async function swReady(page) {
     const names = (await caches.keys()).filter(n => n.startsWith('apdc-'));
     for (const name of names) {
       const cache = await caches.open(name);
-      if (await cache.match('/regionals-spring-2027/index.html')) return true;
+      if (await cache.match('/regionals-march-2027/index.html')) return true;
     }
     return false;
   }, null, { timeout: 15000 });

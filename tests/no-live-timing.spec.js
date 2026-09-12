@@ -37,7 +37,6 @@ const BANNED = [
 const PAGES = [
   '/index.html',
   '/nationals-2026/index.html',
-  '/regionals-spring-2027/index.html',
   '/regionals-march-2027/index.html',
   '/regionals-april-2027/index.html',
   '/regionals-may-2027/index.html',
@@ -88,7 +87,6 @@ test.describe('no-live-timing guardrail', () => {
       'assets/schedule-api.js',
       'assets/schedule-init.js',
       'nationals-2026/index.html',
-      'regionals-spring-2027/index.html',
       'regionals-march-2027/index.html',
       'regionals-april-2027/index.html',
       'regionals-may-2027/index.html',
