@@ -144,7 +144,18 @@
   }
   .season-rule { flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
 
-  /* ── COMPETITION ROWS ── */
+  /* ── COMPETITION ROWS ──
+     Rows stay plain (no per-row card, per Wave 4 §4.5/§4.16 — see .next-hero's
+     comment above), but grouping them in one soft Level-1 surface gives the
+     list a rounded edge of its own so it doesn't read as a hard square block
+     sitting flush under the hero's big rounded corners. */
+  .comp-rows {
+    background: var(--color-surface-card);
+    border-radius: var(--radius-card-sm);
+    margin-top: 20px;
+    padding: 0 20px;
+    overflow: hidden;
+  }
   .comp-row {
     display: block; text-decoration: none; color: inherit;
     padding: 28px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -152,10 +163,17 @@
     -webkit-tap-highlight-color: transparent;
   }
   .comp-row:first-of-type { border-top: 1px solid rgba(255,255,255,0.05); }
+  /* The card's own top edge already reads as a boundary — an interior
+     divider right against it would just double up. */
+  .comp-rows .comp-row:first-of-type { border-top: none; }
 
   .comp-row::before {
     content: ''; position: absolute; left: -28px; top: 0; bottom: 0; width: 2px;
   }
+  /* Inside .comp-rows the row is inset by the card's own padding rather than
+     sitting flush against the page edge, so the accent bar tucks in closer
+     instead of reaching past the card boundary. */
+  .comp-rows .comp-row::before { left: -8px; }
   .comp-row.nationals-row::before {
     background: linear-gradient(180deg, #fde68a 0%, #c084fc 100%);
     opacity: 1;
@@ -667,10 +685,14 @@
     // Upcoming (and in-progress) seasons — the global "next" comp is the hero.
     groupBySeason(APDCComps.upcoming(now)).forEach(g => {
       html += '<div class="season-block">' + seasonLabelHtml(g.label);
+      let rowsHtml = '';
       g.comps.forEach(c => {
         if (c === heroComp) html += heroHtml(c, now);
-        else html += rowHtml(c, String(++idx).padStart(2, '0'));
+        else rowsHtml += rowHtml(c, String(++idx).padStart(2, '0'));
       });
+      // Grouped in one rounded surface so the list doesn't read as a hard
+      // square block directly under the hero's rounded card (see .comp-rows).
+      if (rowsHtml) html += '<div class="comp-rows">' + rowsHtml + '</div>';
       html += '</div>';
     });
 
